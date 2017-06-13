@@ -1,0 +1,51 @@
+# Custom makefiles
+makefile
+
+# Sublime Text and Visual Studio project files
+*.sublime-project
+*.sublime-workspace
+.vs/
+.project
+
+# Compilation files
+*.stackdump
+
+# FORD compiled documentation (run `ford ford.md` to compile, if FORD installed)
+doc/dist/
+
+# Directory for personal code snippets (e.g., for error testing and reporting separate
+# to main program).
+snip/
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
