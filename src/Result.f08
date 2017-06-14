@@ -11,14 +11,11 @@ module ResultModule
     !> Result type used for returning data and errors from functions.
     !! TODO:
     !!  - initWithPoly for initialising with class(*) or class(App) data.
-    !!  - An array of errors might be useful as functions could contain
-    !!    more than one error. E.g., two input parameters could be wildly wrong.
     type, public :: Result
-        class(*), allocatable                           :: data          !! The data returned from the function
-        type(ErrorInstance), dimension(:), allocatable     :: errors         !! The error (if any) returned from the function
+        class(*), allocatable                           :: data     !! The data returned from the function
+        type(ErrorInstance), dimension(:), allocatable  :: errors   !! The errors (if any) returned from the function
 
         contains
-            ! Getters
             procedure :: getData
             procedure :: getError
             procedure :: getErrors
@@ -26,26 +23,97 @@ module ResultModule
     end type
 
     interface Result
-        procedure initWithInteger
-        procedure initWithReal
-        procedure initWithCharacter
+        ! procedure initWithInteger
+        ! procedure initWithReal
+        ! procedure initWithCharacter
+        procedure initWithPoly
     end interface
 
     contains
-        !> Initialise the result object with integer data.
-        !! Either a scalar ErrorInstance or array of ErrorInstances
-        !! can be provided (the latter taking precedent if both
-        ! provided). If none provided, default "no error" returned.
-        function initWithInteger(data, error, errors) result(this)
+        ! !> Initialise the result object with integer data.
+        ! !! Either a scalar ErrorInstance or array of ErrorInstances
+        ! !! can be provided (the latter taking precedent if both
+        ! ! provided). If none provided, default "no error" returned.
+        ! function initWithInteger(data, error, errors) result(this)
+        !     type(Result)                            :: this
+        !     integer, intent(in)                     :: data
+        !     type(ErrorInstance), intent(in), optional  :: error
+        !     type(ErrorInstance), intent(in), optional  :: errors(:)
+
+        !     ! Store the given data in this%data
+        !     allocate(this%data, source=data)
+
+        !     ! Allocate array of errors, if it isn't already
+        !     if (.not. allocated(this%errors)) allocate(this%errors(0))
+            
+        !     ! If errors array given as param, use that, otherwise
+        !     ! use error param, and if that's not there, use the
+        !     ! default "no error" error.
+        !     if (present(errors)) then
+        !         this%errors = errors
+        !     else if (present(error)) then
+        !         this%errors = [error]
+        !     else
+        !         this%errors = [ErrorInstance(0, "No error.", .false.)]
+        !     end if
+        ! end function
+
+        ! !> Initialise the result object with real(dp) data.
+        ! function initWithReal(data, error, errors) result(this)
+        !     type(Result)                            :: this
+        !     real(dp), intent(in)                    :: data
+        !     type(ErrorInstance), intent(in), optional  :: error
+        !     type(ErrorInstance), intent(in), optional  :: errors(:)
+
+        !     ! Store the given data in this%data
+        !     allocate(this%data, source=data)
+
+        !     ! Allocate array of errors, if it isn't already
+        !     if (.not. allocated(this%errors)) allocate(this%errors(0))
+            
+        !     ! If errors array given as param, use that, otherwise
+        !     ! use error param, and if that's not there, use the
+        !     ! default "no error" error.
+        !     if (present(errors)) then
+        !         this%errors = errors
+        !     else if (present(error)) then
+        !         this%errors = [error]
+        !     else
+        !         this%errors = [ErrorInstance(0, "No error.", .false.)]
+        !     end if
+        ! end function
+
+        ! !> Initialise the result object with character data.
+        ! function initWithCharacter(data, error, errors) result(this)
+        !     type(Result)                        :: this
+        !     character(len=*), intent(in)        :: data
+        !     type(ErrorInstance), intent(in), optional  :: error
+        !     type(ErrorInstance), intent(in), optional  :: errors(:)
+
+        !     ! Store the given data in this%data
+        !     allocate(this%data, source=data)
+
+        !     ! Allocate array of errors, if it isn't already
+        !     if (.not. allocated(this%errors)) allocate(this%errors(0))
+            
+        !     ! If errors array given as param, use that, otherwise
+        !     ! use error param, and if that's not there, use the
+        !     ! default "no error" error.
+        !     if (present(errors)) then
+        !         this%errors = errors
+        !     else if (present(error)) then
+        !         this%errors = [error]
+        !     else
+        !         this%errors = [ErrorInstance(0, "No error.", .false.)]
+        !     end if
+        ! end function
+
+        !> Initialise the result object with polymorphic class(*) data.
+        function initWithPoly(data, error, errors) result(this)
             type(Result)                            :: this
-            integer, intent(in)                     :: data
+            class(*), intent(in)                    :: data
             type(ErrorInstance), intent(in), optional  :: error
             type(ErrorInstance), intent(in), optional  :: errors(:)
-            type(ErrorHandler)                      :: ERR
-
-            ! Initialise ErrorHandler: TEMPORARY until all
-            ! extending from App
-            call ERR%init()
 
             ! Store the given data in this%data
             allocate(this%data, source=data)
@@ -61,78 +129,18 @@ module ResultModule
             else if (present(error)) then
                 this%errors = [error]
             else
-                this%errors = [ERR%getNoError()]
+                this%errors = [ErrorInstance(0, "No error.", .false.)]
             end if
         end function
 
-        !> Initialise the result object with real(dp) data.
-        function initWithReal(data, error, errors) result(this)
-            type(Result)                            :: this
-            real(dp), intent(in)                    :: data
-            type(ErrorInstance), intent(in), optional  :: error
-            type(ErrorInstance), intent(in), optional  :: errors(:)
-            type(ErrorHandler)                      :: ERR
-
-            ! Initialise ErrorHandler: TEMPORARY until all
-            ! extending from App
-            call ERR%init()
-
-            ! Store the given data in this%data
-            allocate(this%data, source=data)
-
-            ! Allocate array of errors, if it isn't already
-            if (.not. allocated(this%errors)) allocate(this%errors(0))
-            
-            ! If errors array given as param, use that, otherwise
-            ! use error param, and if that's not there, use the
-            ! default "no error" error.
-            if (present(errors)) then
-                this%errors = errors
-            else if (present(error)) then
-                this%errors = [error]
-            else
-                this%errors = [ERR%getNoError()]
-            end if
-        end function
-
-        !> Initialise the result object with character data.
-        function initWithCharacter(data, error, errors) result(this)
-            type(Result)                        :: this
-            character(len=*), intent(in)        :: data
-            type(ErrorInstance), intent(in), optional  :: error
-            type(ErrorInstance), intent(in), optional  :: errors(:)
-            type(ErrorHandler)                      :: ERR
-
-            ! Initialise ErrorHandler: TEMPORARY until all
-            ! extending from App
-            call ERR%init()
-
-            ! Store the given data in this%data
-            allocate(this%data, source=data)
-
-            ! Allocate array of errors, if it isn't already
-            if (.not. allocated(this%errors)) allocate(this%errors(0))
-            
-            ! If errors array given as param, use that, otherwise
-            ! use error param, and if that's not there, use the
-            ! default "no error" error.
-            if (present(errors)) then
-                this%errors = errors
-            else if (present(error)) then
-                this%errors = [error]
-            else
-                this%errors = [ERR%getNoError()]
-            end if
-        end function
-
+        !> Return the data from the Result object.
         pure function getData(this) result(data)
             class(Result), intent(in)   :: this
             class(*), allocatable       :: data
             allocate(data, source=this%data)
         end function
 
-        !> Returns the error code from the first error
-        !! in the errors array.
+        !> Returns the error code from the first error in the errors array.
         pure function getErrorCode(this) result(errorCode)
             class(Result), intent(in)   :: this
             integer                     :: errorCode
@@ -146,6 +154,7 @@ module ResultModule
             if (size(this%errors)>0) error = this%errors(1)
         end function
 
+        !> Return the errors array.
         pure function getErrors(this) result(errors)
             class(Result), intent(in) :: this
             type(ErrorInstance) :: errors(size(this%errors))

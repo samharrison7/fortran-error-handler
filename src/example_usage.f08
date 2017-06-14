@@ -1,4 +1,5 @@
 program example_usage
+    use TestClassModule
     use ErrorInstanceModule
     use ErrorHandlerModule
     use ErrorCriteriaModule
@@ -9,8 +10,14 @@ program example_usage
     type(ErrorInstance) :: newError
     type(ErrorCriteria), target :: crit
     type(ErrorHandler), pointer :: err
+    type(Result) :: r
     real :: start, finish
     integer :: i
+    integer :: int
+    real :: re
+    type(TestClass) :: tcin
+    type(TestClass) :: tcout
+    class(*), allocatable :: tc
 
     call cpu_time(start)
 
@@ -32,9 +39,26 @@ program example_usage
         call crit%remove([200,300])
         call crit%add([501,502,503],["A","B","C"], [.true.,.true.,.true.])
         call crit%printErrors()
-        call crit%trigger(code=700)
+        ! call crit%trigger(code=700)
 
-        call crit%trigger(12345)
+        call tcin%setStuff(1.2345)
+
+        r = Result( &
+            data = 1.2345, &
+            errors = errors &
+        )
+        ! call crit%trigger(errors=r%getErrors())
+        ! allocate(tc, source=r%getData())
+        re = transfer(source=r%getData(), mold=re)
+
+        ! re = tcin%getStuff()
+        write(*,*) re
+
+        ! select type(d => r%getData())
+        !     type is (TestClass)
+        !         write(*,'(f6.4)') d%getStuff()
+        ! end select
+
 
     call cpu_time(finish)
     print '("Time = ",f10.8," seconds.")',finish-start
