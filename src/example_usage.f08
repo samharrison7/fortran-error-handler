@@ -14,7 +14,7 @@ program example_usage
     real :: start, finish
     integer :: i
     integer :: int
-    real :: re
+    real :: re(2)
     type(TestClass) :: tcin
     type(TestClass) :: tcout
     class(*), allocatable :: tc
@@ -41,18 +41,18 @@ program example_usage
         call crit%printErrors()
         ! call crit%trigger(code=700)
 
-        call tcin%setStuff(1.2345)
-
+        ! call tcin%setStuff(1.2345)
         r = Result( &
-            data = 1.2345, &
+            data = 'hi', &
             errors = errors &
         )
         ! call crit%trigger(errors=r%getErrors())
         ! allocate(tc, source=r%getData())
-        re = transfer(source=r%getData(), mold=re)
+        ! re = .real. r  ! Make this work
+        ! re = transfer(source=r%getData(), mold=re)
 
         ! re = tcin%getStuff()
-        write(*,*) re
+        write(*,*) .character. r
 
         ! select type(d => r%getData())
         !     type is (TestClass)

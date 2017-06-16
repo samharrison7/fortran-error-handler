@@ -140,3 +140,5 @@ if (lr%getData .eqv. .false.) write(*,*) "True!"
 
 Caveats:
 Error code must be <99999
+
+Write a bit about kinds as well, reference the "best answer" here: https://software.intel.com/en-us/forums/intel-fortran-compiler-for-linux-and-mac-os-x/topic/611490
