@@ -5,7 +5,7 @@ module ResultModule
     private
 
     !> Result type used for returning data and errors from functions.
-    type, public :: Result
+    type, abstract, public :: Result
         private
         class(*), allocatable                           :: data     !! The data returned from the function
         type(ErrorInstance), dimension(:), allocatable  :: errors   !! The errors (if any) returned from the function
