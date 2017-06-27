@@ -9,15 +9,13 @@ module ErrorInstanceModule
     !!  - Ultimately it would be nice if ErrorInstance could be passed `this` to automatically
     !!    figure out what the text for the stack point should be.
     type, public :: ErrorInstance
-        integer :: code                     !> Numeric error code
-        character(len=256) :: message       !> Message to accompany the error
-        logical :: isCritical = .true.      !> Shoud program execution be stopped?
-        character(len=256), dimension(:), allocatable :: trace   !> Custom backtrace for the error
+        integer                                         :: code                     !> Numeric error code
+        character(len=256)                              :: message                  !> Message to accompany the error
+        logical                                         :: isCritical = .true.      !> Shoud program execution be stopped?
+        character(len=256), dimension(:), allocatable   :: trace                    !> Custom backtrace for the error
 
         contains
             procedure, public :: addPointToTrace
-
-            ! Getters
             procedure, public :: getCode
     end type
 
@@ -26,13 +24,13 @@ module ErrorInstanceModule
     end interface
 
     contains
-
+        !> Create a new ErrorInstance.
         function init(code, message, isCritical, trace) result(this)
-            type(ErrorInstance) :: this
-            integer, intent(in) :: code
-            character(len=*), intent(in), optional :: message
-            logical, intent(in), optional :: isCritical
-            character(len=*), intent(in), optional :: trace(:)
+            type(ErrorInstance)                     :: this             !> The ErrorInstance class
+            integer, intent(in)                     :: code             !> Code for the error
+            character(len=*), intent(in), optional  :: message          !> Custom error message
+            logical, intent(in), optional           :: isCritical       !> Is the error message critical?
+            character(len=*), intent(in), optional  :: trace(:)         !> User-defined trace for the error
 
             this%code = code
             if (present(message)) this%message = message
@@ -57,7 +55,7 @@ module ErrorInstanceModule
             this%trace = [this%trace, tempPoint]
         end subroutine
 
-        !> Return the error code
+        !> Return the error code.
         pure function getCode(this) result(code)
             class(ErrorInstance), intent(in)   :: this
             integer                         :: code

@@ -9,12 +9,12 @@ module ErrorHandlerModule
     !! or just warnings.
     type, public :: ErrorHandler
         private
-        type(ErrorInstance), dimension(:), allocatable :: errors    !> Array of all possible errors
-        character(len=256) :: criticalPrefix = "Error:"         !> Prefix to output error message
-        character(len=256) :: warningPrefix = "Warning:"        !> Prefix to output error message
-        character(len=256) :: messageSuffix = ""                !> Suffix to output error message
-        logical :: isInitialised = .false.                      !> Has the ErrorHandler been initialised?
-        logical :: bashColors = .true.
+        type(ErrorInstance), allocatable    :: errors(:)                    !> Array of all possible errors
+        character(len=256)                  :: criticalPrefix = "Error:"    !> Prefix to output error message
+        character(len=256)                  :: warningPrefix = "Warning:"   !> Prefix to output error message
+        character(len=256)                  :: messageSuffix = ""           !> Suffix to output error message
+        logical                             :: isInitialised = .false.      !> Has the ErrorHandler been initialised?
+        logical                             :: bashColors = .true.          !> Should colors be displayed in bash consoles?
         
         contains
             procedure, public :: init => initErrorHandler
@@ -32,15 +32,17 @@ module ErrorHandlerModule
             ! Getters
             procedure, public :: getError
             procedure, public :: getErrors
+            procedure, public :: getErrorFromCode
+            procedure, public :: getNoError
 
             ! Setters
             procedure, public :: setErrors
 
-            procedure, public :: getErrorFromCode       ! Maybe rename get()
-            procedure, public :: getNoError
-            procedure :: stopIfNotInitialised
-            procedure :: stopIfInitialised
+            ! Initialised checks
+            procedure, public :: stopIfNotInitialised
+            procedure, public :: stopIfInitialised
 
+            ! Testing
             procedure, public :: printErrors
     end type
 
@@ -101,6 +103,8 @@ module ErrorHandlerModule
                 ! logical mask specified above.
                 allocate(this%errors(1:2+size(pack(errors, .not. mask))))
                 this%errors = [defaultErrors, pack(errors, .not. mask)]
+            else
+                this%errors = defaultErrors
             end if
 
             ! Set the error message prefixes
@@ -133,9 +137,8 @@ module ErrorHandlerModule
 
             ! If an error code has been provided
             if (present(code)) then
-
                 ! Check if the error instance already exists
-                do i=lbound(this%errors,1), ubound(this%errors,1)
+                do i=1, size(this%errors)
                     if (this%errors(i)%code == code) then
                         write(*,"(a,a,i5,a)") trim(this%criticalPrefix), " Tried adding error code that already exists: ", code, "."
                         write(*,"(a)") "Did you mean to use modify() procedure instead?"
@@ -171,11 +174,11 @@ module ErrorHandlerModule
         end subroutine
 
         subroutine addMultipleErrorInstances(this, codes, messages, areCritical)
-            class(ErrorHandler) :: this
-            integer, intent(in) :: codes(:)
-            character(len=*), intent(in) :: messages(size(codes))
-            logical, intent(in), optional :: areCritical(size(codes))
-            integer :: i
+            class(ErrorHandler)             :: this
+            integer, intent(in)             :: codes(:)
+            character(len=*), intent(in)    :: messages(size(codes))
+            logical, intent(in), optional   :: areCritical(size(codes))
+            integer                         :: i
 
             do i=1, size(codes)
                 call this%addErrorInstance(codes(i), messages(i), areCritical(i))
@@ -197,9 +200,9 @@ module ErrorHandlerModule
             ! Set message, criticality and trace if so.
             do i=lbound(this%errors,1), ubound(this%errors,1)
                 if (this%errors(i)%code == code) then
-                    this%errors(i)%message = message
-                    this%errors(i)%isCritical = isCritical
-                    this%errors(i)%trace = trace
+                    if (present(message)) this%errors(i)%message = message
+                    if (present(isCritical)) this%errors(i)%isCritical = isCritical
+                    if (present(trace)) this%errors(i)%trace = trace
                     errorExists = .true.
                 end if
             end do
@@ -273,16 +276,16 @@ module ErrorHandlerModule
         !! program execution is stopped, with exit code of first critical error.
         !! If no errors are specified, then nothing happens.
         subroutine trigger(this, code, error, errors)
-            class(ErrorHandler)                     :: this         !> Dummy argument
-            integer, optional                       :: code         !> Error code
-            type(ErrorInstance), optional           :: error        !> ErrorInstance
-            type(ErrorInstance), optional :: errors(:)    !> Array of ErrorInstances
+            class(ErrorHandler)             :: this         !> Dummy argument
+            integer, optional               :: code         !> Error code
+            type(ErrorInstance), optional   :: error        !> ErrorInstance
+            type(ErrorInstance), optional   :: errors(:)    !> Array of ErrorInstances
             
-            character(len=256)          :: messagePrefix    !> The message prefix (critical or warning)
-            character(len=1000)         :: outputMessage    !> The full message to be output
-            character(len=500)          :: traceMessage     !> The strack trace message
+            character(len=256)              :: messagePrefix    !> The message prefix (critical or warning)
+            character(len=1000)             :: outputMessage    !> The full message to be output
+            character(len=500)              :: traceMessage     !> The strack trace message
             type(ErrorInstance), allocatable :: errorsOut(:)   !> The errors to output
-            integer                     :: i, j             !> Loop iterators
+            integer                         :: i, j             !> Loop iterators
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -336,7 +339,7 @@ module ErrorHandlerModule
                         end do
 
                         write(*,"(a)") trim(outputMessage)
-                        write(*,"(a)") trim(traceMessage)
+                        write(*,"(a)") trim(adjustl(traceMessage))
                     else
                         write(*,"(a)") trim(outputMessage)
                     end if

@@ -1,6 +1,6 @@
 # Fortran Error Handler
 
-Fortran error handling frameworks are few and far between, and those that do exist often implement only parts of the error handling process, or rely on pre-processors. The goal of this error handling framework is to provide a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of object-oriented Fortran.
+Fortran error handling frameworks are few and far between, and those that do exist often implement only parts of the error handling process, or rely on pre-processors. The goal of this error handling framework is to provide a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
 The framework consists of two main classes:
 
@@ -41,15 +41,17 @@ call EH%trigger(300)
 ERROR: Another custom error message.
 ```
 
-Two further classes provide added functionality:
+A number of further classes provide added functionality:
 
 ### Result
 A Result object, though not required to use the framework, is designed as an object to be return from any procedures that may throw an error. It consists of data (i.e., what the function should return if there aren't any errors) and an ErrorInstance.
 
+The pitfalls of polymorphism in Fortran - specifically, the lack of array rank polymorphism - means a number of separate classes exist for data of different ranks, each one extending from an abstract Result class. Currently, this is limited to rank 4 (4 dimensional) data, though this could easily be extended.
+
 ```fortran
 type(ErrorHandler) :: EH
 type(ErrorInstance) :: procError
-type(Result) :: r
+type(Result0D) :: r
 
 procError = ErrorInstance(100, "Non-critical error that a procedure throws.", .false.)
 call EH%init(errors=[procError])
@@ -73,18 +75,30 @@ type(ErrorInstance) :: limitError
 
 call EH%init()          ! This sets some default error criteria messages
 limitError = EH%limit( &
-    value = 2,
-    lbound = 0,
-    ubound = 1,
-    message = "Value must be between 0 and 1."
+    value = 2, &
+    lbound = 0, &
+    ubound = 1 &
 )
 call EH%trigger(error=limitError)
 ```
 ```bash
-ERROR: Value must be between 0 and 1.
+ERROR: Value must be between 0 and 1. Given value: 2.
 ```
 
+## Learn more
+
+Explore the documentation for each class to learn how to best use the framework, and browse the examples to get an idea of how to implement the framework into your project:
+
+- ErrorHandler
+- ErrorInstance
+- Result
+- ErrorCriteria
+- Examples
+
 ## Result
+
+***Only sp (not kind attr), dp and qp supported in .real. (.sp., alias of .real., .dp., .qp) because kinds (real(kind)) can't be set dynamically and select type construct takes into account kind, thus real(dp) won't pass type is (real). You must specify dp = selected_kind_parameter() in wherever you pass data from. Don't currently support integer types.***
+
 The limited nature of polymorphism in Fortran makes providing a Result object with a generic data element a non-trivial task. To enable the `Result()` constructor to work with any type of input data, the data is stored as an unlimited polymorphic object, `class(*)`. This means that the `select type` construct must be used when the data is returned from the result object (using the `getData()` function), otherwise your compiler is likely to complain that you're trying to convert a `class(*)` object to whatever type you're trying to store data in.
 
 For example, if we know that the data is an object of type `TestClass`, then the following approach can be used:
@@ -139,6 +153,7 @@ if (lr%getData .eqv. .false.) write(*,*) "True!"
 ```
 
 Caveats:
-Error code must be <99999
+- Error code must be <99999
+- -fcheck=no-bounds must be used to avoid errors on allocating 2+ rank arrays.
 
 Write a bit about kinds as well, reference the "best answer" here: https://software.intel.com/en-us/forums/intel-fortran-compiler-for-linux-and-mac-os-x/topic/611490
