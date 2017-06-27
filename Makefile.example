@@ -1,0 +1,33 @@
+# Modules in compilation order.
+modules = src/ErrorInstance.f08 \
+    src/ErrorHandler.f08 \
+    src/ErrorCriteria.f08 \
+    src/Result.f08 \
+    src/TestClass.f08 \
+    src/example_usage.f08
+
+# Where should the output .exe be placed and run?
+outputFile = ./feh
+
+# Flags
+flags = -g -O1 -fcheck=all -fcheck=no-bounds -fbackslash -Wall -Wno-unused-dummy-argument
+
+# The commands:
+#   make main: Compile and create exe.
+#   make compile: Only compile, don't create exe.
+#   make run: Same as `make main`, but run the exe as well.
+#   make clean: Remove compiled files.
+#   
+#   GFortran bug causes "character length mismatch in array constructor"
+#   errors with allocatable character variables, even when they're the correct length.
+#   -O1 or higher must be used. See
+#   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70231 and
+#   https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran.
+main: $(modules)
+    gfortran $(modules) $(flags)  -o "$(outputFile)"
+compile: $(modules)
+    gfortran -c $(modules) $(flags)
+run: $(modules)
+    gfortran $(vendor) $(modules) $(flags) -o "$(outputFile)" && "$(outputFile)"
+clean:
+    rm -f *.mod *.o *.stackdump

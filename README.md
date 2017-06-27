@@ -2,9 +2,83 @@
 
 Fortran error handling frameworks are few and far between, and those that do exist often implement only parts of the error handling process, or rely on pre-processors. The goal of this error handling framework is to provide a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
+- [Installation](#installation)
+- [Usage](#usage)
+    - [A quick example](#usage-example)
+- [Structure](#structure)
+    - [ErrorHandler](#structure-errorhandler)
+    - [ErrorInstance](#structure-errorinstance)
+    - [Result](#structure-result)
+    - [ErrorCriteria](#structure-errorcriteria)
+- [Learn more](#more)
+
+## Installation <a name="installation"></a>
+
+Simply download the source and compile. An example Makefile.example is included, which can be altered according to your compiler and preferences. The framework has only been tested using GFortran 6.3.0. Note that a few bugs in GFortran mean that `-O1` or higher and `-fcheck-no-bounds` must be used.
+
+## Usage <a name="usage"></a>
+
+Read the below documentation for example usage, and check out the [example](example/) directory for ideas of how to incorporate into your project.
+
+### A quick example <a name="usage-example"></a>
+
+```fortran
+use ErrorCriteriaModule
+use ErrorInstanceModule
+use ResultModule
+
+type(ErrorCriteria) :: EH
+integer :: i
+type(Result0D) :: r
+
+! Initialise the ErrorHandler with two custom errors. Default error (code 1) and no error (code 0)
+! will also be created, alongside default errors for criteria (see ErrorCriteria docs)
+call EH%init( &
+    errors = [ &
+        ErrorInstance(code=200, message="A custom error message.", isCritical=.false.), &
+        ErrorInstance(code=200, message="Another custom error message.", isCritical=.true.) &
+    ] &
+)
+
+! Get the user to enter an integer
+write(*,"(a)") "Enter an integer between 0 and 2."
+read(*,*) i
+
+! Construct a Result object, where the error argument is the result of the ErrorCriteria limit
+! function, which returns an error if the criterion test is failed, or a "no error" (code 0) if the
+! value passes the test.
+r = Result( &
+    data = i, &
+    error = EH%limit(i,0,2) &
+)
+! Use the ErrorHandler to trigger the error. Nothing will happen if the value passed the test.
+! If the value fails the test, the program will be stopped and an error message displayed.
+call EH%trigger(error=r%getError())
+! Print the integer. We'll only get this far if the value passed the test.
+write(*,"(a,i1)") "Input value is: ", .integer. r
+```
+
+If we enter 1 when asked:
+```bash
+$ Enter an integer between 0 and 2.
+$ 1
+$ Input value is: 2
+```
+If we enter 3 when asked:
+```bash
+$ Enter an integer between 0 and 2.
+$ 3
+$ Error: Value must be between 0 and 2. Given value: 3.
+$ ERROR STOP 105
+```
+
+The stop code 105 is the default error code for the limit criterion. This can be changed to whatever you like.
+
+## Structure <a name="structure"></a>
+
 The framework consists of two main classes:
 
-### ErrorHandler
+### ErrorHandler <a name="structure-errorhandler"></a>
 Responsible for initiating the error handling environment, triggering error events, and storing a list of possible error codes and their respetive error messages.
 
 ```fortran
@@ -25,7 +99,7 @@ Which outputs:
 WARNING: A custom error message.
 ```
 
-### ErrorInstance
+### ErrorInstance <a name="structure-errorinstance"></a>
 An ErrorInstance is an object representing an error, containing an error code, error message, whether the error is critical (should stop the program executing), and a user-defined trace of where the error has come from.
 
 ```fortran
@@ -43,7 +117,7 @@ ERROR: Another custom error message.
 
 A number of further classes provide added functionality:
 
-### Result
+### Result <a name="structure-result"></a>
 A Result object, though not required to use the framework, is designed as an object to be return from any procedures that may throw an error. It consists of data (i.e., what the function should return if there aren't any errors) and an ErrorInstance.
 
 The pitfalls of polymorphism in Fortran - specifically, the lack of array rank polymorphism - means a number of separate classes exist for data of different ranks, each one extending from an abstract Result class. Currently, this is limited to rank 4 (4 dimensional) data, though this could easily be extended.
@@ -66,7 +140,7 @@ call EH%trigger(errors=r%getErrors())
 WARNING: Non-critical error that a procedure throws.
 ```
 
-### ErrorCriteria
+### ErrorCriteria <a name="structure-errorcriteria"></a>
 This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances.
 
 ```fortran
@@ -85,75 +159,31 @@ call EH%trigger(error=limitError)
 ERROR: Value must be between 0 and 1. Given value: 2.
 ```
 
-## Learn more
+## Learn more <a name="more"></a>
 
 Explore the documentation for each class to learn how to best use the framework, and browse the examples to get an idea of how to implement the framework into your project:
 
-- ErrorHandler
-- ErrorInstance
-- Result
-- ErrorCriteria
-- Examples
+- [ErrorHandler](doc/ErrorHandler.md)
+- [ErrorInstance](doc/ErrorInstance.md)
+- [Result](doc/Result.md)
+- [ErrorCriteria](doc/ErrorCriteria.md)
+- [Examples](examples/)
 
-## Result
+## Caveats and limitations <a name="caveats"></a>
 
-***Only sp (not kind attr), dp and qp supported in .real. (.sp., alias of .real., .dp., .qp) because kinds (real(kind)) can't be set dynamically and select type construct takes into account kind, thus real(dp) won't pass type is (real). You must specify dp = selected_kind_parameter() in wherever you pass data from. Don't currently support integer types.***
-
-The limited nature of polymorphism in Fortran makes providing a Result object with a generic data element a non-trivial task. To enable the `Result()` constructor to work with any type of input data, the data is stored as an unlimited polymorphic object, `class(*)`. This means that the `select type` construct must be used when the data is returned from the result object (using the `getData()` function), otherwise your compiler is likely to complain that you're trying to convert a `class(*)` object to whatever type you're trying to store data in.
-
-For example, if we know that the data is an object of type `TestClass`, then the following approach can be used:
-
-```fortran
-type(TestClass) :: tc
-type(Result) :: r
-
-call tc%setImportantNumber(1.2345)      ! Give tc some data
-r = Result(data=tc)                     ! Store in Result object
-select type(data => r%getData())        ! Use select type to retrieve the TestClass object
-    type is (TestClass)
-        write(*,'(f6.4)') data%getImportantNumber()
-end select
-```
-
-```sh
-1.2345
-```
-
-Another approach, to be used with caution, would be to use the intrinsic `transfer` function, which casts a bitwise representation from one type to another; e.g., `class(*)` to `type(TestClass)`. For example:
+- Error code must be less than 99999
+- GFortran bugs:
+    - `-O1` or higher must be used to avoid "character length mismatch in array constructor" errors with allocatable character variables.
+    - `-fcheck=no-bounds` must be used to avoid errors on allocating rank-2 or higher arrays.
+- Result objects only support up to rank-4 (4 dimensional) data.
+- Limited support for different kinds, due to Fortran's lack of kind polymorphism. In particular, ErrorCriteria only accept 4-byte integers and single precision, double precision and quadruple precision reals, as such:
 
 ```fortran
-type(TestClass) :: tc
-type(Result) :: r
+integer, parameter :: dp = selected_real_kind(15,307)
+integer, parameter :: qp = selected_real_kind(33,4931)
 
-call tc%setImportantNumber(1.2345)      ! Give tc some data
-r = Result(data=tc)                     ! Store in Result object
-tc = transfer(source=r%getData(), mold=tc)      ! Cast class(*) object to TestClass object
-write(*,'(f6.4)') tc%getImportantNumber()
+integer :: i = 1
+real :: r = 1.0
+real(dp) :: r_dp = 1.0_dp
+real(qp) :: r_qp = 1.0_qp
 ```
-
-```sh
-1.2345
-```
-
-To make this process slightly less painful, specific result types are provided for intrinsic data types: integer, real, complex, logical. These are extensions of `Result` and the `getData()` function returns a variable of the corresponding data type, not an unlimited polymorphic object. For example:
-
-```fortran
-type(IntegerResult) :: ir
-type(RealResult) :: rr
-type(ComplexResult) :: cr
-type(LogicalResult) :: lr
-
-ir = Result(data=1)
-rr = Result(data=1.2345)
-cr = Result(data=)
-lr = Result(data=.false.)
-
-write(*,*) ir%getData(), rr%getData(), cr%getData()
-if (lr%getData .eqv. .false.) write(*,*) "True!"
-```
-
-Caveats:
-- Error code must be <99999
-- -fcheck=no-bounds must be used to avoid errors on allocating 2+ rank arrays.
-
-Write a bit about kinds as well, reference the "best answer" here: https://software.intel.com/en-us/forums/intel-fortran-compiler-for-linux-and-mac-os-x/topic/611490
