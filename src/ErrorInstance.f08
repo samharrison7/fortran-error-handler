@@ -33,7 +33,11 @@ module ErrorInstanceModule
             character(len=*), intent(in), optional  :: trace(:)         !> User-defined trace for the error
 
             this%code = code
-            if (present(message)) this%message = message
+            if (present(message)) then
+                this%message = message
+            else
+                this%message = ""
+            end if
             if (present(isCritical)) this%isCritical = isCritical
             if (present(trace)) this%trace = trace
         end function

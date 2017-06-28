@@ -107,17 +107,30 @@ program example_usage
     call EH%init( &
         errors = [ &
             ErrorInstance(code=200, message="A custom error message.", isCritical=.false.), &
-            ErrorInstance(code=200, message="Another custom error message.", isCritical=.true.) &
+            ErrorInstance(code=300, message="Another custom error message.", isCritical=.true.) &
         ] &
     )
-    write(*,"(a)") "Enter an integer between 0 and 2."
-    read(*,*) i
 
-    r = Result( &
-        data = i, &
-        error = EH%limit(i,0,2) &
-    )
-    call EH%trigger(error=r%getError())
-    write(*,"(a,i1)") "Input value is: ", .integer. r
+call EH%trigger(code=200)
+call EH%trigger(error=ErrorInstance(code=999, message="On-the-fly error.", isCritical=.false.))
+call EH%trigger(errors=[ &
+    ErrorInstance(code=200, message="Override code 200's default message and criticality.", isCritical=.false.), &
+    ErrorInstance(code=997, message="Another specific error.") &
+    ] &
+)
+
+    ! write(*,"(a)") "Enter an integer between 0 and 10, but not equal to 5:"
+    ! read(*,*) i
+
+    ! r = Result( &
+    !     data = i, &
+    !     errors = [ &
+    !         EH%limit(i,0,10), &
+    !         EH%notEqual(i,5) &
+    !     ] &
+    ! )
+    ! call EH%trigger(errors=r%getErrors())
+    ! write(*,"(a,i1)") "Input value is: ", .integer. r
+    ! call EH%printErrors()
     
 end program

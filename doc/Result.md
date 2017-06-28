@@ -1,6 +1,28 @@
 # Result
 
-***Work in progress***
+***Work in progress.***
+
+A Result object, though not required to use the framework, is designed as an object to be return from any procedures that may throw an error. It consists of data (i.e., what the function should return if there aren't any errors) and an ErrorInstance.
+
+The pitfalls of polymorphism in Fortran - specifically, the lack of array rank polymorphism - means a number of separate classes exist for data of different ranks, each one extending from an abstract Result class. Currently, this is limited to rank 4 (4 dimensional) data, though this could easily be extended.
+
+```fortran
+type(ErrorHandler) :: EH
+type(ErrorInstance) :: procError
+type(Result0D) :: r
+
+procError = ErrorInstance(100, "Non-critical error that a procedure throws.", .false.)
+call EH%init(errors=[procError])
+
+r = Result( &
+    data = 'Here is some data', &
+    error = procError
+)
+call EH%trigger(errors=r%getErrors())
+```
+```bash
+WARNING: Non-critical error that a procedure throws.
+```
 
 <!-- ***Only sp (not kind attr), dp and qp supported in .real. (.sp., alias of .real., .dp., .qp) because kinds (real(kind)) can't be set dynamically and select type construct takes into account kind, thus real(dp) won't pass type is (real). You must specify dp = selected_kind_parameter() in wherever you pass data from. Don't currently support integer types.***
 

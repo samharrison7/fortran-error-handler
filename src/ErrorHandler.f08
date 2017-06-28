@@ -20,10 +20,11 @@ module ErrorHandlerModule
             procedure, public :: init => initErrorHandler
             procedure, public :: trigger
             procedure, public :: modify
+            procedure, public :: errorExists
 
             ! Adding ErrorInstaces
-            generic, public :: add => addErrorInstance, addMultipleErrorInstances
-            procedure :: addErrorInstance, addMultipleErrorInstances
+            generic, public :: add => addErrorInstance, addMultipleErrorInstancesFromCodes, addMultipleErrorInstancesFromErrors
+            procedure :: addErrorInstance, addMultipleErrorInstancesFromCodes, addMultipleErrorInstancesFromErrors
 
             ! Removing ErrorInstances
             generic, public :: remove => removeErrorInstance, removeMultipleErrorInstances
@@ -67,6 +68,9 @@ module ErrorHandlerModule
             ! Stop the program running is ErrorHandler is already initialised
             call this%stopIfInitialised()
 
+            ! Mark as initialised
+            this%isInitialised = .true.
+
             ! Construct the default errors array with the error that will always be present
             defaultErrors(1)%code = 0
             defaultErrors(1)%message = "No error."
@@ -102,7 +106,8 @@ module ErrorHandlerModule
                 ! Pack removes the default errors from input using the
                 ! logical mask specified above.
                 allocate(this%errors(1:2+size(pack(errors, .not. mask))))
-                this%errors = [defaultErrors, pack(errors, .not. mask)]
+                this%errors = defaultErrors
+                call this%addMultipleErrorInstancesFromErrors(pack(errors, .not. mask))
             else
                 this%errors = defaultErrors
             end if
@@ -116,9 +121,6 @@ module ErrorHandlerModule
             if (present(bashColors)) this%bashColors = bashColors
             if (this%bashColors .eqv. .true.) this%criticalPrefix = "\x1B[91m" // adjustl(trim(this%criticalPrefix)) // "\x1B[0m"
             if (this%bashColors .eqv. .true.) this%warningPrefix = "\x1B[94m" // adjustl(trim(this%warningPrefix)) // "\x1B[0m"
-
-            ! Initialisation is complete!
-            this%isInitialised = .true.
         end subroutine
 
         !> Add an error to the list of possible errors,
@@ -148,8 +150,16 @@ module ErrorHandlerModule
 
                 ! Store the parameters for the new error in the ErrorInstance
                 errorOut%code = code
-                if (present(message)) errorOut%message = message
-                if (present(isCritical)) errorOut%isCritical = isCritical
+                if (present(message)) then
+                    errorOut%message = message
+                else
+                    errorOut%message = ""
+                end if
+                if (present(isCritical)) then
+                    errorOut%isCritical = isCritical
+                else
+                    errorOut%isCritical = .true.
+                end if
 
                 ! Add the new error to the errors array.
                 this%errors = [this%errors, errorOut]
@@ -173,15 +183,43 @@ module ErrorHandlerModule
             end if
         end subroutine
 
-        subroutine addMultipleErrorInstances(this, codes, messages, areCritical)
-            class(ErrorHandler)             :: this
-            integer, intent(in)             :: codes(:)
-            character(len=*), intent(in)    :: messages(size(codes))
-            logical, intent(in), optional   :: areCritical(size(codes))
-            integer                         :: i
+        subroutine addMultipleErrorInstancesFromCodes(this, codes, messages, areCritical)
+            class(ErrorHandler)                     :: this             !> The ErrorHandler instance
+            integer, intent(in)                     :: codes(:)         !> Error codes to add
+            character(len=*), intent(in), optional  :: messages(:)      !> Messages to accompany the error codes
+            logical, intent(in), optional           :: areCritical(:)   !> Array of criticality to accompany the error codes
+            integer                                 :: i                !> Loop iterator
 
+            ! Check that messages and areCritical array sizes are the same as codes
+            if (present(messages)) then
+                if (size(messages) /= size(codes)) then
+                    write(*,"(a)") trim(this%criticalPrefix), &
+                        " Mismatching array sizes for codes and messages parameters to ErrorHandler%add."
+                    error stop 1
+                end if
+            end if
+            if (present(areCritical)) then
+                if (size(areCritical) /= size(codes)) then
+                    write(*,"(a)") trim(this%criticalPrefix), &
+                        " Mismatching array sizes for codes and areCritical parameters to ErrorHandler%add."
+                    error stop 1
+                end if
+            end if
+            ! If we've got this far, add the errors
             do i=1, size(codes)
                 call this%addErrorInstance(codes(i), messages(i), areCritical(i))
+            end do
+            
+        end subroutine
+
+        subroutine addMultipleErrorInstancesFromErrors(this, errors)
+            class(ErrorHandler)                 :: this         !> The ErrorHandler instance
+            type(ErrorInstance), intent(in)     :: errors(:)    !> Array of errors to add
+            integer                             :: i            !> Loop iterator
+
+            ! Add the errors one by one
+            do i=1, size(errors)
+                call this%addErrorInstance(error=errors(i))
             end do
         end subroutine
 
@@ -270,6 +308,18 @@ module ErrorHandlerModule
             this%errors = errors
         end subroutine
 
+        function errorExists(this, code)
+            class(ErrorHandler) :: this         !> The ErrorHandler instance
+            integer, intent(in) :: code         !> Error code to check existance far
+            logical             :: errorExists  !> Whether or not the error exists
+            integer             :: i            !> Loop iterator
+            errorExists = .false.
+            ! Loop through the existing error, check against code
+            do i=lbound(this%errors,1), ubound(this%errors,1)
+                if (this%errors(i)%code == code) errorExists = .true.
+            end do
+        end function
+
         !> Trigger an error from a code, ErrorInstance or array
         !! of ErrorInstances. If multiple are specified, then order of precedence
         !! is code, ErrorInstances, ErrorInstance. If there is a critical error,
@@ -285,26 +335,55 @@ module ErrorHandlerModule
             character(len=1000)             :: outputMessage    !> The full message to be output
             character(len=500)              :: traceMessage     !> The strack trace message
             type(ErrorInstance), allocatable :: errorsOut(:)   !> The errors to output
-            integer                         :: i, j             !> Loop iterators
+            integer                         :: i, j, k         !> Loop iterators
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
 
-            ! Try find error from code, then array of errors, then singular error,
+            ! Try find error from code, then singular error, then array of errors, 
             ! then finally, if not present, then set error to generic error. If
             ! error code provided isn't valid, then no error returned. This is intentional.
             if (present(code)) then
                 allocate(errorsOut(1))
+                ! Returns no error if code isn't valid
                 errorsOut(1) = this%getErrorFromCode(code)
-            else if (present(errors)) then
-                allocate(errorsOut(size(errors)))
-                errorsOut = errors
             else if (present(error)) then
                 allocate(errorsOut(1))
-                errorsOut(1) = error
+                ! Check if the error already exists
+                if (this%errorExists(error%code)) then
+                    ! Set the error to trigger the already existing one
+                    errorsOut(1) = this%getErrorFromCode(error%code)
+                    ! If message given for input error, override the default one
+                    if (error%message /= "") errorsOut(1)%message = error%message
+                    ! isCritical default to .true. for ErrorInstances, so unless it's specified
+                    ! when the error is declared, it will trigger as true, regardless of the
+                    ! default criticality stored in the ErrorHandler.
+                    errorsOut(1)%isCritical = error%isCritical
+                ! If the error doesn't exist, output it anyway. Good for on-the-fly error raising.
+                else
+                    errorsOut(1) = error
+                end if
+            else if (present(errors)) then
+                allocate(errorsOut(size(errors)))
+                ! Loop through input errors and see if that code already exists
+                do k=1, size(errors)
+                    if (this%errorExists(errors(k)%code)) then
+                        ! Set the error to trigger the already existing one
+                        errorsOut(k) = this%getErrorFromCode(errors(k)%code)
+                        ! If a message given for the input error, override the default one
+                        if (errors(k)%message /= "") errorsOut(k)%message = errors(k)%message
+                        ! isCritical default to .true. for ErrorInstances, so unless it's specified
+                        ! when the error is declared, it will trigger as true, regardless of the
+                        ! default criticality stored in the ErrorHandler.
+                        errorsOut(k)%isCritical = errors(k)%isCritical
+                    ! If the error doesn't exist, output it anyway. Good for on-the-fly error raising.
+                    else
+                        errorsOut(k) = errors(k)
+                    end if
+                end do
             else
                 allocate(errorsOut(1))
-                errorsOut(1) = this%getNoError()
+                errorsOut(1) = this%getErrorFromCode(1)
             end if
 
             ! Only do something if there's actually an error (i.e., the
@@ -326,8 +405,7 @@ module ErrorHandlerModule
                     ! Compose the message to output to the console
                     outputMessage = trim(messagePrefix) // " " // &
                                     trim(errorsOut(i)%message) // " " // &
-                                    trim(this%messageSuffix) // " "
-                                    !"(" // trim(str(errorsOut(i)%code)) // ": " // trim(errorsOut(i)%label) // ")"
+                                    trim(this%messageSuffix)
                     ! Loop through the stack trace and add to the message,
                     ! then print
                     if (size(errorsOut(i)%trace)>0 .and. allocated(errorsOut(i)%trace)) then
