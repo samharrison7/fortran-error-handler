@@ -15,7 +15,7 @@ Fortran error handling frameworks are few and far between, and those that do exi
 Simply download the source and compile. An example Makefile.example is included, which can be altered according to your compiler and preferences. The framework has only been tested using GFortran 6.3.0. Note that a few bugs in GFortran mean that `-O1` or higher and `-fcheck-no-bounds` must be used.
 
 ```bash
-git clone https://github.com/samharrison7/fortran-error-handler.git
+$ git clone https://github.com/samharrison7/fortran-error-handler.git
 ```
 
 <a name="usage"></a>
