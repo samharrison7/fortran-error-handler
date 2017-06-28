@@ -4,13 +4,10 @@ Fortran error handling frameworks are few and far between, and those that do exi
 
 - [Installation](#installation)
 - [Usage](#usage)
-    - [A quick example](#usage-example)
-- [Structure](#structure)
-    - [ErrorHandler](#structure-errorhandler)
-    - [ErrorInstance](#structure-errorinstance)
-    - [Result](#structure-result)
-    - [ErrorCriteria](#structure-errorcriteria)
+    - [Basic structure](#usage-structure)
+    - [Quick start guide](#usage-quickstart)
 - [Learn more](#more)
+- [Caveats and limitations](#more)
 
 <a name="installation"></a>
 ## Installation
@@ -22,7 +19,7 @@ Simply download the source and compile. An example Makefile.example is included,
 
 Read the below documentation for example usage, and check out the [example](example/) directory for ideas of how to incorporate into your project.
 
-<a name="structure"></a>
+<a name="usage-structure"></a>
 ### Basic structure
 
 The framework consists of two main classes:
