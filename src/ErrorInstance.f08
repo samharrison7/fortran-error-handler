@@ -17,6 +17,7 @@ module ErrorInstanceModule
         contains
             procedure, public :: addPointToTrace
             procedure, public :: getCode
+            procedure, public :: isError
     end type
 
     interface ErrorInstance
@@ -61,9 +62,16 @@ module ErrorInstanceModule
 
         !> Return the error code.
         pure function getCode(this) result(code)
-            class(ErrorInstance), intent(in)   :: this
-            integer                         :: code
+            class(ErrorInstance), intent(in)    :: this
+            integer                             :: code
             code = this%code
+        end function
+
+        pure function isError(this)
+            class(ErrorInstance), intent(in)    :: this
+            logical                             :: isError
+            isError = .true.
+            if (this%code == 0) isError = .false.
         end function
 
 end module
