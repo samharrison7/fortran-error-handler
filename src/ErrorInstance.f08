@@ -18,6 +18,7 @@ module ErrorInstanceModule
             procedure, public :: addPointToTrace
             procedure, public :: getCode
             procedure, public :: isError
+            procedure, public :: notError
     end type
 
     interface ErrorInstance
@@ -72,6 +73,13 @@ module ErrorInstanceModule
             logical                             :: isError
             isError = .true.
             if (this%code == 0) isError = .false.
+        end function
+
+        pure function notError(this)
+            class(ErrorInstance), intent(in)    :: this
+            logical                             :: notError
+            notError = .true.
+            if (this%code /= 0) notError = .false.
         end function
 
 end module
