@@ -344,11 +344,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('limit'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     if (present(lbound) .and. present(ubound)) then
                         write(charLbound,*) lbound
                         write(charUbound,*) ubound
@@ -412,11 +413,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('limit'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     if (present(lbound) .and. present(ubound)) then
                         write(charLbound,*) lbound
                         write(charUbound,*) ubound
@@ -479,11 +481,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('limit'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     if (present(lbound) .and. present(ubound)) then
                         write(charLbound,*) lbound
                         write(charUbound,*) ubound
@@ -546,11 +549,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('limit'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     if (present(lbound) .and. present(ubound)) then
                         write(charLbound,*) lbound
                         write(charUbound,*) ubound
@@ -601,11 +605,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('nonZero'))    ! Get the non-zero error
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -642,11 +647,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('nonZero'))    ! Get the non-zero error
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -683,11 +689,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('nonZero'))    ! Get the non-zero error
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -724,11 +731,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('nonZero'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -762,11 +770,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('zero'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -802,11 +811,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('zero'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -842,11 +852,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('zero'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -882,11 +893,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('zero'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -921,11 +933,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('lessThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charUbound,*) ubound
                     error%message = "Value must be less than " &
                                     // trim(adjustl(charUbound)) // ". " &
@@ -960,11 +973,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('lessThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charUbound,*) ubound
                     error%message = "Value must be less than " &
                                     // trim(adjustl(charUbound)) // ". " &
@@ -999,11 +1013,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('lessThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charUbound,*) ubound
                     error%message = "Value must be less than " &
                                     // trim(adjustl(charUbound)) // ". " &
@@ -1038,11 +1053,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('lessThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charUbound,*) ubound
                     error%message = "Value must be less than " &
                                     // trim(adjustl(charUbound)) // ". " &
@@ -1079,11 +1095,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('greaterThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charLbound,*) lbound
                     error%message = "Value must be greater than " &
                                     // trim(adjustl(charLbound)) // ". " &
@@ -1118,11 +1135,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('greaterThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charLbound,*) lbound
                     error%message = "Value must be greater than " &
                                     // trim(adjustl(charLbound)) // ". " &
@@ -1157,11 +1175,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('greaterThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charLbound,*) lbound
                     error%message = "Value must be greater than " &
                                     // trim(adjustl(charLbound)) // ". " &
@@ -1196,11 +1215,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('greaterThan'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charLbound,*) lbound
                     error%message = "Value must be greater than " &
                                     // trim(adjustl(charLbound)) // ". " &
@@ -1237,12 +1257,13 @@ module ErrorCriteriaModule
             ! If value doesn't pass test, get the error to return, compose the message
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
-                error = this%getErrorFromCode(this%getCodeFromCriterionName('notEqual'))    ! Get the not-zero error
+                error = this%getErrorFromCode(this%getCodeFromCriterionName('notEqual'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1281,12 +1302,13 @@ module ErrorCriteriaModule
             ! If value doesn't pass test, get the error to return, compose the message
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
-                error = this%getErrorFromCode(this%getCodeFromCriterionName('notEqual'))    ! Get the non-zero error
+                error = this%getErrorFromCode(this%getCodeFromCriterionName('notEqual'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1326,11 +1348,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('notEqual'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1370,11 +1393,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('notEqual'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1411,11 +1435,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('equal'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1454,11 +1479,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('equal'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1497,11 +1523,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('equal'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1540,11 +1567,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('equal'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     write(charCriterion,*) criterion
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
@@ -1578,11 +1606,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('positive'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -1613,11 +1642,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('positive'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -1648,11 +1678,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('positive'))
+                 write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -1683,11 +1714,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('positive'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -1720,11 +1752,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('negative')) ! Get the limit error
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -1755,11 +1788,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('negative'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -1790,11 +1824,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('negative'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
@@ -1825,11 +1860,12 @@ module ErrorCriteriaModule
             ! and add specified point to trace. Else, return no error.
             if (.not. pass) then
                 error = this%getErrorFromCode(this%getCodeFromCriterionName('negative'))
+                write(charValue,*) value
                 ! Customise the error message, based on whether user has provided a message
                 if (present(message)) then
-                    error%message = message
+                    error%message = message &
+                                    // " Given value: " // trim(adjustl(charValue)) // "."
                 else
-                    write(charValue,*) value
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if

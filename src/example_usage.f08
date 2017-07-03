@@ -25,8 +25,8 @@ program example_usage
     r = Result( &
         data = i, &
         errors = [ &
-            EH%limit(i,0,10), &
-            EH%notEqual(i,5) &
+            EH%limit(i,0,10,message="NO!"), &
+            EH%notEqual(i,5,message="boom.") &
         ] &
     )
     call EH%trigger(errors=.errors. r)
