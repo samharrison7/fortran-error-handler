@@ -29,7 +29,7 @@ program example_usage
             EH%notEqual(i,5) &
         ] &
     )
-    call EH%trigger(errors=r%getErrors())
+    call EH%trigger(errors=.errors. r)
     write(*,"(a,i1)") "Input value is: ", .integer. r
     
 end program

@@ -18,6 +18,10 @@ module ResultModule
             procedure, public :: getErrors
             procedure, public :: getErrorCode
             procedure, public :: setErrors
+
+            ! Operators
+            generic, public :: operator(.error.) => getError
+            generic, public :: operator(.errors.) => getErrors
     end type
 
     type, public, extends(Result) :: Result0D
