@@ -355,6 +355,8 @@ module ErrorHandlerModule
                     errorsOut(1) = this%getErrorFromCode(error%code)
                     ! If message given for input error, override the default one
                     if (error%message /= "") errorsOut(1)%message = error%message
+                    ! If there is a trace, add that
+                    if (size(error%trace) /= 0) allocate(errorsOut(1)%trace, source=error%trace)
                     ! isCritical default to .true. for ErrorInstances, so unless it's specified
                     ! when the error is declared, it will trigger as true, regardless of the
                     ! default criticality stored in the ErrorHandler.
