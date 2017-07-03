@@ -1,5 +1,7 @@
 # Fortran Error Handler
 
+***Work in progress.***
+
 Fortran error handling frameworks are few and far between, and those that do exist often implement only parts of the error handling process, or rely on pre-processors. The goal of this error handling framework is to provide a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
 - [Installation](#installation)
