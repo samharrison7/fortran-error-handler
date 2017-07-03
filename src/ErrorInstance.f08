@@ -15,7 +15,7 @@ module ErrorInstanceModule
         character(len=256), dimension(:), allocatable   :: trace                    !> Custom backtrace for the error
 
         contains
-            procedure, public :: addPointToTrace
+            procedure, public :: addToTrace
             procedure, public :: getCode
             procedure, public :: isError
             procedure, public :: notError
@@ -48,7 +48,7 @@ module ErrorInstanceModule
         !! WARNING: GFortran bug means this must be compiled with
         !! flag -O1 at least. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70231
         !! and https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran
-        pure subroutine addPointToTrace(this, point)
+        pure subroutine addToTrace(this, point)
             class(ErrorInstance), intent(inout) :: this
             character(len=*), intent(in) :: point
             character(len=256) :: tempPoint

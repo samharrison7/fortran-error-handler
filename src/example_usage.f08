@@ -25,10 +25,11 @@ program example_usage
     r = Result( &
         data = i, &
         errors = [ &
-            EH%limit(i,0,10,message="NO!"), &
-            EH%notEqual(i,5,message="boom.") &
+            EH%limit(i,0,10), &
+            EH%notEqual(i,5) &
         ] &
     )
+    call r%addToTrace("example_usage")
     call EH%trigger(errors=.errors. r)
     write(*,"(a,i1)") "Input value is: ", .integer. r
     

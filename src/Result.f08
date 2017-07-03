@@ -18,6 +18,7 @@ module ResultModule
             procedure, public :: getErrors
             procedure, public :: getErrorCode
             procedure, public :: setErrors
+            procedure, public :: addToTrace
 
             ! Operators
             generic, public :: operator(.error.) => getError
@@ -910,6 +911,17 @@ module ResultModule
             else
                 this%errors = [ErrorInstance(0, "No error.", .false.)]
             end if
+        end subroutine
+
+        ! Add the same trace message to all error in a Result object
+        subroutine addToTrace(this, traceMessage)
+            class(Result)       :: this             !> The Result instance
+            character(len=*)    :: traceMessage     !> Message to add to trace
+            integer             :: i                !> Loop iterator
+            ! Loop through the errors and add the trace message one-by-one
+            do i=1, size(this%errors)
+                call this%errors(i)%addToTrace(traceMessage)
+            end do
         end subroutine
 
 end module

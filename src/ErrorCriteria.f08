@@ -371,7 +371,7 @@ module ErrorCriteriaModule
                     end if
                 end if
                 ! Add trace message
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -439,7 +439,7 @@ module ErrorCriteriaModule
                                         // "Given value: " // trim(adjustl(charValue)) // "."
                     end if
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -507,7 +507,7 @@ module ErrorCriteriaModule
                                         // "Given value: " // trim(adjustl(charValue)) // "."
                     end if
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -575,7 +575,7 @@ module ErrorCriteriaModule
                                         // "Given value: " // trim(adjustl(charValue)) // "."
                     end if
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -614,7 +614,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -656,7 +656,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -698,7 +698,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -740,7 +740,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be non-zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -779,7 +779,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -820,7 +820,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -861,7 +861,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -902,7 +902,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be zero. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -944,7 +944,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charUbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -984,7 +984,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charUbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1024,7 +1024,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charUbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1064,7 +1064,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charUbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1106,7 +1106,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charLbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1146,7 +1146,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charLbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1186,7 +1186,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charLbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1226,7 +1226,7 @@ module ErrorCriteriaModule
                                     // trim(adjustl(charLbound)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1268,7 +1268,7 @@ module ErrorCriteriaModule
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1313,7 +1313,7 @@ module ErrorCriteriaModule
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1358,7 +1358,7 @@ module ErrorCriteriaModule
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1403,7 +1403,7 @@ module ErrorCriteriaModule
                     error%message = "Value must not be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1445,7 +1445,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1489,7 +1489,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1533,7 +1533,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1577,7 +1577,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be equal to " // trim(adjustl(charCriterion)) // ". " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1615,7 +1615,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1651,7 +1651,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1687,7 +1687,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1723,7 +1723,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be positive. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1761,7 +1761,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1797,7 +1797,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1833,7 +1833,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
@@ -1869,7 +1869,7 @@ module ErrorCriteriaModule
                     error%message = "Value must be negative. " &
                                     // "Given value: " // trim(adjustl(charValue)) // "."
                 end if
-                if (present(traceMessage)) call error%addPointToTrace(traceMessage)
+                if (present(traceMessage)) call error%addToTrace(traceMessage)
             else
                 error = this%getNoError()
             end if
