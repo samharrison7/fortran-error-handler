@@ -9,7 +9,7 @@ module ResultModule
     integer, parameter :: dp = selected_real_kind(15,307)       !! Double precision, 15 digits, 1e307
     integer, parameter :: qp = selected_real_kind(33,4931)      !! Quadruple precision, 33 digits, 1e4931
 
-    type, public, abstract :: Result
+    type, public :: Result
         type(ErrorInstance), dimension(:), allocatable :: errors !! The errors (if any) returned from the function
         
         contains
@@ -147,10 +147,23 @@ module ResultModule
     end type
 
     interface Result
-        module procedure init0D, init1D, init2D, init3D, init4D
+        module procedure initNoData, init0D, init1D, init2D, init3D, init4D
     end interface
 
     contains
+
+!-------------!
+!-- No data --!
+!-------------!
+
+        !> Initialise the result object with no data.
+        function initNoData(error, errors) result(this)
+            type(Result) :: this
+            type(ErrorInstance), intent(in), optional :: error
+            type(ErrorInstance), intent(in), optional :: errors(:)
+            ! Set the errors
+            call this%setErrors(error, errors)
+        end function
 
 !--------!
 !-- 0D --!
