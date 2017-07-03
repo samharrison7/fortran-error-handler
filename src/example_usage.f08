@@ -30,6 +30,7 @@ program example_usage
         ] &
     )
     call r%addToTrace("example_usage")
+    call r%addToTrace("another trace point")
     call EH%trigger(errors=.errors. r)
     write(*,"(a,i1)") "Input value is: ", .integer. r
     

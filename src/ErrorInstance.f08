@@ -41,7 +41,11 @@ module ErrorInstanceModule
                 this%message = ""
             end if
             if (present(isCritical)) this%isCritical = isCritical
-            if (present(trace)) this%trace = trace
+            if (present(trace)) then
+                allocate(this%trace, source=trace)
+            else
+                allocate(this%trace(0))
+            end if
         end function
 
         !> Add a point to the stack trace.
