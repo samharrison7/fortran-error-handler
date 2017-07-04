@@ -240,7 +240,7 @@ module ErrorHandlerModule
                 if (this%errors(i)%code == code) then
                     if (present(message)) this%errors(i)%message = message
                     if (present(isCritical)) this%errors(i)%isCritical = isCritical
-                    if (present(trace)) this%errors(i)%trace = trace
+                    if (present(trace)) allocate(this%errors(i)%trace, source=trace)
                     errorExists = .true.
                 end if
             end do
@@ -302,9 +302,10 @@ module ErrorHandlerModule
             errors = this%errors
         end function
 
+        !> Set the list of errors. Any existing errors will be overriden
         subroutine setErrors(this, errors)
-            class(ErrorHandler) :: this
-            type(ErrorInstance) :: errors(:)
+            class(ErrorHandler) :: this         !> The ErrorHandler instance
+            type(ErrorInstance) :: errors(:)    !> New array of errors
             this%errors = errors
         end subroutine
 
@@ -489,7 +490,7 @@ module ErrorHandlerModule
             integer :: i
 
             do i=lbound(this%errors,1), ubound(this%errors,1)
-                print *, this%errors(i)%code, " ", this%errors(i)%message
+                write(*,"(i5,a,a,a)") this%errors(i)%code, " ", trim(adjustl(this%errors(i)%message))
             end do
         end subroutine
 

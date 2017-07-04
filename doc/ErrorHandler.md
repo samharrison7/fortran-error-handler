@@ -1,9 +1,8 @@
 # ErrorHandler
 
-***Work in progress.***
-
 The ErrorHandler is the class responsible for initialising the error handling environment, triggering error events, and storing a list of possible error codes and their respective error messages.
 
+<a name="initialising"></a>
 ## Initialising
 The ErrorHandler must be initialised before use, by calling the `init` procedure. This sets the default "generic error" with code 1, and the default "no error" with code 0. A number of optional parameters can be specified:
 
@@ -31,6 +30,7 @@ call EH%init( &
 )
 ```
 
+<a name="adding"></a>
 ## Adding custom errors
 As well as specifying custom errors when initialising, custom errors can be added on the fly using the `add` procedure. This can add a single error from a code, message and isCritical parameter, a single error from an ErrorInstance, multiple errors from an arrays of codes, messages and areCritical parameters, or multiple errors from an array of ErrorInstances. `add` is generic, and one of a number of actual procedures will be called, depending on the parameters specified:
 
@@ -42,13 +42,13 @@ For single errors, `add` acts as a generic to the ErrorHandler's `addErrorInstan
 | `integer, optional :: code` | Error code to add. | - |
 | `character(len=*), optional :: message` | Message for the error. | "" |
 | `logical, optional :: isCritical` | Is the error critical? | .true. |
-| `type(ErrorInstance), optional :: error | ErrorInstance to add, if a code hasn't been specified. | - |
+| `type(ErrorInstance), optional :: error` | ErrorInstance to add, if a code hasn't been specified. | - |
 
 For example:
 
 ```fortran
-EH%add(code=300, message="Another custom error message.", isCritical=.false.)
-EH%add(error=ErrorInstance(code=400, message="A really important error"))
+call EH%add(code=300, message="Another custom error message.", isCritical=.false.)
+call EH%add(error=ErrorInstance(code=400, message="A really important error"))
 ```
 
 #### `ErrorHandler%add(codes, message, areCritical)`
@@ -63,7 +63,7 @@ For multiple errors input as an array of codes and optional messages and areCrit
 For example:
 
 ```fortran
-EH%add(codes=[201,202], messages=["A","B"], areCritical=[.false.,.true.])
+call EH%add(codes=[201,202], messages=["A","B"], areCritical=[.false.,.true.])
 ```
 
 #### `ErrorHandler%add(errors)`
@@ -73,6 +73,7 @@ Finally, multiple errors can be added as an array of ErrorInstances and in this 
 | :--- | :--- | :--- |
 | `type(ErrorInstance) :: errors(:)` | Array of ErrorInstances to add. | - |
 
+<a name="triggering"></a>
 ## Triggering errors
 
 #### `ErrorHandler%trigger(code, error, errors)`
@@ -89,11 +90,11 @@ A number of situations can arise, depending on whether the code/error(s) exist i
 
 - `code` provided and it exists: The corresponding error will be got from the ErrorHandler's list and its message/criticality used.
 - `code` provided but it doesn't exist: No error will be triggered - i.e., nothing will happen.
-- `error` or `errors` provided and it exists:
+- `error` or `errors` provided and it/they exist:
     - If no `message` exists (i.e., the message is "") in the input error/errors, then the default message from the ErrorHandler's list of errors will be used.
     - If a `message` exists, then this will override the default message.
     - If an `isCritical` exists, then this will override the default criticality from the ErrorHandler's list of errors.
-    - When an ErrorInstance is constructured, not specifying `isCritical` means that it defaults to `.true.`. Thus, inputting an error/errors that, when constructed, didn't explicitly specify `isCritical`, means the error will be triggered as critical, regardless of the criticality of the error in the ErrorHandler's list of errors.
+    - *Note*: When an ErrorInstance is constructured, not specifying `isCritical` means that it defaults to `.true.`. Thus, inputting an error/errors that, when constructed, didn't explicitly specify `isCritical`, means the error will be triggered as critical, regardless of the criticality of the error in the ErrorHandler's list of errors. This might seem slightly unexpected, so be careful!
 - `error` or `errors` provided and they don't exist: They will be triggered anyway, allowing for one-off errors to be triggered on-the-fly, without having to add them to the ErrorHandler. It is up to the user to ensure this is rational for their application, and that confusion isn't caused by using the same error codes for on-the-fly errors at different points in the same application.
 - No parameters provided - `ErrorHandler%trigger()`. The default error (code 1) will be triggered.
 
@@ -106,7 +107,8 @@ call EH%add(code=200, message="Custom error message.", isCritical=.false.)
 call EH%trigger(code=200)
 call EH%trigger(error=ErrorInstance(code=999, message="On-the-fly error.", isCritical=.false.))
 call EH%trigger(errors=[ &
-    ErrorInstance(code=200, message="Override default message."), &
+    ! Note that isCritical=.false. is required to avoid ErrorInstance defaulting to isCritical=.true. (see above)
+    ErrorInstance(code=200, message="Override default message.", isCritical=.false.), &      !
     ErrorInstance(code=997, message="Another specific error.") &
     ] &
 )
@@ -120,3 +122,108 @@ $ Warning: Override default message.
 $ Error: Another specific error.
 $ ERROR STOP 997
 ```
+
+<a name="modifying"></a>
+## Modifying errors
+
+The message, criticality and trace of errors that have already been added to the ErrorHandler instance can be modified using the `modify` procedure. The error code itself cannot be modified; to achieve this, [remove](#removing) and re-[add](#adding) the error.
+
+#### `ErrorHandler%modify(code, message, isCritical, trace)`
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `integer :: code` | Code of the error to modify. Error is thrown if code doesn't exist already. | - |
+| `character(len=*), optional :: message` | New error message. | - |
+| `logical, optional :: isCritical` | New criticality for the error. | - |
+| `character(len=*), optional :: trace(:)` | New trace for the error. | - |
+
+For example:
+
+```fortran
+call EH%add(code=400, message="Old message.", isCritical=.false.)
+call EH%trigger(400)
+call EH%modify(code=400, message="New message.", isCritical=.true.)
+call EH%trigger(400)
+```
+
+This results in:
+```bash
+$ Warning: Old message.
+$ Error: New message.
+```
+
+
+
+<a name="removing"></a>
+## Removing errors
+
+The `remove` binding acts as a generic to two ErrorHandler procedures, `removeErrorInstance` and `removeMultipleErrorInstances`, which take an integer error code or array of integer error codes, respectively.
+
+If the error code specified doesn't exist, then nothing happens. If the error code is 0 and 1, then an error is thrown as these two codes are the reserved codes for the default "no error" (code 0) and the generic error (code 1).
+
+#### `ErrorHandler%remove(code)`
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `integer :: code` | Code of the error to remove. | - |
+
+#### `ErrorHandler%remove(codes)`
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `integer :: codes(:)` | Array of error codes to remove. | - |
+
+For example:
+
+```fortran
+call EH%remove(400)
+```
+
+
+## Getters, setters and tests
+
+A number of procedures exist to get and set errors, as well as testing whether an error exists in the list of errors.
+
+#### `ErrorHandler%getError(key)`
+
+Return an error at a specific array index location. Probably not that useful, *might be depracated* in the future. Currently no check whether the given key is valid (within the array bounds), so use with caution. Returns `type(ErrorInstance)`.
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `integer :: key` | Array index of the error to remove. | - |
+
+#### `ErrorHandler%getErrors()`
+
+Return all of the defined errors (i.e., the `this%errors` property). Returns a `type(ErrorInstance)` array.
+
+#### `ErrorHandler%getNoError()`
+
+Return the default "no error" with code 0. Returns `type(ErrorInstance)`.
+
+#### `ErrorHandler%getErrorFromCode(code)`
+
+Return array with the given error code. If the error isn't found, the default "no error" is returned. Returns `type(ErrorInstance)`.
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `integer :: code` | Code of the error. | - |
+
+#### `ErrorHandler%setErrors(errors)`
+
+Sets the list of errors (`this%errors`) from the given input. Any existing errors will be overridden. Probably not that useful, *might be depracated* in the future. 
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `type(ErrorInstance) :: errors(:)` | Array of new errors. | - |
+
+#### `ErrorHandler%errorExists(code)`
+
+Check if a given error code exists in the current list of errors, and returns a `logical` true or false.
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `integer :: code` | The error code to test. | - |
+
+#### `ErrorHandler%printErrors()`
+
+Print a list of the defined errors and their messages. Useful for testing purposes.
