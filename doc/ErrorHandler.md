@@ -2,6 +2,13 @@
 
 The ErrorHandler is the class responsible for initialising the error handling environment, triggering error events, and storing a list of possible error codes and their respective error messages.
 
+- [Initialising](#initialising)
+- [Adding custom errors](#adding)
+- [Triggering errors](#triggering)
+- [Modifying errors](#modifying)
+- [Removing errors](#removing)
+- [Getters, setters and tests](#getters)
+
 <a name="initialising"></a>
 ## Initialising
 The ErrorHandler must be initialised before use, by calling the `init` procedure. This sets the default "generic error" with code 1, and the default "no error" with code 0. A number of optional parameters can be specified:
@@ -179,7 +186,7 @@ For example:
 call EH%remove(400)
 ```
 
-
+<a name="getters"></a>
 ## Getters, setters and tests
 
 A number of procedures exist to get and set errors, as well as testing whether an error exists in the list of errors.
