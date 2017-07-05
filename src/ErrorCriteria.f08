@@ -31,14 +31,14 @@ module ErrorCriteriaModule
     !!      9               negative            109
     !! TODO: Array of function names to save hardcoding case() things in code from criterion name.
     type, public, extends(ErrorHandler) :: ErrorCriteria
-        private
+        
 
         ! Current error criteria codes, messages and criticality will be used to keep track of the
         ! codes/messages/criticality that relate to the error criteria in amongst other error codes.
-        integer             :: currentErrorCriteriaCodes(9)
-        character(len=256)  :: currentErrorCriteriaNames(9)
-        character(len=256)  :: currentErrorCriteriaMessages(9)
-        logical             :: currentErrorCriteriaIsCritical(9)
+        integer, allocatable             :: currentErrorCriteriaCodes(:)
+        character(len=256), allocatable  :: currentErrorCriteriaNames(:)
+        character(len=256), allocatable  :: currentErrorCriteriaMessages(:)
+        logical, allocatable             :: currentErrorCriteriaIsCritical(:)
 
         ! Default error criteria codes and messages that are used if none others specified.
         integer             :: defaultErrorCriteriaCodes(9)
@@ -55,9 +55,11 @@ module ErrorCriteriaModule
             procedure, public :: init => initErrorCriteria      ! Overload Errorhandler init procedure
             procedure, public :: setEpsilon
 
-            ! Getters
+            ! Getters and adding
             procedure, public :: getCodeFromCriterionName
             procedure, public :: getIndexFromCriterionName
+            procedure, public :: addErrorCriterion
+            procedure, public :: addErrorCriteria
 
             ! Removing ErrorInstances: removeErrorInstance and removeErrorInstances are
             ! bound to remove generic in parent. Here, we overload then to check that
@@ -146,10 +148,10 @@ module ErrorCriteriaModule
             )
 
             ! Set the current error criteria to the current
-            this%currentErrorCriteriaCodes = this%defaultErrorCriteriaCodes
-            this%currentErrorCriteriaNames = this%defaultErrorCriteriaNames
-            this%currentErrorCriteriaMessages = this%defaultErrorCriteriaMessages
-            this%currentErrorCriteriaIsCritical = this%defaultErrorCriteriaIsCritical
+            allocate(this%currentErrorCriteriaCodes, source=this%defaultErrorCriteriaCodes)
+            allocate(this%currentErrorCriteriaNames, source=this%defaultErrorCriteriaNames)
+            allocate(this%currentErrorCriteriaMessages, source=this%defaultErrorCriteriaMessages)
+            allocate(this%currentErrorCriteriaIsCritical, source=this%defaultErrorCriteriaIsCritical)
         end subroutine
 
         !> Set epsilon, the tolerance allowed when equating
@@ -163,10 +165,15 @@ module ErrorCriteriaModule
 
         !> Modify the error codes for the error criteria. Defaults given
         !! in the docs for the ErrorCriteria derived type, as well as the
-        !! indices required for the codes parameter.
+        !! indices required for the codes parameter. Must be the same size
+        !! as the number of criteria.
         subroutine modifyErrorCriteriaCodes(this, codes)
             class(ErrorCriteria)            :: this         !> This ErrorCriteria instance
             integer, intent(in)             :: codes(:)     !> The new codes
+
+            if (size(codes) /= size(this%currentErrorCriteriaCodes)) then
+                error stop "Error modifying error criteria codes: Array of new codes doesn't match number of criteria functions."
+            end if
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
@@ -194,6 +201,10 @@ module ErrorCriteriaModule
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
+
+            if (index > size(this%currentErrorCriteriaCodes)) then
+                error stop "Error modifying error criterion code by index: Index doesn't match any criteria functions."
+            end if
 
             ! Remove the old code (use the ErrorHandler's method to avoid throwing
             ! error that the error code is an error criteria one).
@@ -223,6 +234,9 @@ module ErrorCriteriaModule
             ! Get the index of the named error criterion in the error criteria array,
             ! then use the modifyErrorCriterionCodeByIndex method to modify
             index = this%getIndexFromCriterionName(name)
+            if (index == 0) then
+                error stop "Error modifying error criterion code by name: Name doesn't match any criteria functions."
+            end if
             call this%modifyErrorCriterionCodeByIndex(index, newCode)
         end subroutine
 
@@ -300,6 +314,62 @@ module ErrorCriteriaModule
             do i=1, size(codes)
                 call this%removeErrorInstance(codes(i))
             end do
+        end subroutine
+
+        !> Add a new error criterion to the list of current error criteria and
+        !! list of errors. A separate criterion function(s) must accompany this
+        !! new criterion.
+        subroutine addErrorCriterion(this, code, name, message, isCritical)
+            class(ErrorCriteria) :: this
+            integer, intent(in) :: code
+            character(len=*) :: name
+            character(len=*) :: message
+            logical :: isCritical
+
+            ! Add the error to the errors array
+            call this%ErrorHandler%add(& 
+                code = code, &
+                message = message, &
+                isCritical = isCritical &
+            )
+
+            ! Reallocate the current error criteria to include the newly added one
+            deallocate(this%currentErrorCriteriaCodes)
+            allocate(this%currentErrorCriteriaCodes, source=[this%defaultErrorCriteriaCodes,code])
+            deallocate(this%currentErrorCriteriaNames)
+            allocate(this%currentErrorCriteriaNames, source=[this%defaultErrorCriteriaNames,name])
+            deallocate(this%currentErrorCriteriaMessages)
+            allocate(this%currentErrorCriteriaMessages, source=[this%defaultErrorCriteriaMessages,message])
+            deallocate(this%currentErrorCriteriaIsCritical)
+            allocate(this%currentErrorCriteriaIsCritical, source=[this%defaultErrorCriteriaIsCritical,isCritical])
+        end subroutine
+
+        !> Add an array of new error criteria to the list of current error criteria 
+        !! and list of errors. Separate criteria functions must accompany these
+        !! new criteria.
+        subroutine addErrorCriteria(this, codes, names, messages, areCritical)
+            class(ErrorCriteria) :: this
+            integer, intent(in) :: codes(:)
+            character(len=*) :: names(:)
+            character(len=*) :: messages(:)
+            logical :: areCritical(:)
+
+            ! Add the errors to the errors array
+            call this%ErrorHandler%add( & 
+                codes = codes, &
+                messages = messages, &
+                areCritical = areCritical &
+            )
+
+            ! Reallocate the current error criteria to include the newly added ones
+            deallocate(this%currentErrorCriteriaCodes)
+            allocate(this%currentErrorCriteriaCodes, source=[this%defaultErrorCriteriaCodes,codes])
+            deallocate(this%currentErrorCriteriaNames)
+            allocate(this%currentErrorCriteriaNames, source=[this%defaultErrorCriteriaNames,names])
+            deallocate(this%currentErrorCriteriaMessages)
+            allocate(this%currentErrorCriteriaMessages, source=[this%defaultErrorCriteriaMessages,messages])
+            deallocate(this%currentErrorCriteriaIsCritical)
+            allocate(this%currentErrorCriteriaIsCritical, source=[this%defaultErrorCriteriaIsCritical,areCritical])
         end subroutine
 
 !--------------------!
