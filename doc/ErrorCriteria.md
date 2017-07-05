@@ -2,7 +2,7 @@
 
 ***Work in progress.***
 
-This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances. It is an *optional extension* and the [ErrorHandler](docs/ErrorHandler.md) can be used without it.
+This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances. It is an *optional extension* and the [ErrorHandler](ErrorHandler.md) can be used without it.
 
 ### Type and kind conventions
 **TL;DR:** Only `integer`, `real`, `real(dp)` and `real(qp)` can be tested using the criteria, where `dp` (double precision) and `qp` (quadruple precision) are defined as:
@@ -17,7 +17,7 @@ integer, parameter :: qp = selected_real_kind(33,4931)
 <a name="Initialising"></a>
 ## Initialising
 
-Initialising ErrorCriteria serves the purpose of [initialising its parent](docs/ErrorHandler.md#initialising), ErrorHandler, and then adding further default errors, each one corresponding to a particular criterion test (these can be [modified](#modifying) later). The `init` procedure takes the same parameters as ErrorHandler's `init` procedure and thus can be used in exactly the same way:
+Initialising ErrorCriteria serves the purpose of [initialising its parent](ErrorHandler.md#initialising), ErrorHandler, and then adding further default errors, each one corresponding to a particular criterion test (these can be [modified](#modifying) later). The `init` procedure takes the same parameters as ErrorHandler's `init` procedure and thus can be used in exactly the same way:
 
 #### `ErrorHandler%init(errors, criticalPrefix, warningPrefix, messageSuffix, bashColors)`
 
@@ -47,11 +47,11 @@ Using the convention of naming the instantiated ErrorCriteria as something relat
 <a name="criteria"></a>
 ## Criteria functions
 
-The following criteria functions are available for use. Each one returns an ErrorInstance, and if the value provided passes the criterion, then the ErrorInstance returned is the default "no error" error (code 0), and thus [triggering](./doc/ErrorHandler.md#triggering) it won't cause anything to happen. Each of the criteria has its own error code, the default (applied by the `init` procedure) for which is shown below. As per the above, the numeric parameters `value`, `lbound`, `ubound` and `criterion` can be `integer`, `real`, `real(dp)` or `real(qp)`, whilst `epsilon` *must* be `real`.
+The following criteria functions are available for use. Each one returns an ErrorInstance, and if the value provided passes the criterion, then the ErrorInstance returned is the default "no error" error (code 0), and thus [triggering](ErrorHandler.md#triggering) it won't cause anything to happen. Each of the criteria has its own error code, the default (applied by the `init` procedure) for which is shown below. As per the above, the numeric parameters `value`, `lbound`, `ubound` and `criterion` can be `integer`, `real`, `real(dp)` or `real(qp)`, whilst `epsilon` *must* be `real`.
 
 **`epsilon`** is a tolerance to account for imprecission in floating point numbers, and is an optional parameter to criteria functions, which defaults to `1.0e-5`. When testing if a value is equal to another number, the criterion function will return true as long as the value falls with the criterion +- epsilon. It has no effect when working with integers.
 
-**`message`** is an optional `character` string that overrides the criterion's default message (which is a generic message such as "Value must be less than [ubound]"). "Given value: [value]." will always be appended to the message in the ErrorInstance returned by the criterion function. A **`traceMessage`** (optional `character` string) can also be applied if the user wishes to add a trace point as this stage (see the [ErrorInstance](./doc/ErrorInstance.md#trace) docs).
+**`message`** is an optional `character` string that overrides the criterion's default message (which is a generic message such as "Value must be less than [ubound]"). "Given value: [value]." will always be appended to the message in the ErrorInstance returned by the criterion function. A **`traceMessage`** (optional `character` string) can also be applied if the user wishes to add a trace point as this stage (see the [ErrorInstance](ErrorInstance.md#trace) docs).
 
 The array index column below is the internal array index that represents the given criterion, and is used externally when [modifying](#modifying) the default criteria codes.
 
