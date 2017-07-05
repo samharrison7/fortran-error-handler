@@ -56,7 +56,7 @@ The following criteria functions are available for use. Each one returns an Erro
 The array index column below is the internal array index that represents the given criterion, and is used externally when [modifying](#modifying) the default criteria codes.
 
 | Function | Description | Default code | Array index |
-| :--- | :--- | :--- |
+| :--- | :--- | :--- | :--- |
 | `ErrorCriteria%nonZero(value, epsilon, message, traceMessage)` | Check a value is non-zero, or further than +- epsilon from zero. | 101 | 1 |
 | `ErrorCriteria%zero(value, epsilon, message, traceMessage)` | Check a value is zero, or within +- epsilon of zero. | 102 | 2 |
 | `ErrorCriteria%lessThan(value, ubound, message, traceMessage)` | Check a value is less than ubound. | 103 | 3 |
