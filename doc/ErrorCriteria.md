@@ -1,7 +1,5 @@
 # ErrorCriteria
 
-***Work in progress.***
-
 This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances. It is an *optional extension* and the [ErrorHandler](ErrorHandler.md) can be used without it.
 
 ### Type and kind conventions
@@ -142,9 +140,9 @@ On the surface, removing errors using the `remove` generic is exactly the same a
 
 ## Extending the error criteria
 
-Of course, the ErrorCriteria provided here only provide checks for a few of the most common criteria, and most users will have their own application-specific checks to perform. Whilst one could simply edit the ErrorCriteria.f08 file to add further criteria functions, this is **strongly discouraged**. Doing so would mean pulling in future updates to the Fortran Error Handler would conflict with (i.e., override) your custom criteria.
+Of course, the ErrorCriteria provided here only includes checks for a few of the most common criteria, and most users will have their own application-specific checks to perform. Whilst one could simply edit the ErrorCriteria.f08 file to add further criteria functions, this is **strongly discouraged**. Doing so would mean pulling in future updates to the Fortran Error Handler would conflict with (i.e., override) your custom criteria.
 
-Instead, you should create your own class that extends the ErrorCriteria and instantiate that class as your error handler. This is best demonstrated by an example class, with two new custom criteria, testing whether an integer is a factor of our a multiple of another integer:
+Instead, you should create your own class that extends the ErrorCriteria and instantiate that class as your error handler. Two self-explanatory procedures, `ErrorCriteria%addErrorCriterion(code, name, message, isCritical)` and `ErrorCriteria%addErrorCriteria(codes, names, messages, areCritical)` can be used in the `init` procedure to add your custom criteria to the current list or criteria and the overall list of errors. This is best demonstrated by an example class, with two new custom criteria, testing whether an integer is a factor of our a multiple of another integer:
 
 ```fortran
 module CustomErrorCriteriaModule
@@ -182,6 +180,7 @@ module CustomErrorCriteriaModule
         !> We must initialise the parent ErrorCriteria for the default criteria to be set                                                              
         call this%ErrorCriteria%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors)
         ! Add our new error criterion. Make sure you include a function(s) that corresponds to this!
+        ! If only one criterion is to be added, you can use this%addErrorCriterion(code,name,message,isCritical).
         call this%addErrorCriteria( &
             codes = [110,111], &
             names = [character(len=100) :: 'factor','multiple'], &
@@ -195,7 +194,7 @@ module CustomErrorCriteriaModule
     pure function integerFactor(this, value, criterion, message, traceMessage) result(error)
         class(CustomErrorCriteria), intent(in)  :: this             !> The ErrorCriteria class
         integer, intent(in)                     :: value            !> The value to test
-        integer, intent(in)                     :: criterion            !> The value to test
+        integer, intent(in)                     :: criterion        !> The value to test
         character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
         character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
         type(ErrorInstance)                     :: error            !> The error to return
