@@ -10,7 +10,7 @@ module ErrorInstanceModule
     !!    figure out what the text for the stack point should be.
     type, public :: ErrorInstance
         integer                                         :: code                     !> Numeric error code
-        character(len=256)                              :: message                  !> Message to accompany the error
+        character(len=256)                              :: message = ""             !> Message to accompany the error
         logical                                         :: isCritical = .true.      !> Shoud program execution be stopped?
         character(len=256), dimension(:), allocatable   :: trace                    !> Custom backtrace for the error
 
@@ -35,11 +35,7 @@ module ErrorInstanceModule
             character(len=*), intent(in), optional  :: trace(:)         !> User-defined trace for the error
 
             this%code = code
-            if (present(message)) then
-                this%message = message
-            else
-                this%message = ""
-            end if
+            if (present(message)) this%message = message
             if (present(isCritical)) this%isCritical = isCritical
             if (present(trace)) then
                 allocate(this%trace, source=trace)

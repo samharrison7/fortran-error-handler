@@ -2,6 +2,13 @@
 
 This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances. It is an *optional extension* and the [ErrorHandler](ErrorHandler.md) can be used without it.
 
+- [Initialising](#initialising)
+- [Criteria functions](#criteria)
+- [Modifying default criteria errors](#modifying)
+- [Getters](#getters)
+- [Removing errors](#removing)
+- [Extending the error criteria](#extending)
+
 ### Type and kind conventions
 **TL;DR:** Only `integer`, `real`, `real(dp)` and `real(qp)` can be tested using the criteria, where `dp` (double precision) and `qp` (quadruple precision) are defined as:
 
@@ -133,11 +140,12 @@ Returns an `integer` array index.
 | :--- | :--- | :--- |
 | `character(len=*) :: name` | Name of the error criterion function to get the array index for. | - |
 
-<a name="getters"></a>
+<a name="removing"></a>
 ## Removing errors
 
 On the surface, removing errors using the `remove` generic is exactly the same as for the ErrorHandler. It is worth noting that internally, the ErrorCriteria checks that the error to be removed isn't an error for a criterion. If it is, an error message is thrown. To remove an error that is used for a criterion, the criterion's error code must first be changed ([see above](#modifying)).
 
+<a name="extending"></a>
 ## Extending the error criteria
 
 Of course, the ErrorCriteria provided here only includes checks for a few of the most common criteria, and most users will have their own application-specific checks to perform. Whilst one could simply edit the ErrorCriteria.f08 file to add further criteria functions, this is **strongly discouraged**. Doing so would mean pulling in future updates to the Fortran Error Handler would conflict with (i.e., override) your custom criteria.

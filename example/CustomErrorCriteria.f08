@@ -4,6 +4,8 @@ module CustomErrorCriteriaModule
     implicit none
     private
 
+    !> Example type that extends the ErrorCriteria to implement
+    !! custom error criteria.
     type, public, extends(ErrorCriteria) :: CustomErrorCriteria
 
       contains
