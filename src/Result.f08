@@ -401,7 +401,7 @@ module ResultModule
                 type is (real(qp))
                     data = nint(d)
                 class default
-                    data = transfer(source=d, mold=data)
+                    error stop "Error trying to return 1D data as INTEGER. Are you sure the data is of type INTEGER?"
             end select
         end function
 
@@ -413,7 +413,7 @@ module ResultModule
                 type is (character(len=*))
                     data = d
                 class default
-                    data = transfer(source=d, mold=data)
+                    error stop "Error trying to return 1D data as CHARACTER. Are you sure the data is of type CHARACTER?"
             end select
         end function
 

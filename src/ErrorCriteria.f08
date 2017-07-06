@@ -14,7 +14,7 @@ module ErrorCriteriaModule
     !! for error checking, such as checking whether a number falls between given bounds.
     !! Criteria functions expedite the error checking process with intuitive function calls 
     !! returning pre-defined ErrorInstances.
-    !! Fortran being Fortran and lacking out-of-the-box key=>value arrays (e.g., dictionaries, hash
+    !! Fortran's lack of out-of-the-box key=>value arrays (e.g., dictionaries, hash
     !! tables, lists) makes this seemingly trivial task a bit complex. To save overcomplicating
     !! things and using, e.g., third-party linked lists, we'll specify that each criterion is
     !! aligned with a specific array index, and the codes/message/criticality arrays below are
@@ -29,9 +29,7 @@ module ErrorCriteriaModule
     !!      7               equal               107
     !!      8               positive            108
     !!      9               negative            109
-    !! TODO: Array of function names to save hardcoding case() things in code from criterion name.
     type, public, extends(ErrorHandler) :: ErrorCriteria
-        
 
         ! Current error criteria codes, messages and criticality will be used to keep track of the
         ! codes/messages/criticality that relate to the error criteria in amongst other error codes.

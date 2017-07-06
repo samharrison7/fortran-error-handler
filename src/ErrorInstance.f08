@@ -2,12 +2,9 @@ module ErrorInstanceModule
     implicit none
     private
 
-    !> Data type for error codes
-    !! TODO:
-    !!  - Could create an ErrorInstance class, as currently ErrorInstance-related procedures
-    !!    are defined in ErrorHandler class (i.e. this file), which doesn't make complete sense.
-    !!  - Ultimately it would be nice if ErrorInstance could be passed `this` to automatically
-    !!    figure out what the text for the stack point should be.
+    !> An ErrorInstance represents an error with an associated error code,
+    !! message, trace and whether or not the error is critical (i.e., stops
+    !! the program executing).
     type, public :: ErrorInstance
         integer                                         :: code                     !> Numeric error code
         character(len=256)                              :: message = ""             !> Message to accompany the error

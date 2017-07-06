@@ -9,6 +9,7 @@ This class extends the ErrorHandler and defines a number of common "criteria" us
 - [Removing errors](#removing)
 - [Extending the error criteria](#extending)
 
+<a name="type-kind"></a>
 ### Type and kind conventions
 **TL;DR:** Only `integer`, `real`, `real(dp)` and `real(qp)` can be tested using the criteria, where `dp` (double precision) and `qp` (quadruple precision) are defined as:
 

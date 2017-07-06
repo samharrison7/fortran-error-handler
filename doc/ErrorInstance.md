@@ -2,8 +2,13 @@
 
 An ErrorInstance is an object representing an error, containing an error code, error message, whether the error is critical (should stop the program executing), and a user-defined trace of where the error has come from.
 
+- [Creating ErrorInstances](#creating)
+- [Error traces](#traces)
+    - [Passing ErrorInstances between procedures](#traces-passing)
+- [Tests and getters](#tests-getters)
+
 <a name="creating"></a>
-## Creating error instances
+## Creating ErrorInstances
 
 An `ErrorInstance(code, message, isCritical, trace)` interface is provided so that ErrorInstances can easily be created. The interface returns the created error.
 
@@ -102,6 +107,6 @@ $ Trace: Radius from diameter > Area from diameter
 <a name="tests"></a>
 ## Tests and getters
 
-The error code can be retrieved from an ErrorInstance object by the `getCode()` procedure, which returns an integer. *Note:* The properties of ErrorInstances aren't currently private, and thus can be accessed directly from outside of the module (e.g., error%code, error%message). This might change in the future.
+The error code can be retrieved from an ErrorInstance object by the `getCode()` procedure, which returns an integer. *Note:* The properties of ErrorInstances aren't currently private, and thus can be accessed directly from outside of the module (e.g., `ErrorInstance%code`, `ErrorInstance%message`). This might change in the future.
 
 An ErrorInstance can be tested to see whether it is an error or the default "no error", using the functions `ErrorInstance%isError()` and `ErrorInstance%notError()`. Both return a logical value. This is particularly useful when returning errors from procedures (such as error criteria) to see whether the procedure resulted in an error.

@@ -3,8 +3,7 @@ modules = src/ErrorInstance.f08 \
     src/ErrorHandler.f08 \
     src/ErrorCriteria.f08 \
     src/Result.f08 \
-    src/TestClass.f08 \
-    src/example_usage.f08
+    example/example_usage.f08
 
 # Where should the output .exe be placed and run?
 outputFile = ./feh
