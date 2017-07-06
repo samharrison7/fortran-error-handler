@@ -1,11 +1,11 @@
 # ErrorInstance
 
-An ErrorInstance is an object representing an error, containing an error code, error message, whether the error is critical (should stop the program executing), and a user-defined trace of where the error has come from.
+An ErrorInstance is an object representing an error, containing an error code, error message, whether the error is critical (should it stop the program executing), and a user-specified trace of where the error has come from.
 
 - [Creating ErrorInstances](#creating)
 - [Error traces](#traces)
     - [Passing ErrorInstances between procedures](#traces-passing)
-- [Tests and getters](#tests-getters)
+- [Tests and getters](#tests)
 
 <a name="creating"></a>
 ## Creating ErrorInstances
@@ -29,9 +29,9 @@ error = ErrorInstance(100, "Error message.", .false.)
 <a name="traces"></a>
 ## Error traces
 
-ErrorInstances contain a "trace" property, which is in essence an array of character strings, the idea behind which is to provide a useful utility to give the ability to store information about the error *trace* - where it was triggered and through what route it has passed through before being triggered. The trace is automatically printed when `ErrorHandler%trigger()` is called.
+ErrorInstances contain a "trace" property, which is in essence an array of character strings, the idea behind which is to provide a useful utility to give the ability to store information about the error *trace* - where it was triggered and through what route it has passed before being triggered. The trace is automatically printed when `ErrorHandler%trigger()` is called.
 
-Many debugging options already exist that print out an error backtrace (stack trace), detailing the trace of the error in terms of file names and line numbers. Whilst this is useful to the developer, if it often useless to the end user. The trace property attempts to plug this gap by providing the ability to build a custom trace based on what will be most useful information for the end user.
+Many debugging options already exist that print out an error backtrace (stack trace), detailing the trace of the error in terms of file names and line numbers. Whilst this is useful to the developer, it is often useless to the end user. The trace property attempts to plug this gap by providing the ability to build a custom trace based on what will be most useful information for the end user.
 
 #### `ErrorInstance%addToTrace(message)` and `Result%addToTrace(message)`
 This procedure adds the specified message to the array of trace messages for ErrorInstance objects, whilst for [Result](Result.md) objects, it adds the same trace messages to all of the errors contained in the Result object (as Result objects can contain an array of errors).
@@ -42,7 +42,7 @@ This procedure adds the specified message to the array of trace messages for Err
 
 <a name="traces-passing"></a>
 ### Passing ErrorInstances between procedures
-The error trace becomes most useful when errors are passed from procedure-to-procedure. In each procedure, a new "node" can be added to the code to describe what was happening when the error occured. This works well when used alongside the [Result](Result.md) object. Using the error trace, passing errors from nested procedure calls is more useful than triggering errors directly from those procedures, as it gives the end user much more information about where the error happened.
+The error trace becomes most useful when errors are passed from procedure-to-procedure. In each procedure, a new "node" can be added to the error to describe what was happening when the error occured. This works well when used alongside the [Result](Result.md) object. Using the error trace, passing errors from nested procedure calls is more useful than triggering errors directly from those procedures, as it gives the end user much more information about where the error happened.
 
 This arbitrary example contains two functions that are used to calculate the area of a circle, from a diameter and from a radius. The former calls another function to calculate the radius from the diameter, and this function checks that the provided diameter is positive (see the [ErrorCriteria docs](ErrorCriteria.md)). The latter calculates the area directly and performs the positive check itself. The trace is formulated so we can see where the error was triggered from an where is passes through:
 

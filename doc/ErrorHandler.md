@@ -42,7 +42,7 @@ call EH%init( &
 As well as specifying custom errors when initialising, custom errors can be added on the fly using the `add` procedure. This can add a single error from a code, message and isCritical parameter, a single error from an ErrorInstance, multiple errors from an arrays of codes, messages and areCritical parameters, or multiple errors from an array of ErrorInstances. `add` is generic, and one of a number of actual procedures will be called, depending on the parameters specified:
 
 #### `ErrorHandler%add(code, message, isCritical, error)`
-For single errors, `add` acts as a generic to the ErrorHandler's `addErrorInstance` procedure. All parameters are optional, and if a code is specified, then the error parameter is ignored. Attempting to add a pre-existing error code cause an error.
+For single errors, `add` acts as a generic to the ErrorHandler's `addErrorInstance` procedure. All parameters are optional, and if a code is specified, then the error parameter is ignored. Attempting to add a pre-existing error code causes an error.
 
 | Parameter declaration | Description | Default |
 | :--- | :--- | :--- |
@@ -101,7 +101,7 @@ A number of situations can arise, depending on whether the code/error(s) exist i
     - If no `message` exists (i.e., the message is "") in the input error/errors, then the default message from the ErrorHandler's list of errors will be used.
     - If a `message` exists, then this will override the default message.
     - If an `isCritical` exists, then this will override the default criticality from the ErrorHandler's list of errors.
-    - *Note*: When an ErrorInstance is constructured, not specifying `isCritical` means that it defaults to `.true.`. Thus, inputting an error/errors that, when constructed, didn't explicitly specify `isCritical`, means the error will be triggered as critical, regardless of the criticality of the error in the ErrorHandler's list of errors. This might seem slightly unexpected, so be careful!
+    - *Note*: When an ErrorInstance is constructed, not specifying `isCritical` means that it defaults to `.true.`. Thus, inputting an error/errors that, when constructed, didn't explicitly specify `isCritical`, means the error will be triggered as critical, regardless of the criticality of the error in the ErrorHandler's list of errors. This might seem slightly unexpected, so be careful!
 - `error` or `errors` provided and they don't exist: They will be triggered anyway, allowing for one-off errors to be triggered on-the-fly, without having to add them to the ErrorHandler. It is up to the user to ensure this is rational for their application, and that confusion isn't caused by using the same error codes for on-the-fly errors at different points in the same application.
 - No parameters provided - `ErrorHandler%trigger()`. The default error (code 1) will be triggered.
 

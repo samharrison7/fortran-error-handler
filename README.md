@@ -35,7 +35,7 @@ The framework consists of two main classes:
 
 A number of further classes provide added functionality:
 
-- [Result](doc/Result.md): A Result object, though not required to use the framework, is designed as an object to be return from any procedures that may throw an error. It consists of data (i.e., what the function should return if there aren't any errors) and an ErrorInstance. Result itself is an abstract class and is extended by separate classes for each rank (dimensionality) of data, e.g. `type(Result2D)` is used for data of rank-2 (2 dimensional).
+- [Result](doc/Result.md): A Result object, though not required to use the framework, is designed as an object to be returned from any procedures that may throw an error. It consists of data (i.e., what the function should return if there aren't any errors) and an array of ErrorInstances. `Result` itself is extended by separate classes for each rank (dimensionality) of data, e.g. `type(Result0D)` is used for scalar data (0D), `type(Result2D)` is used for data of rank-2 (2D). `type(Result)` contains no data, just errors.
 - [ErrorCriteria](doc/ErrorCriteria.md): This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances.
 
 <a name="usage-quickstart"></a>
@@ -61,7 +61,7 @@ integer :: i
 type(Result0D) :: r
 ```
 
-We first need to initialise the ErrorCriteria (and thus ErrorHandler). This sets a default error with code 1, and a "no error" with code 0, as well as a number of default errors for the criteria (see the [ErrorCriteria docs](docs/ErrorCriteria.md)). At the same time, let's specify two custom errors that we might want to trigger at some later point in the code. `isCritical` determines whether triggering of the error stops the program executing or just prints a warning, and it default to true (i.e., triggering an error stops the program).
+We first need to initialise the ErrorCriteria (and thus ErrorHandler). This sets a default error with code 1, and a "no error" with code 0, as well as a number of default errors for the criteria (see the [ErrorCriteria docs](doc/ErrorCriteria.md)). At the same time, let's specify two custom errors that we might want to trigger at some later point in the code. `isCritical` determines whether triggering of the error stops the program executing or just prints a warning, and it defaults to true (i.e., triggering an error stops the program).
 
 ```fortran
 call EH%init( &
@@ -93,7 +93,7 @@ r = Result( &
 )
 ```
 
-Now we can attempt to trigger any errors that might be present, by using the ErrorHandler's `trigger` method, which accepts either an error code, an ErrorInstance or an array of ErrorInstances as its parameters. If the criteria check didn't result in any errors, nothing will happen (in reality, the criteria will be return an ErrorInstance with code 0 - the default "no error" - which the `trigger` method ignores).
+Now we can attempt to trigger any errors that might be present, by using the ErrorHandler's `trigger` method, which accepts either an error code, an ErrorInstance or an array of ErrorInstances as its parameters. If the criteria check didn't result in any errors, nothing will happen (in reality, the criteria returns an ErrorInstance with code 0 - the default "no error" - which the `trigger` method ignores).
 
 ```fortran
 call EH%trigger(errors=r%getErrors())
@@ -141,7 +141,7 @@ Explore the documentation for each class to learn how to best use the framework,
 
 ## Caveats and limitations <a name="caveats"></a>
 
-- Error code must be less than 99999
+- Error code must be less than 99999.
 - GFortran bugs:
     - `-O1` or higher must be used to avoid "character length mismatch in array constructor" errors with allocatable character variables.
     - `-fcheck=no-bounds` must be used to avoid errors on allocating rank-2 or higher arrays.

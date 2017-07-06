@@ -1,6 +1,6 @@
 # ErrorCriteria
 
-This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances. It is an *optional extension* and the [ErrorHandler](ErrorHandler.md) can be used without it.
+This class extends the ErrorHandler and defines a number of common "criteria" used for error checking, such as checking whether a number falls between given bounds. Criteria functions expedite the error checking process with intuitive function calls returning pre-defined ErrorInstances. It is an optional extension and the [ErrorHandler](ErrorHandler.md) can be used without it.
 
 - [Initialising](#initialising)
 - [Criteria functions](#criteria)
@@ -57,21 +57,21 @@ The following criteria functions are available for use. Each one returns an Erro
 
 **`epsilon`** is a tolerance to account for imprecission in floating point numbers, and is an optional parameter to criteria functions, which defaults to `1.0e-5`. When testing if a value is equal to another number, the criterion function will return true as long as the value falls with the criterion +- epsilon. It has no effect when working with integers.
 
-**`message`** is an optional `character` string that overrides the criterion's default message (which is a generic message such as "Value must be less than [ubound]"). "Given value: [value]." will always be appended to the message in the ErrorInstance returned by the criterion function. A **`traceMessage`** (optional `character` string) can also be applied if the user wishes to add a trace point as this stage (see the [ErrorInstance](ErrorInstance.md#trace) docs).
+**`message`** is an optional `character` string that overrides the criterion's default message (which is a generic message such as "Value must be less than [ubound]"). "Given value: [value]." will always be appended to the message in the ErrorInstance returned by the criterion function. A **`traceMessage`** (optional `character` string) can also be applied if the user wishes to add a trace point as this stage (see the [ErrorInstance](ErrorInstance.md#traces) docs).
 
 The array index column below is the internal array index that represents the given criterion, and is used externally when [modifying](#modifying) the default criteria codes.
 
-| Function | Description | Default code | Array index |
-| :--- | :--- | :--- | :--- |
-| `ErrorCriteria%nonZero(value, epsilon, message, traceMessage)` | Check a value is non-zero, or further than +- epsilon from zero. | 101 | 1 |
-| `ErrorCriteria%zero(value, epsilon, message, traceMessage)` | Check a value is zero, or within +- epsilon of zero. | 102 | 2 |
-| `ErrorCriteria%lessThan(value, ubound, message, traceMessage)` | Check a value is less than ubound. | 103 | 3 |
-| `ErrorCriteria%greaterThan(value, lbound, message, traceMessage)` | Check a value is greater than lbound. | 104 | 4 |
-| `ErrorCriteria%limit(value, lbound, ubound, message, traceMessage)` | Check a value is between lbound and ubound. If only lbound or ubound specified, value is testing to be greater than or less than, respectively. | 105 | 5 |
-| `ErrorCriteria%notEqual(value, criterion, epsilon, message, traceMessage)` | Check a value is not equal to criterion, or further than +- epsilon from criterion. | 106 | 6 |
-| `ErrorCriteria%equal(value, criterion, epsilon, message, traceMessage)` | Check a value is equal to criterion, or within +- epsilon of criterion. | 107 | 7 |
-| `ErrorCriteria%positive(value, message, traceMessage)` | Check a value is positive. | 108 | 8 |
-| `ErrorCriteria%negative(value, message, traceMessage)` | Check a value is negative. | 109 | 9 |
+| Criterion | Function interface | Description | Default code | Array index |
+| :--- | :--- | :--- | :--- | :--- |
+| nonZero | `ErrorCriteria%nonZero(value, epsilon, message, traceMessage)` | Check a value is non-zero, or further than +- epsilon from zero. | 101 | 1 |
+| zero | `ErrorCriteria%zero(value, epsilon, message, traceMessage)` | Check a value is zero, or within +- epsilon of zero. | 102 | 2 |
+| lessThan | `ErrorCriteria%lessThan(value, ubound, message, traceMessage)` | Check a value is less than ubound. | 103 | 3 |
+| greaterThan | `ErrorCriteria%greaterThan(value, lbound, message, traceMessage)` | Check a value is greater than lbound. | 104 | 4 |
+| limit | `ErrorCriteria%limit(value, lbound, ubound, message, traceMessage)` | Check a value is between lbound and ubound. If only lbound or ubound specified, value is testing to be greater than or less than, respectively. | 105 | 5 |
+| notEqual | `ErrorCriteria%notEqual(value, criterion, epsilon, message, traceMessage)` | Check a value is not equal to criterion, or further than +- epsilon from criterion. | 106 | 6 |
+| equal | `ErrorCriteria%equal(value, criterion, epsilon, message, traceMessage)` | Check a value is equal to criterion, or within +- epsilon of criterion. | 107 | 7 |
+| positive | `ErrorCriteria%positive(value, message, traceMessage)` | Check a value is positive. | 108 | 8 |
+| negative | `ErrorCriteria%negative(value, message, traceMessage)` | Check a value is negative. | 109 | 9 |
 
 For example:
 

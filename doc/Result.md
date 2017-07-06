@@ -2,19 +2,19 @@
 
 The Result type is an addon to the framework and is designed as an object to be returned from any procedures that may throw an error. It consists of data (i.e., what the function should return if there aren't any errors) and an array of ErrorInstances.
 
-- [Creating result objects](#creating)
+- [Creating Result objects](#creating)
 - [Data](#data)
 - [Errors](#errors)
 - [Error trace](#trace)
 
 <a name="rank"></a>
-### Rank (dimensions)
-Fortran lacks any real kind of array-rank polymorphism ([assumed rank arrays](https://software.intel.com/en-us/node/692101) currently have very limited implementation and scope, and the `select rank` has even less support) and creating a Result object able to store both type- and rank-polymorphic data [proved impossible](https://stackoverflow.com/questions/44564872/using-assumed-rank-fortran-array-as-derived-type-component). As such, a different type exists for each rank, up to rank-4 (4 dimensional) data: `type(Result0D)`, `type(Result1D)`, `type(Result2D)`, `type(Result3D)` and `type(Result4D)`. These all extend from the parent `type(Result)`, which can be instantied itself to provide a Result object with no data (e.g., for returning an error from functions that would normally be subroutines).
+#### Rank (dimensions)
+Fortran lacks any real kind of array-rank polymorphism ([assumed rank arrays](https://software.intel.com/en-us/node/692101) currently have very limited implementation and scope, and the `select rank` construct has even less support) and creating a Result object able to store both type- and rank-polymorphic data [proved impossible](https://stackoverflow.com/questions/44564872/using-assumed-rank-fortran-array-as-derived-type-component). As such, a different type exists for each rank, up to rank-4 (4 dimensional) data: `type(Result0D)`, `type(Result1D)`, `type(Result2D)`, `type(Result3D)` and `type(Result4D)`. These all extend from the parent `type(Result)`, which can be instantied itself to provide a Result object with no data (e.g., for returning an error from functions that would normally be subroutines).
 
 Extending to high ranks is trivial - take a look at the [Result.f08](../src/Result.f08) file to see how it's done. If you do this, it is strongly encouraged to place the extension in a separate file so that you can later update the framework without conflicting with or overriding the changes you've made.
 
 <a name="creating"></a>
-## Creating result objects
+## Creating Result objects
 A generic `Result(data, error, errors)` interface can be used to construct the Result object with a type corresponding to the rank of the data that you provide. If no error is provided, the errors array is set to contain only the default "no error" with code 0.
 
 | Parameter declaration | Description | Default |
@@ -42,11 +42,11 @@ r2D = Result(data=[1,2], error=randomError)
 ## Data
 The data property is an unlimited polymorphic object, `class(*)`, and so any object (or array of the same type objects) can be stored in it. However, this does means that a `select type` construct or `transfer()` function must be used when performing operations with the data that are returned from the Result object (using `Result%getData()`), to avoid type conversion errors.
 
-For your convenience, data for the most common types and kinds have pre-defined functions and corresponding operators that use the `select type` construct to return the data as the specified type. These follow the same kind conventions as described in the [ErrorCriteria docs](ErrorCriteria.md#type-kind).
+For your convenience, data for the most common types and kinds have pre-defined functions and corresponding operators that use the `select type` construct to return the data as the specified type. These follow the same kind conventions as described in the [ErrorCriteria docs](ErrorCriteria.md#type-kind) for integers and reals.
 
 The following functions are generics that will work with any rank of Result object that has data (`Result0D`, `Result1D`, etc.), and for non-scalar data, they return an array of the specified type. If they are unsuccessful returning the data as the specified type, an error will be thrown.
 
-| Return type and kind | Function | Operator | Conversion |
+| Return type and kind | Function | Operator | Implicit conversion |
 | :--- | :--- | :--- | :--- |
 | `integer` | `Result%getDataAsInteger()` | `.integer.` | If data is `real`, `real(dp)` or `real(qp)`, the nearest integer will be returned |
 | `real` | `Result%getDataAsReal()` | `.real.` | If data is `integer`, `real(dp)` or `real(qp)`, it will be converted to `real` |
