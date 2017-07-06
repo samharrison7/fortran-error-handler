@@ -913,7 +913,7 @@ module ResultModule
             end if
         end subroutine
 
-        ! Add the same trace message to all error in a Result object
+        ! Add the same trace message to all errors in a Result object
         subroutine addToTrace(this, traceMessage)
             class(Result)       :: this             !> The Result instance
             character(len=*)    :: traceMessage     !> Message to add to trace

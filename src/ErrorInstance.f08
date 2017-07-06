@@ -44,7 +44,7 @@ module ErrorInstanceModule
             end if
         end function
 
-        !> Add a point to the stack trace.
+        !> Add a node to the trace.
         !! WARNING: GFortran bug means this must be compiled with
         !! flag -O1 at least. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70231
         !! and https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran
@@ -55,9 +55,9 @@ module ErrorInstanceModule
 
             tempPoint = point       ! Make character length 256
             ! Check if this is the first time something has been added to
-            ! the stack trace or not. If it is, allocate as null array.
+            ! the trace or not. If it is, allocate as null array.
             if (.not. allocated(this%trace)) allocate(this%trace(0))
-            ! Add the new trace point to the trace array.
+            ! Add the new node to the trace array.
             this%trace = [this%trace, tempPoint]
         end subroutine
 
