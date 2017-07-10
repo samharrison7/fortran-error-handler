@@ -162,7 +162,7 @@ module ResultModule
 !-------------!
 
         !> Initialise the result object with no data.
-        function initNoData(error, errors) result(this)
+        pure function initNoData(error, errors) result(this)
             type(Result) :: this
             type(ErrorInstance), intent(in), optional :: error
             type(ErrorInstance), intent(in), optional :: errors(:)
@@ -175,7 +175,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 0D polymorphic class(*) data.
-        function init0D(data, error, errors) result(this)
+        pure function init0D(data, error, errors) result(this)
             type(Result0D)                              :: this
             class(*), intent(in)                        :: data
             type(ErrorInstance), intent(in), optional   :: error
@@ -196,7 +196,7 @@ module ResultModule
         !> Attempt to return the data as a real (single precision).
         !! If dp or qp variables passed as data, they will be converted
         !! to single precision.
-        function getDataAsReal0D(this) result(data)
+        pure function getDataAsReal0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real                            :: data
             select type (d => this%data)
@@ -215,7 +215,7 @@ module ResultModule
 
         !> Attempt to return the data as real with double precision (real(dp)).
         !> If sp or qp variables passed, they will be converted implicitally.
-        function getDataAsRealDP0D(this) result(data)
+        pure function getDataAsRealDP0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real(dp)                        :: data
             select type (d => this%data)
@@ -234,7 +234,7 @@ module ResultModule
 
         !> Attempt to return the data as real with quadruple precision (real(qp)).
         !> If sp or dp variables passed, they will be converted implicitally.
-        function getDataAsRealQP0D(this) result(data)
+        pure function getDataAsRealQP0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real(qp)                        :: data
             select type (d => this%data)
@@ -311,7 +311,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 1D polymorphic class(*) data.
-        function init1D(data, error, errors) result(this)
+        pure function init1D(data, error, errors) result(this)
             type(Result1D)                              :: this
             class(*), intent(in)                        :: data(:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -446,7 +446,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 2D polymorphic class(*) data.
-        function init2D(data, error, errors) result(this)
+        pure function init2D(data, error, errors) result(this)
             type(Result2D)                              :: this
             class(*), intent(in)                        :: data(:,:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -580,7 +580,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 3D polymorphic class(*) data.
-        function init3D(data, error, errors) result(this)
+        pure function init3D(data, error, errors) result(this)
             type(Result3D)                              :: this
             class(*), intent(in)                        :: data(:,:,:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -723,7 +723,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with polymorphic class(*) data.
-        function init4D(data, error, errors) result(this)
+        pure function init4D(data, error, errors) result(this)
             type(Result4D)                              :: this
             class(*), intent(in)                        :: data(:,:,:,:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -893,8 +893,8 @@ module ResultModule
 
         !> Set the array of ErrorInstances from a single error
         !! or array of errors.
-        subroutine setErrors(this, error, errors)
-            class(Result)                               :: this
+        pure subroutine setErrors(this, error, errors)
+            class(Result), intent(inout)                :: this
             type(ErrorInstance), optional, intent(in)   :: error
             type(ErrorInstance), optional, intent(in)   :: errors(:)
 
@@ -914,10 +914,10 @@ module ResultModule
         end subroutine
 
         ! Add the same trace message to all errors in a Result object
-        subroutine addToTrace(this, traceMessage)
-            class(Result)       :: this             !> The Result instance
-            character(len=*)    :: traceMessage     !> Message to add to trace
-            integer             :: i                !> Loop iterator
+        pure subroutine addToTrace(this, traceMessage)
+            class(Result), intent(inout)    :: this             !> The Result instance
+            character(len=*), intent(in)    :: traceMessage     !> Message to add to trace
+            integer                         :: i                !> Loop iterator
             ! Loop through the errors and add the trace message one-by-one
             do i=1, size(this%errors)
                 call this%errors(i)%addToTrace(traceMessage)

@@ -24,7 +24,7 @@ module ErrorInstanceModule
 
     contains
         !> Create a new ErrorInstance.
-        function init(code, message, isCritical, trace) result(this)
+        pure function init(code, message, isCritical, trace) result(this)
             type(ErrorInstance)                     :: this             !> The ErrorInstance class
             integer, intent(in)                     :: code             !> Code for the error
             character(len=*), intent(in), optional  :: message          !> Custom error message
