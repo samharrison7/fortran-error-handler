@@ -6,10 +6,10 @@ module ErrorInstanceModule
     !! message, trace and whether or not the error is critical (i.e., stops
     !! the program executing).
     type, public :: ErrorInstance
-        integer                                         :: code                     !> Numeric error code
-        character(len=256)                              :: message = ""             !> Message to accompany the error
-        logical                                         :: isCritical = .true.      !> Shoud program execution be stopped?
-        character(len=256), dimension(:), allocatable   :: trace                    !> Custom backtrace for the error
+        integer                         :: code                     !> Numeric error code
+        character(len=256)              :: message = ""             !> Message to accompany the error
+        logical                         :: isCritical = .true.      !> Shoud program execution be stopped?
+        character(len=256), allocatable :: trace(:)                 !> Custom backtrace for the error
 
         contains
             procedure, public :: addToTrace
