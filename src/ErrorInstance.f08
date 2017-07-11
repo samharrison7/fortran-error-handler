@@ -30,12 +30,20 @@ module ErrorInstanceModule
             character(len=*), intent(in), optional  :: message          !> Custom error message
             logical, intent(in), optional           :: isCritical       !> Is the error message critical?
             character(len=*), intent(in), optional  :: trace(:)         !> User-defined trace for the error
+            integer                                 :: i                !> Loop iterator
+            character(len=256), allocatable         :: tempTrace(:)     !> Temporary fixed-length character string array for trace node
 
             this%code = code
             if (present(message)) this%message = message
             if (present(isCritical)) this%isCritical = isCritical
+            ! If trace present, loop through and convert the nodes to fixed-length
+            ! character strings before storing in this%trace.
             if (present(trace)) then
-                allocate(this%trace, source=trace)
+                allocate(tempTrace(size(trace)))       ! Make tempTrace the correct size
+                do i=1, size(trace)
+                    tempTrace(i) = trace(i)
+                end do
+                allocate(this%trace, source=tempTrace)
             else
                 allocate(this%trace(0))
             end if
