@@ -33,6 +33,8 @@ ErrorInstances contain a "trace" property, which is in essence an array of chara
 
 Many debugging options already exist that print out an error backtrace (stack trace), detailing the trace of the error in terms of file names and line numbers. Whilst this is useful to the developer, it is often useless to the end user. The trace property attempts to plug this gap by providing the ability to build a custom trace based on what will be most useful information for the end user.
 
+*Note*: A trace message is limited to a length of 256 characters.
+
 #### `ErrorInstance%addToTrace(message)` and `Result%addToTrace(message)`
 This procedure adds the specified message to the array of trace messages for ErrorInstance objects, whilst for [Result](Result.md) objects, it adds the same trace messages to all of the errors contained in the Result object (as Result objects can contain an array of errors).
 

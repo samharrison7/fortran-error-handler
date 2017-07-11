@@ -53,17 +53,17 @@ module ErrorInstanceModule
         !! WARNING: GFortran bug means this must be compiled with
         !! flag -O1 at least. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70231
         !! and https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran
-        pure subroutine addToTrace(this, point)
+        pure subroutine addToTrace(this, message)
             class(ErrorInstance), intent(inout) :: this
-            character(len=*), intent(in) :: point
-            character(len=256) :: tempPoint
+            character(len=*), intent(in) :: message
+            character(len=256) :: tempMessage
 
-            tempPoint = point       ! Make character length 256
+            tempMessage = message       ! Make character length 256
             ! Check if this is the first time something has been added to
             ! the trace or not. If it is, allocate as null array.
             if (.not. allocated(this%trace)) allocate(this%trace(0))
             ! Add the new node to the trace array.
-            this%trace = [this%trace, tempPoint]
+            this%trace = [this%trace, tempMessage]
         end subroutine
 
         !> Return the error code.

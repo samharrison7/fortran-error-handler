@@ -914,13 +914,13 @@ module ResultModule
         end subroutine
 
         ! Add the same trace message to all errors in a Result object
-        pure subroutine addToTrace(this, traceMessage)
+        pure subroutine addToTrace(this, message)
             class(Result), intent(inout)    :: this             !> The Result instance
-            character(len=*), intent(in)    :: traceMessage     !> Message to add to trace
+            character(len=*), intent(in)    :: message          !> Message to add to trace
             integer                         :: i                !> Loop iterator
             ! Loop through the errors and add the trace message one-by-one
             do i=1, size(this%errors)
-                call this%errors(i)%addToTrace(traceMessage)
+                call this%errors(i)%addToTrace(message)
             end do
         end subroutine
 
