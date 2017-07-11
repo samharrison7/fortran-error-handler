@@ -357,7 +357,7 @@ module ErrorHandlerModule
                     ! If message given for input error, override the default one
                     if (error%message /= "") errorsOut(1)%message = error%message
                     ! If there is a trace, add that
-                    if (allocated(error%trace)) allocate(errorsOut(1)%trace, source=error%trace)
+                    if (allocated(error%trace)) errorsOut(1)%trace = error%trace
                     ! isCritical default to .true. for ErrorInstances, so unless it's specified
                     ! when the error is declared, it will trigger as true, regardless of the
                     ! default criticality stored in the ErrorHandler.
@@ -376,7 +376,7 @@ module ErrorHandlerModule
                         ! If a message given for the input error, override the default one
                         if (errors(k)%message /= "") errorsOut(k)%message = errors(k)%message
                         ! If there is a trace, add that
-                        if (allocated(errors(k)%trace)) allocate(errorsOut(k)%trace, source=errors(k)%trace)
+                        if (allocated(errors(k)%trace)) errorsOut(k)%trace = errors(k)%trace
                         ! isCritical default to .true. for ErrorInstances, so unless it's specified
                         ! when the error is declared, it will trigger as true, regardless of the
                         ! default criticality stored in the ErrorHandler.
