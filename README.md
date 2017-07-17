@@ -41,7 +41,7 @@ A number of further classes provide added functionality:
 
 Let's create a quick program that asks for a user's input, checks that it passes a number of criteria and if it doesn't, triggers an error.
 
-Firstly, unless you are including the framework as libraries via your compiler's command line options, you might need to include the appropriate modules to use (for example, if you use the example Makefile):
+Firstly, you need to include the appropriate modules to use:
 
 ```fortran
 use ErrorInstanceModule
