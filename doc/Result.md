@@ -115,4 +115,4 @@ $ ERROR STOP 200
 <a name="trace"></a>
 ## Error trace
 
-The procedure `Result%addToTrace(message)` can be used to add a the same node to each of the Result object's errors. See the [ErrorInstance docs](ErrorInstance.md#traces).
+The procedure `Result%addToTrace(message)` can be used to add the same node to each of the Result object's errors. See the [ErrorInstance docs](ErrorInstance.md#traces).
