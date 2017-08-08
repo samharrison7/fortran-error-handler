@@ -9,12 +9,12 @@ module ErrorHandlerModule
     !! or just warnings.
     type, public :: ErrorHandler
         private
-        type(ErrorInstance), allocatable    :: errors(:)                    !> Array of all possible errors
-        character(len=256)                  :: criticalPrefix = "Error:"    !> Prefix to output error message
-        character(len=256)                  :: warningPrefix = "Warning:"   !> Prefix to output error message
-        character(len=256)                  :: messageSuffix = ""           !> Suffix to output error message
-        logical                             :: isInitialised = .false.      !> Has the ErrorHandler been initialised?
-        logical                             :: bashColors = .true.          !> Should colors be displayed in bash consoles?
+        type(ErrorInstance), allocatable    :: errors(:)                    !! Array of all possible errors
+        character(len=256)                  :: criticalPrefix = "Error:"    !! Prefix to output error message
+        character(len=256)                  :: warningPrefix = "Warning:"   !! Prefix to output error message
+        character(len=256)                  :: messageSuffix = ""           !! Suffix to output error message
+        logical                             :: isInitialised = .false.      !! Has the ErrorHandler been initialised?
+        logical                             :: bashColors = .true.          !! Should colors be displayed in bash consoles?
         
         contains
             procedure, public :: init => initErrorHandler
@@ -61,9 +61,9 @@ module ErrorHandlerModule
             character(len=*), intent(in), optional :: warningPrefix
             character(len=*), intent(in), optional :: messageSuffix
             logical, intent(in), optional :: bashColors
-            integer :: i                                    !> Loop iterator.
-            logical, allocatable :: mask(:)                 !> Logical mask to remove default errors from input errors array.
-            type(ErrorInstance) :: defaultErrors(2)         !> Temporary array containing default errors.
+            integer :: i                                    !! Loop iterator.
+            logical, allocatable :: mask(:)                 !! Logical mask to remove default errors from input errors array.
+            type(ErrorInstance) :: defaultErrors(2)         !! Temporary array containing default errors.
 
             ! Stop the program running is ErrorHandler is already initialised
             call this%stopIfInitialised()
@@ -126,13 +126,13 @@ module ErrorHandlerModule
         !> Add an error to the list of possible errors,
         !! by specifying its code and message.
         subroutine addErrorInstance(this, code, message, isCritical, error)
-            class(ErrorHandler) :: this             !> Dummy argument
-            integer, optional             :: code             !> Error code
-            character(len=*), optional :: message          !> Error message to be printed when handled
-            logical, optional   :: isCritical       !> Should program execution be stopped?   
-            type(ErrorInstance), optional :: error
-            type(ErrorInstance) :: errorOut            !> The new error
-            integer :: i
+            class(ErrorHandler)             :: this             !! Dummy argument
+            integer, optional               :: code             !! Error code
+            character(len=*), optional      :: message          !! Error message to be printed when handled
+            logical, optional               :: isCritical       !! Should program execution be stopped?   
+            type(ErrorInstance), optional   :: error            !! ErrorInstance to add
+            type(ErrorInstance)             :: errorOut         !! The new error
+            integer                         :: i                !! Loop iterator
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -183,12 +183,14 @@ module ErrorHandlerModule
             end if
         end subroutine
 
+        !> Add multiple error instances from an array of codes, messages and
+        !! criticalities.
         subroutine addMultipleErrorInstancesFromCodes(this, codes, messages, areCritical)
-            class(ErrorHandler)                     :: this             !> The ErrorHandler instance
-            integer, intent(in)                     :: codes(:)         !> Error codes to add
-            character(len=*), intent(in), optional  :: messages(:)      !> Messages to accompany the error codes
-            logical, intent(in), optional           :: areCritical(:)   !> Array of criticality to accompany the error codes
-            integer                                 :: i                !> Loop iterator
+            class(ErrorHandler)                     :: this             !! The ErrorHandler instance
+            integer, intent(in)                     :: codes(:)         !! Error codes to add
+            character(len=*), intent(in), optional  :: messages(:)      !! Messages to accompany the error codes
+            logical, intent(in), optional           :: areCritical(:)   !! Array of criticality to accompany the error codes
+            integer                                 :: i                !! Loop iterator
 
             ! Check that messages and areCritical array sizes are the same as codes
             if (present(messages)) then
@@ -212,10 +214,11 @@ module ErrorHandlerModule
             
         end subroutine
 
+        !> Add multiple error instances from an array of ErrorInstances.
         subroutine addMultipleErrorInstancesFromErrors(this, errors)
-            class(ErrorHandler)                 :: this         !> The ErrorHandler instance
-            type(ErrorInstance), intent(in)     :: errors(:)    !> Array of errors to add
-            integer                             :: i            !> Loop iterator
+            class(ErrorHandler)                 :: this         !! The ErrorHandler instance
+            type(ErrorInstance), intent(in)     :: errors(:)    !! Array of errors to add
+            integer                             :: i            !! Loop iterator
 
             ! Add the errors one by one
             do i=1, size(errors)
@@ -225,13 +228,13 @@ module ErrorHandlerModule
 
         !> Modify the existing error with the given code.
         subroutine modify(this, code, message, isCritical, trace)
-            class(ErrorHandler)                     :: this         !> Dummy class variable.
-            integer, intent(in)                     :: code         !> Code of the error to modify.
-            character(len=*), intent(in), optional  :: message      !> Modified error message.
-            logical, intent(in), optional           :: isCritical   !> Modified error criticality.
-            character(len=*), intent(in), optional  :: trace(:)     !> Modified error trace.
-            integer                                 :: i
-            logical                                 :: errorExists
+            class(ErrorHandler)                     :: this         !! Dummy class variable.
+            integer, intent(in)                     :: code         !! Code of the error to modify.
+            character(len=*), intent(in), optional  :: message      !! Modified error message.
+            logical, intent(in), optional           :: isCritical   !! Modified error criticality.
+            character(len=*), intent(in), optional  :: trace(:)     !! Modified error trace.
+            integer                                 :: i            !! Loop iterator.
+            logical                                 :: errorExists  !! Boolean to check if error exists.
             
             errorExists = .false.
             ! Loop through this%errors to see if the given code matches an existing one.
@@ -257,10 +260,10 @@ module ErrorHandlerModule
         !! error doesn't exist, then nothing happens. If the error is 0 or 1
         !! (the defaults), an error is thrown.
         subroutine removeErrorInstance(this, code)
-            class(ErrorHandler) :: this
-            integer, intent(in) :: code
-            integer :: i
-            logical :: mask(size(this%errors))
+            class(ErrorHandler) :: this                     !! This ErrorHandler instance.
+            integer, intent(in) :: code                     !! Code of the error to remove.
+            integer             :: i                        !! Loop iterator.
+            logical             :: mask(size(this%errors))  !! Mask to help removing error.
 
             if (code == 0 .or. code == 1) then
                 write(*,"(a,a,i1,a)") trim(this%criticalPrefix), " Cannot remove default error code ", code, "."
@@ -279,41 +282,46 @@ module ErrorHandlerModule
             this%errors = pack(this%errors, .not. mask)
         end subroutine
 
+        !> Remove multiple error instances from an array of codes. If the specified
+        !! error doesn't exist, then nothing happens. If the error is 0 or 1
+        !! (the defaults), an error is thrown.
         subroutine removeMultipleErrorInstances(this, codes)
-            class(ErrorHandler) :: this
-            integer, intent(in) :: codes(:)
-            integer :: i
+            class(ErrorHandler) :: this         !! This ErrorHandler instance.
+            integer, intent(in) :: codes(:)     !! Array of error codes to remove.
+            integer             :: i            !! Loop iterator.
 
             do i=1, size(codes)
                 call this%removeErrorInstance(codes(i))
             end do
         end subroutine
 
+        !> Get predefined error with a given array key.
         function getError(this, key) result(error)
-            class(ErrorHandler) :: this
-            integer :: key
-            type(ErrorInstance) :: error
+            class(ErrorHandler) :: this     !! This ErrorHandler instance.
+            integer             :: key      !! Array key of the error.
+            type(ErrorInstance) :: error    !! The error to return.
             error = this%errors(key)
         end function
 
+        !> Return all of the predefined errors.
         function getErrors(this) result(errors)
-            class(ErrorHandler) :: this
-            type(ErrorInstance) :: errors(size(this%errors))
+            class(ErrorHandler) :: this                         !! This ErrorHandler instance.
+            type(ErrorInstance) :: errors(size(this%errors))    !! The array of errors to return.
             errors = this%errors
         end function
 
         !> Set the list of errors. Any existing errors will be overriden
         subroutine setErrors(this, errors)
-            class(ErrorHandler) :: this         !> The ErrorHandler instance
-            type(ErrorInstance) :: errors(:)    !> New array of errors
+            class(ErrorHandler) :: this         !! The ErrorHandler instance
+            type(ErrorInstance) :: errors(:)    !! New array of errors
             this%errors = errors
         end subroutine
 
         function errorExists(this, code)
-            class(ErrorHandler) :: this         !> The ErrorHandler instance
-            integer, intent(in) :: code         !> Error code to check existance far
-            logical             :: errorExists  !> Whether or not the error exists
-            integer             :: i            !> Loop iterator
+            class(ErrorHandler) :: this         !! The ErrorHandler instance
+            integer, intent(in) :: code         !! Error code to check existance far
+            logical             :: errorExists  !! Whether or not the error exists
+            integer             :: i            !! Loop iterator
             errorExists = .false.
             ! Loop through the existing error, check against code
             do i=lbound(this%errors,1), ubound(this%errors,1)
@@ -327,16 +335,16 @@ module ErrorHandlerModule
         !! program execution is stopped, with exit code of first critical error.
         !! If no errors are specified, then nothing happens.
         subroutine trigger(this, code, error, errors)
-            class(ErrorHandler)             :: this         !> Dummy argument
-            integer, optional               :: code         !> Error code
-            type(ErrorInstance), optional   :: error        !> ErrorInstance
-            type(ErrorInstance), optional   :: errors(:)    !> Array of ErrorInstances
+            class(ErrorHandler)             :: this             !! Dummy argument
+            integer, optional               :: code             !! Error code
+            type(ErrorInstance), optional   :: error            !! ErrorInstance
+            type(ErrorInstance), optional   :: errors(:)        !! Array of ErrorInstances
             
-            character(len=256)              :: messagePrefix    !> The message prefix (critical or warning)
-            character(len=1000)             :: outputMessage    !> The full message to be output
-            character(len=500)              :: traceMessage     !> The strack trace message
-            type(ErrorInstance), allocatable :: errorsOut(:)   !> The errors to output
-            integer                         :: i, j, k         !> Loop iterators
+            character(len=256)              :: messagePrefix    !! The message prefix (critical or warning)
+            character(len=1000)             :: outputMessage    !! The full message to be output
+            character(len=500)              :: traceMessage     !! The strack trace message
+            type(ErrorInstance), allocatable :: errorsOut(:)    !! The errors to output
+            integer                         :: i, j, k          !! Loop iterators
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -441,7 +449,7 @@ module ErrorHandlerModule
         !> Check error handler is initialised. If it isn't,
         !! stop the program running.
         pure subroutine stopIfNotInitialised(this)
-            class(ErrorHandler), intent(in) :: this     !> The error handler class
+            class(ErrorHandler), intent(in) :: this     !! The error handler class
             if (this%isInitialised .eqv. .false.) then
                 error stop "Error handling not initialised. Call init() procedure on ErrorHandler object before using."
             end if
@@ -450,7 +458,7 @@ module ErrorHandlerModule
         !> Check error handler is initialised. If it isn't,
         !! stop the program running.
         pure subroutine stopIfInitialised(this)
-            class(ErrorHandler), intent(in) :: this     !> The error handler class
+            class(ErrorHandler), intent(in) :: this     !! The error handler class
             if (this%isInitialised .eqv. .true.) then
                 error stop "Error handling already initialised, no need to call again."
             end if
@@ -458,15 +466,15 @@ module ErrorHandlerModule
 
         !> Get an ErrorInstance object from its unique error code
         pure function getErrorFromCode(this, code) result(error)
-            class(ErrorHandler), intent(in) :: this     !> The error handler class
-            integer, intent(in)             :: code     !> Error code
-            type(ErrorInstance)             :: error    !> The returned error
-            integer                         :: i        !> Loop iterator
+            class(ErrorHandler), intent(in) :: this     !! This ErrorHandler instance.
+            integer, intent(in)             :: code     !! Error code
+            type(ErrorInstance)             :: error    !! The returned error
+            integer                         :: i        !! Loop iterator
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
 
-            error = this%getNoError()                      !> No error (in case loop doesn't return one)
+            error = this%getNoError()                      ! No error (in case loop doesn't return one)
             do i=lbound(this%errors,1), ubound(this%errors,1)
                 if (this%errors(i)%code == code) then
                     error = this%errors(i)
@@ -476,8 +484,8 @@ module ErrorHandlerModule
 
         !> Return the default no error, with code 0.
         pure function getNoError(this) result(noError)
-            class(ErrorHandler), intent(in) :: this
-            type(ErrorInstance) :: noError
+            class(ErrorHandler), intent(in) :: this     !! This ErrorHandler instance.
+            type(ErrorInstance) :: noError              !! The no error to return.
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
