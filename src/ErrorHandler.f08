@@ -9,15 +9,17 @@ module ErrorHandlerModule
     !! or just warnings.
     type, public :: ErrorHandler
         private
-        type(ErrorInstance), allocatable    :: errors(:)                    !! Array of all possible errors
-        character(len=256)                  :: criticalPrefix = "Error:"    !! Prefix to output error message
-        character(len=256)                  :: warningPrefix = "Warning:"   !! Prefix to output error message
-        character(len=256)                  :: messageSuffix = ""           !! Suffix to output error message
+        type(ErrorInstance), allocatable    :: errors(:)                    !! Array of all possible errors.
+        type(ErrorInstance), allocatable    :: errorQueue(:)                     !! Queue of errors to be triggered.
+        character(len=256)                  :: criticalPrefix = "Error:"    !! Prefix to output error message.
+        character(len=256)                  :: warningPrefix = "Warning:"   !! Prefix to output error message.
+        character(len=256)                  :: messageSuffix = ""           !! Suffix to output error message.
         logical                             :: isInitialised = .false.      !! Has the ErrorHandler been initialised?
         logical                             :: bashColors = .true.          !! Should colors be displayed in bash consoles?
         
         contains
             procedure, public :: init => initErrorHandler
+            procedure, public :: queue
             procedure, public :: trigger
             procedure, public :: modify
             procedure, public :: errorExists
@@ -70,6 +72,9 @@ module ErrorHandlerModule
 
             ! Mark as initialised
             this%isInitialised = .true.
+
+            ! Set queue to empty
+            allocate(this%errorQueue(0))
 
             ! Construct the default errors array with the error that will always be present
             defaultErrors(1)%code = 0
@@ -329,6 +334,65 @@ module ErrorHandlerModule
             end do
         end function
 
+        !> Queue an error/errors so that it/they will be triggered on the next trigger() call.
+        subroutine queue(this, code, error, errors)
+            class(ErrorHandler)                 :: this             !! This ErrorHandler instance.
+            integer, optional                   :: code             !! Code of error to queue.
+            type(ErrorInstance), optional       :: error            !! ErrorInstance to queue.
+            type(ErrorInstance), optional       :: errors(:)        !! Array of ErrorInstances to queue.
+            type(ErrorInstance), allocatable    :: errorsToQueue(:) !! The generated ErrorInstance to add.
+            integer                             :: k                !! Loop iterator.
+
+            if (present(code)) then
+                allocate(errorsToQueue(1))
+                ! Returns no error if code isn't valid
+                errorsToQueue(1) = this%getErrorFromCode(code)
+            else if (present(error)) then
+                allocate(errorsToQueue(1))
+                ! Check if the error already exists
+                if (this%errorExists(error%code)) then
+                    ! Set the error to trigger the already existing one
+                    errorsToQueue(1) = this%getErrorFromCode(error%code)
+                    ! If message given for input error, override the default one
+                    if (error%message /= "") errorsToQueue(1)%message = error%message
+                    ! If there is a trace, add that
+                    if (allocated(error%trace)) errorsToQueue(1)%trace = error%trace
+                    ! isCritical defaults to .true. for ErrorInstances, so unless it's specified
+                    ! when the error is declared, it will trigger as true, regardless of the
+                    ! default criticality stored in the ErrorHandler.
+                    errorsToQueue(1)%isCritical = error%isCritical
+                ! If the error doesn't exist, queue it anyway. Good for on-the-fly error raising.
+                else
+                    errorsToQueue(1) = error
+                end if
+            else if (present(errors)) then
+                allocate(errorsToQueue(size(errors)))
+                ! Loop through input errors and see if that code already exists
+                do k=1, size(errors)
+                    if (this%errorExists(errors(k)%code)) then
+                        ! Set the error to trigger the already existing one
+                        errorsToQueue(k) = this%getErrorFromCode(errors(k)%code)
+                        ! If a message given for the input error, override the default one
+                        if (errors(k)%message /= "") errorsToQueue(k)%message = errors(k)%message
+                        ! If there is a trace, add that
+                        if (allocated(errors(k)%trace)) errorsToQueue(k)%trace = errors(k)%trace
+                        ! isCritical default to .true. for ErrorInstances, so unless it's specified
+                        ! when the error is declared, it will trigger as true, regardless of the
+                        ! default criticality stored in the ErrorHandler.
+                        errorsToQueue(k)%isCritical = errors(k)%isCritical
+                    ! If the error doesn't exist, queue it anyway. Good for on-the-fly error raising.
+                    else
+                        errorsToQueue(k) = errors(k)
+                    end if
+                end do
+            ! If no code, error or errors provided, make errorsToQueue zero-sized
+            else
+                allocate(errorsToQueue(0))
+            end if
+
+            this%errorQueue = [this%errorQueue, errorsToQueue]
+        end subroutine
+
         !> Trigger an error from a code, ErrorInstance or array
         !! of ErrorInstances. If multiple are specified, then order of precedence
         !! is code, ErrorInstances, ErrorInstance. If there is a critical error,
@@ -356,6 +420,8 @@ module ErrorHandlerModule
                 allocate(errorsOut(1))
                 ! Returns no error if code isn't valid
                 errorsOut(1) = this%getErrorFromCode(code)
+                ! Add any queued errors, with queued errors coming first
+                errorsOut = [this%errorQueue, errorsOut]
             else if (present(error)) then
                 allocate(errorsOut(1))
                 ! Check if the error already exists
@@ -374,6 +440,8 @@ module ErrorHandlerModule
                 else
                     errorsOut(1) = error
                 end if
+                ! Add any queued errors, with queued errors coming first
+                errorsOut = [this%errorQueue, errorsOut]
             else if (present(errors)) then
                 allocate(errorsOut(size(errors)))
                 ! Loop through input errors and see if that code already exists
@@ -394,9 +462,17 @@ module ErrorHandlerModule
                         errorsOut(k) = errors(k)
                     end if
                 end do
+                ! Add any queued errors, with queued errors coming first
+                errorsOut = [this%errorQueue, errorsOut]
             else
-                allocate(errorsOut(1))
-                errorsOut(1) = this%getErrorFromCode(1)
+                if (size(this%errorQueue) == 0) then
+                    allocate(errorsOut(1))
+                    errorsOut(1) = this%getErrorFromCode(1)
+                    ! Add any queued errors, with queued errors coming first
+                    errorsOut = [this%errorQueue, errorsOut]
+                else
+                    allocate(errorsOut, source=this%errorQueue)
+                end if
             end if
 
             ! Only do something if there's actually an error (i.e., the

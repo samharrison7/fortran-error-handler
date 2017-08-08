@@ -4,6 +4,7 @@ The ErrorHandler is the class responsible for initialising the error handling en
 
 - [Initialising](#initialising)
 - [Adding custom errors](#adding)
+- [Queueing errors](#queueing)
 - [Triggering errors](#triggering)
 - [Modifying errors](#modifying)
 - [Removing errors](#removing)
@@ -80,12 +81,47 @@ Finally, multiple errors can be added as an array of ErrorInstances and in this 
 | :--- | :--- | :--- |
 | `type(ErrorInstance) :: errors(:)` | Array of ErrorInstances to add. | - |
 
+<a name="queueing"></a>
+## Queueing errors
+
+The ErrorHandler instance contains an array of queued errors that are triggered when the `trigger()` procedure is called (see [below](#triggering)). This is useful for large scripts that might contain multiple errors.
+
+#### `ErrorHandler%queue(code, message, isCritical, trace, error, errors)`
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `integer, optional :: code` | Code of error to trigger. Must be in ErrorHandler's list of errors. | - |
+| `type(ErrorInstance), optional :: error` | ErrorInstance to queue. | - |
+| `type(ErrorInstance) :: errors(:)` | Array of ErrorInstances to queue. | - |
+
+A number of situations can arise, depending on whether the code/error(s) exist in the ErrorHandler's list of errors (i.e., whether it is one of the default errors, or has been previously added by the user). These follow the same convention as for [triggering errors](#triggering).
+
+For example:
+
+```fortran
+! Add an error
+call EH%add(code=200, message="Custom error message.", isCritical=.false.)
+call EH%add(code=300, message="Another custom error message.", isCritical=.true.)
+! Queue some errors and trigger
+call EH%queue(200)
+call EH%queue(error=ErrorInstance(code=999, message="On-the-fly queued error."))
+call EH%trigger(300)
+```
+
+This results in:
+```bash
+Warning: A custom error message.
+Error: On-the-fly queued error.
+Error: Another custom error message.
+ERROR STOP 999
+```
+
 <a name="triggering"></a>
 ## Triggering errors
 
 #### `ErrorHandler%trigger(code, error, errors)`
 
-Triggering an error causes the error code to be printed to the console, along with any prefixes or suffixes. If the error is critical, program execution will be stopped with a stop code of the error code. If multiple critical errors are specified, they will all be printed to the console and the first error encountered will be used as the stop code. If a code, error and errors are provided, the code, followed by error, will take precedence.
+Triggering an error causes the error code to be printed to the console, along with any prefixes or suffixes. If the error is critical, program execution will be stopped with a stop code of the error code. If multiple critical errors are specified, they will all be printed to the console and the first error encountered will be used as the stop code. If a code, error and errors are provided, the code, followed by error, will take precedence. Any [queued errors](#queueing) will be output before the triggered error.
 
 | Parameter declaration | Description | Default |
 | :--- | :--- | :--- |
@@ -103,10 +139,9 @@ A number of situations can arise, depending on whether the code/error(s) exist i
     - If an `isCritical` exists, then this will override the default criticality from the ErrorHandler's list of errors.
     - *Note*: When an ErrorInstance is constructed, not specifying `isCritical` means that it defaults to `.true.`. Thus, inputting an error/errors that, when constructed, didn't explicitly specify `isCritical`, means the error will be triggered as critical, regardless of the criticality of the error in the ErrorHandler's list of errors. This might seem slightly unexpected, so be careful!
 - `error` or `errors` provided and they don't exist: They will be triggered anyway, allowing for one-off errors to be triggered on-the-fly, without having to add them to the ErrorHandler. It is up to the user to ensure this is rational for their application, and that confusion isn't caused by using the same error codes for on-the-fly errors at different points in the same application.
-- No parameters provided - `ErrorHandler%trigger()`. The default error (code 1) will be triggered.
+- No parameters provided - `ErrorHandler%trigger()`. Only the queue will be triggered, or if the queue is empty, the default error (code 1) will be triggered.
 
 For example:
-
 ```fortran
 ! Add an error
 call EH%add(code=200, message="Custom error message.", isCritical=.false.)
