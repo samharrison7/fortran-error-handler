@@ -28,7 +28,7 @@ Read the below documentation for example usage, and check out the [example](exam
 
 The framework consists of two main classes:
 
-- [ErrorHandler](doc/ErrorHandler.md): Responsible for initiating the error handling environment, triggering error events, and storing a list of possible error codes and their respective error messages.
+- [ErrorHandler](doc/ErrorHandler.md): Responsible for initiating the error handling environment, queuing and triggering error events, and storing a list of possible error codes and their respective error messages.
 - [ErrorInstance](doc/ErrorInstance.md): An ErrorInstance is an object representing an error, containing an error code, error message, whether the error is critical (should stop the program executing), and a user-defined trace of where the error has come from.
 
 A number of further classes provide added functionality:

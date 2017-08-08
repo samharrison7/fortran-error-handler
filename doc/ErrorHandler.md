@@ -1,6 +1,6 @@
 # ErrorHandler
 
-The ErrorHandler is the class responsible for initialising the error handling environment, triggering error events, and storing a list of possible error codes and their respective error messages.
+The ErrorHandler is the class responsible for initialising the error handling environment, queuing and triggering error events, and storing a list of possible error codes and their respective error messages.
 
 - [Initialising](#initialising)
 - [Adding custom errors](#adding)
