@@ -112,6 +112,25 @@ $ ERROR STOP 200
 
 `Result%getErrorCode()` returns the integer code of the first error in the errors array.
 
+### Adding further errors
+Once a Result object has been created, you can add further errors to the array of errors stored by it, by using the `Result%addError(error)` and `Result%addErrors(errors)` functions.
+
+#### `Result%addError(error)`
+
+Add a single error to the Result object.
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `type(ErrorInstance) :: error` | The error to add to the Result object's array of errors. | - |
+
+#### `Result%addErrors(errors)`
+
+Add an array of errors to the Result object.
+
+| Parameter declaration | Description | Default |
+| :--- | :--- | :--- |
+| `type(ErrorInstance) :: errors(:)` | The errors to add to the Result object's array of errors. | - |
+
 <a name="trace"></a>
 ## Error trace
 
