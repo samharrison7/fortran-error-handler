@@ -18,6 +18,7 @@ module ResultModule
             procedure, public :: getErrors
             procedure, public :: getErrorCode
             procedure, public :: setErrors
+            procedure, public :: addError
             procedure, public :: addToTrace
 
             ! Operators
@@ -898,7 +899,7 @@ module ResultModule
             type(ErrorInstance), optional, intent(in)   :: error
             type(ErrorInstance), optional, intent(in)   :: errors(:)
 
-            ! Allocate array of errors, if it isn't already
+            ! Allocate array of errors, if it isn't already allocated
             if (.not. allocated(this%errors)) allocate(this%errors(0))
             
             ! If errors array given as param, use that, otherwise
@@ -911,6 +912,17 @@ module ResultModule
             else
                 this%errors = [ErrorInstance(0, "No error.", .false.)]
             end if
+        end subroutine
+
+        !> Add an error to the result object (without overriding previously
+        !! added errors).
+        pure subroutine addError(this, error)
+            class(Result), intent(inout)        :: this
+            type(ErrorInstance), intent(in)     :: error
+            ! Allocate array of errors, if it isn't already allocated
+            if (.not. allocated(this%errors)) allocate(this%errors(0))
+            ! Add the new error
+            this%errors = [this%errors, error]
         end subroutine
 
         ! Add the same trace message to all errors in a Result object
