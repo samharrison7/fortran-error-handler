@@ -18,14 +18,14 @@ integer, parameter :: dp = selected_real_kind(15,307)
 integer, parameter :: qp = selected_real_kind(33,4931) 
 ```
 
-**More detailed explanation:** The lack of dynamic (run-time) polymorphism in Fortran means that the compiler must know the type of a variable before operating on it. This means that generic procedure names, such as the criterion names used by the ErrorCriteria (e.g., `limit`, `postive`; see below) have to be bound to a separate procedure for each variable type *and* kind (an alternative approch would have been to use the `select type` construct in one large procedure for each criterion, but the implication remains the same). Currently, procedures for those types and kind listed above are implemented, and the use of `selected_real_kind` to define `dp` and `qp` was chosen as "best practice" in texts such as N. S. Clerman and W. Spector's book "Modern Fortran" (2012). If there is demand in the future, other types and kinds might be added (e.g., support for 8-byte integers or complex numbers).
+**More detailed explanation:** The lack of dynamic (run-time) polymorphism in Fortran means that the compiler must know the type of a variable before operating on it. This means that generic procedure names, such as the criterion names used by the ErrorCriteria (e.g., `limit`, `positive`; see below) have to be bound to a separate procedure for each variable type *and* kind (an alternative approch would have been to use the `select type` construct in one large procedure for each criterion, but the implication remains the same). Currently, procedures for those types and kind listed above are implemented, and the use of `selected_real_kind` to define `dp` and `qp` was chosen as "best practice" in texts such as N. S. Clerman and W. Spector's book "Modern Fortran" (2012). If there is demand in the future, other types and kinds might be added (e.g., support for 8-byte integers or complex numbers). Pull requests to that effect are more than welcome.
 
 <a name="Initialising"></a>
 ## Initialising
 
 Initialising ErrorCriteria serves the purpose of [initialising its parent](ErrorHandler.md#initialising), ErrorHandler, and then adding further default errors, each one corresponding to a particular criterion test (these can be [modified](#modifying) later). The `init` procedure takes the same parameters as ErrorHandler's `init` procedure and thus can be used in exactly the same way:
 
-#### `ErrorHandler%init(errors, criticalPrefix, warningPrefix, messageSuffix, bashColors)`
+#### `ErrorCriteria%init(errors, criticalPrefix, warningPrefix, messageSuffix, bashColors)`
 
 | Parameter declaration | Description | Default |
 | :--- | :--- | :--- |
@@ -53,7 +53,7 @@ Using the convention of naming the instantiated ErrorCriteria as something relat
 <a name="criteria"></a>
 ## Criteria functions
 
-The following criteria functions are available for use. Each one returns an ErrorInstance, and if the value provided passes the criterion, then the ErrorInstance returned is the default "no error" error (code 0), and thus [triggering](ErrorHandler.md#triggering) it won't cause anything to happen. Each of the criteria has its own error code, the default (applied by the `init` procedure) for which is shown below. As per the above, the numeric parameters `value`, `lbound`, `ubound` and `criterion` can be `integer`, `real`, `real(dp)` or `real(qp)`, whilst `epsilon` *must* be `real`.
+The criteria functions in the following table are available for use. Each one returns an ErrorInstance, and if the value provided passes the criterion, then the ErrorInstance returned is the default "no error" error (code 0), and thus [triggering](ErrorHandler.md#triggering) it won't cause anything to happen. Each of the criteria has its own error code, the default (applied by the `init` procedure) for which is shown below. As per the above, the numeric parameters `value`, `lbound`, `ubound` and `criterion` can be `integer`, `real`, `real(dp)` or `real(qp)`, whilst `epsilon` *must* be `real`. Required parameters are indicated by asterisks.
 
 **`epsilon`** is a tolerance to account for imprecission in floating point numbers, and is an optional parameter to criteria functions, which defaults to `1.0e-5`. When testing if a value is equal to another number, the criterion function will return true as long as the value falls with the criterion +- epsilon. It has no effect when working with integers.
 
@@ -61,17 +61,17 @@ The following criteria functions are available for use. Each one returns an Erro
 
 The array index column below is the internal array index that represents the given criterion, and is used externally when [modifying](#modifying) the default criteria codes.
 
-| Criterion | Function interface | Description | Default code | Array index |
+| Criterion | Function interface *(required parameters indicated by asterisks)* | Description | Default code | Array index |
 | :--- | :--- | :--- | :--- | :--- |
-| nonZero | `ErrorCriteria%nonZero(value, epsilon, message, traceMessage)` | Check a value is non-zero, or further than +- epsilon from zero. | 101 | 1 |
-| zero | `ErrorCriteria%zero(value, epsilon, message, traceMessage)` | Check a value is zero, or within +- epsilon of zero. | 102 | 2 |
-| lessThan | `ErrorCriteria%lessThan(value, ubound, message, traceMessage)` | Check a value is less than ubound. | 103 | 3 |
-| greaterThan | `ErrorCriteria%greaterThan(value, lbound, message, traceMessage)` | Check a value is greater than lbound. | 104 | 4 |
-| limit | `ErrorCriteria%limit(value, lbound, ubound, message, traceMessage)` | Check a value is between lbound and ubound. If only lbound or ubound specified, value is testing to be greater than or less than, respectively. | 105 | 5 |
-| notEqual | `ErrorCriteria%notEqual(value, criterion, epsilon, message, traceMessage)` | Check a value is not equal to criterion, or further than +- epsilon from criterion. | 106 | 6 |
-| equal | `ErrorCriteria%equal(value, criterion, epsilon, message, traceMessage)` | Check a value is equal to criterion, or within +- epsilon of criterion. | 107 | 7 |
-| positive | `ErrorCriteria%positive(value, message, traceMessage)` | Check a value is positive. | 108 | 8 |
-| negative | `ErrorCriteria%negative(value, message, traceMessage)` | Check a value is negative. | 109 | 9 |
+| nonZero | `ErrorCriteria%nonZero(*value*, epsilon, message, traceMessage)` | Check a value is non-zero, or further than +- epsilon from zero. | 101 | 1 |
+| zero | `ErrorCriteria%zero(*value*, epsilon, message, traceMessage)` | Check a value is zero, or within +- epsilon of zero. | 102 | 2 |
+| lessThan | `ErrorCriteria%lessThan(*value*, *ubound*, message, traceMessage)` | Check a value is less than ubound. | 103 | 3 |
+| greaterThan | `ErrorCriteria%greaterThan(*value*, *lbound*, message, traceMessage)` | Check a value is greater than lbound. | 104 | 4 |
+| limit | `ErrorCriteria%limit(*value*, lbound, ubound, message, traceMessage)` | Check a value is between lbound and ubound. If only lbound or ubound specified, value is testing to be greater than or less than, respectively. | 105 | 5 |
+| notEqual | `ErrorCriteria%notEqual(*value*, *criterion*, epsilon, message, traceMessage)` | Check a value is not equal to criterion, or further than +- epsilon from criterion. | 106 | 6 |
+| equal | `ErrorCriteria%equal(*value*, *criterion*, epsilon, message, traceMessage)` | Check a value is equal to criterion, or within +- epsilon of criterion. | 107 | 7 |
+| positive | `ErrorCriteria%positive(*value*, message, traceMessage)` | Check a value is positive. | 108 | 8 |
+| negative | `ErrorCriteria%negative(*value*, message, traceMessage)` | Check a value is negative. | 109 | 9 |
 
 For example:
 
@@ -151,7 +151,9 @@ On the surface, removing errors using the `remove` generic is exactly the same a
 
 Of course, the ErrorCriteria provided here only includes checks for a few of the most common criteria, and most users will have their own application-specific checks to perform. Whilst one could simply edit the ErrorCriteria.f08 file to add further criteria functions, this is **strongly discouraged**. Doing so would mean pulling in future updates to the Fortran Error Handler would conflict with (i.e., override) your custom criteria.
 
-Instead, you should create your own class that extends the ErrorCriteria and instantiate that class as your error handler. Two self-explanatory procedures, `ErrorCriteria%addErrorCriterion(code, name, message, isCritical)` and `ErrorCriteria%addErrorCriteria(codes, names, messages, areCritical)` can be used in the `init` procedure to add your custom criteria to the current list or criteria and the overall list of errors. This is best demonstrated by an example class, with two new custom criteria, testing whether an integer is a factor of our a multiple of another integer:
+Instead, you should create your own class that extends the ErrorCriteria and instantiate that class as your error handler. Two self-explanatory procedures, `ErrorCriteria%addErrorCriterion(code, name, message, isCritical)` and `ErrorCriteria%addErrorCriteria(codes, names, messages, areCritical)` can be used in the `init` procedure to add your custom criteria to the current list or criteria and the overall list of errors. 
+
+To demonstrate extending the ErrorCriteria, the following code is an example module that contains a `CustomErrorCriteria` type, which extends `ErrorCriteria` to add the ability to test whether an integer is a factor of or a multiple of another integer:
 
 ```fortran
 module CustomErrorCriteriaModule
@@ -179,12 +181,12 @@ module CustomErrorCriteriaModule
                                         warningPrefix, &
                                         messageSuffix, &
                                         bashColors)
-        class(CustomErrorCriteria), intent(inout)   :: this                 !> This ErrorCriteria instance
-        type(ErrorInstance), intent(in), optional   :: errors(:)            !> Custom defined errors
-        character(len=*), intent(in), optional      :: criticalPrefix       !> Prefix to critical error messages
-        character(len=*), intent(in), optional      :: warningPrefix        !> Prefix to warning error messages
-        character(len=*), intent(in), optional      :: messageSuffix        !> Suffix to error messages
-        logical, intent(in), optional               :: bashColors           !> Should prefixes be colored in bash shells?
+        class(CustomErrorCriteria), intent(inout)   :: this                 !! This ErrorCriteria instance
+        type(ErrorInstance), intent(in), optional   :: errors(:)            !! Custom defined errors
+        character(len=*), intent(in), optional      :: criticalPrefix       !! Prefix to critical error messages
+        character(len=*), intent(in), optional      :: warningPrefix        !! Prefix to warning error messages
+        character(len=*), intent(in), optional      :: messageSuffix        !! Suffix to error messages
+        logical, intent(in), optional               :: bashColors           !! Should prefixes be colored in bash shells?
 
         !> We must initialise the parent ErrorCriteria for the default criteria to be set                                                              
         call this%ErrorCriteria%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors)
@@ -201,15 +203,15 @@ module CustomErrorCriteriaModule
 
     !> Test whether an integer value is a factor of criterion
     pure function integerFactor(this, value, criterion, message, traceMessage) result(error)
-        class(CustomErrorCriteria), intent(in)  :: this             !> The ErrorCriteria class
-        integer, intent(in)                     :: value            !> The value to test
-        integer, intent(in)                     :: criterion        !> The value to test
-        character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-        character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-        type(ErrorInstance)                     :: error            !> The error to return
-        logical                                 :: pass             !> Does the value pass the test?
-        character(len=100)                      :: charValue        !> Character variable to store value in
-        character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+        class(CustomErrorCriteria), intent(in)  :: this             !! The ErrorCriteria class
+        integer, intent(in)                     :: value            !! The value to test
+        integer, intent(in)                     :: criterion        !! The value to test
+        character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+        character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+        type(ErrorInstance)                     :: error            !! The error to return
+        logical                                 :: pass             !! Does the value pass the test?
+        character(len=100)                      :: charValue        !! Character variable to store value in
+        character(len=100)                      :: charCriterion    !! Character variable to store criterion in
 
         ! Stop the program running if ErrorHandler not initialised
         call this%stopIfNotInitialised()
@@ -242,15 +244,15 @@ module CustomErrorCriteriaModule
 
     !> Test whether an integer value is a multiple of criterion
     pure function integerMultiple(this, value, criterion, message, traceMessage) result(error)
-        class(CustomErrorCriteria), intent(in)  :: this             !> The ErrorCriteria class
-        integer, intent(in)                     :: value            !> The value to test
-        integer, intent(in)                     :: criterion            !> The value to test
-        character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-        character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-        type(ErrorInstance)                     :: error            !> The error to return
-        logical                                 :: pass             !> Does the value pass the test?
-        character(len=100)                      :: charValue        !> Character variable to store value in
-        character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+        class(CustomErrorCriteria), intent(in)  :: this             !! The ErrorCriteria class
+        integer, intent(in)                     :: value            !! The value to test
+        integer, intent(in)                     :: criterion        !! The value to test
+        character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+        character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+        type(ErrorInstance)                     :: error            !! The error to return
+        logical                                 :: pass             !! Does the value pass the test?
+        character(len=100)                      :: charValue        !! Character variable to store value in
+        character(len=100)                      :: charCriterion    !! Character variable to store criterion in
 
         ! Stop the program running if ErrorHandler not initialised
         call this%stopIfNotInitialised()

@@ -121,24 +121,24 @@ ERROR STOP 999
 
 #### `ErrorHandler%trigger(code, error, errors)`
 
-Triggering an error causes the error code to be printed to the console, along with any prefixes or suffixes. If the error is critical, program execution will be stopped with a stop code of the error code. If multiple critical errors are specified, they will all be printed to the console and the first error encountered will be used as the stop code. If a code, error and errors are provided, the code, followed by error, will take precedence. Any [queued errors](#queueing) will be output before the triggered error.
+Triggering an error causes the error code to be printed to the console, along with any prefixes or suffixes. If the error is critical, program execution will be stopped with a stop code of the error code. If multiple critical ErrorInstances are provided in the `errors` array parameter, they will all be printed to the console and the first error encountered will be used as the stop code to stop the execution of the program. If a code, error and errors are provided, the code, followed by error and then errors, will take precedence. Any [queued errors](#queueing) will be output before the triggered error.
 
 | Parameter declaration | Description | Default |
 | :--- | :--- | :--- |
 | `integer, optional :: code` | Code of error to trigger. Must be in ErrorHandler's list of errors. | - |
-| `type(ErrorInstance), optional :: error` | ErrorInstance to trigger. | - |
-| `type(ErrorInstance) :: errors(:)` | Array of ErrorInstances to trigger. | - |
+| `type(ErrorInstance), optional :: error` | ErrorInstance to trigger. Specify `isCritical` when constructing ErrorInstance to avoid it defaulting to `.true.`; see *note* below. | - |
+| `type(ErrorInstance) :: errors(:)` | Array of ErrorInstances to trigger. Same applies as above regarding criticality. | - |
 
 A number of situations can arise, depending on whether the code/error(s) exist in the ErrorHandler's list of errors (i.e., whether it is one of the default errors, or has been previously added by the user):
 
-- `code` provided and it exists: The corresponding error will be got from the ErrorHandler's list and its message/criticality used.
+- `code` provided and it exists: The corresponding error will be taken from the ErrorHandler's list and its message/criticality used.
 - `code` provided but it doesn't exist: No error will be triggered - i.e., nothing will happen.
 - `error` or `errors` provided and it/they exist:
     - If no `message` exists (i.e., the message is "") in the input error/errors, then the default message from the ErrorHandler's list of errors will be used.
     - If a `message` exists, then this will override the default message.
     - If an `isCritical` exists, then this will override the default criticality from the ErrorHandler's list of errors.
     - *Note*: When an ErrorInstance is constructed, not specifying `isCritical` means that it defaults to `.true.`. Thus, inputting an error/errors that, when constructed, didn't explicitly specify `isCritical`, means the error will be triggered as critical, regardless of the criticality of the error in the ErrorHandler's list of errors. This might seem slightly unexpected, so be careful!
-- `error` or `errors` provided and they don't exist: They will be triggered anyway, allowing for one-off errors to be triggered on-the-fly, without having to add them to the ErrorHandler. It is up to the user to ensure this is rational for their application, and that confusion isn't caused by using the same error codes for on-the-fly errors at different points in the same application.
+- `error` or `errors` provided and they don't exist: They will be triggered anyway, allowing for one-off errors to be triggered on-the-fly (at arbitrary points in the code), without having to add them to the ErrorHandler. It is up to the user to ensure this is rational for their application, and that confusion isn't caused by using the same error codes for on-the-fly errors at different points in the same application.
 - No parameters provided - `ErrorHandler%trigger()`. Only the queue will be triggered, or if the queue is empty, the default error (code 1) will be triggered.
 
 For example:
@@ -158,7 +158,7 @@ call EH%trigger(errors=[ &
 
 This results in:
 ```bash
-$ Warning: A custom error message.
+$ Warning: Custom error message.
 $ Warning: On-the-fly error.
 $ Warning: Override default message.
 $ Error: Another specific error.
@@ -168,7 +168,7 @@ $ ERROR STOP 997
 <a name="modifying"></a>
 ## Modifying errors
 
-The message, criticality and trace of errors that have already been added to the ErrorHandler instance can be modified using the `modify` procedure. The error code itself cannot be modified; to achieve this, [remove](#removing) and re-[add](#adding) the error.
+The message, criticality and [trace](docs/ErrorInstance.md#traces) of errors that have already been added to the ErrorHandler instance can be modified using the `modify` procedure. The error code itself cannot be modified; to achieve this, [remove](#removing) and re-[add](#adding) the error.
 
 #### `ErrorHandler%modify(code, message, isCritical, trace)`
 
@@ -192,6 +192,7 @@ This results in:
 ```bash
 $ Warning: Old message.
 $ Error: New message.
+$ ERROR STOP 400
 ```
 
 

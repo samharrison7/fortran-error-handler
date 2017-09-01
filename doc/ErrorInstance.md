@@ -16,7 +16,7 @@ An `ErrorInstance(code, message, isCritical, trace)` interface is provided so th
 | :--- | :--- | :--- |
 | `integer :: code` | The error code. | - |
 | `character(len=*), optional :: message` | Default message for the error (which there is plenty of opportunity to override). | "" |
-| `logical, optional :: isCritical` | Is the error critical? | .true. |
+| `logical, optional :: isCritical` | Is the error critical (i.e., should it stop the program)? | .true. |
 | `character(len=*), optional :: trace(:)` | Custom trace for the error | - |
 
 For example:
@@ -104,6 +104,7 @@ $ Error: Value must be positive. Given value: -1.00000000.
 $ Trace: Area from radius
 $ Error: Value must be positive. Given value: -2.00000000.
 $ Trace: Radius from diameter > Area from diameter
+$ ERROR STOP 108
 ```
 
 <a name="tests"></a>
