@@ -942,6 +942,8 @@ module ResultModule
             class(Result), intent(inout)    :: this             !> The Result instance
             character(len=*), intent(in)    :: message          !> Message to add to trace
             integer                         :: i                !> Loop iterator
+            ! Allocate array of errors, if it isn't already allocated
+            if (.not. allocated(this%errors)) allocate(this%errors(0))
             ! Loop through the errors and add the trace message one-by-one
             do i=lbound(this%errors,1), ubound(this%errors,1)
                 call this%errors(i)%addToTrace(message)
