@@ -943,7 +943,7 @@ module ResultModule
             character(len=*), intent(in)    :: message          !> Message to add to trace
             integer                         :: i                !> Loop iterator
             ! Loop through the errors and add the trace message one-by-one
-            do i=lbound(this%errors), ubound(this%errors)
+            do i=lbound(this%errors,1), ubound(this%errors,1)
                 call this%errors(i)%addToTrace(message)
             end do
         end subroutine
