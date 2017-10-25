@@ -498,18 +498,21 @@ module ErrorHandlerModule
                     ! Loop through the stack trace and add to the message,
                     ! then print
                     if (size(errorsOut(i)%trace)>0 .and. allocated(errorsOut(i)%trace)) then
-                        traceMessage = "Trace:"
+                        traceMessage = "Trace: "
 
                         do j=1, size(errorsOut(i)%trace)
                             traceMessage = " " // trim(traceMessage) // " " // trim(errorsOut(i)%trace(j))
-                            if (j<size(errorsOut(i)%trace)) traceMessage = " " // trim(traceMessage) // " >"
+                            if (j<size(errorsOut(i)%trace)) traceMessage = " " // trim(traceMessage) // new_line('A') &
+                                                            // "       >"
                         end do
 
-                        write(*,"(a)") trim(outputMessage)
+                        write(*,"(a)") new_line('A') // trim(outputMessage)
                         write(*,"(a)") trim(adjustl(traceMessage))
                     else
-                        write(*,"(a)") trim(outputMessage)
+                        write(*,"(a)") new_line('A') // trim(outputMessage)
                     end if
+                    
+                    if (i == size(errorsOut)) write(*,"(a)") ! Finish messages with new line
                 end if
             end do
 
@@ -517,7 +520,10 @@ module ErrorHandlerModule
             ! and stop the program running if so. We'll trigger error
             ! stop on the first critical error found.
             do i=1, size(errorsOut)
-                if (errorsOut(i)%isCritical) error stop errorsOut(i)%code
+                if (errorsOut(i)%isCritical) then
+                    write(*,"(a)")                  ! New line
+                    error stop errorsOut(i)%code
+                end if
             end do
 
         end subroutine
