@@ -112,4 +112,4 @@ $ ERROR STOP 108
 
 The error code can be retrieved from an ErrorInstance object by the `getCode()` procedure, which returns an integer. *Note:* The properties of ErrorInstances aren't currently private, and thus can be accessed directly from outside of the module (e.g., `ErrorInstance%code`, `ErrorInstance%message`). This might change in the future.
 
-An ErrorInstance can be tested to see whether it is an error or the default "no error", using the functions `ErrorInstance%isError()` and `ErrorInstance%notError()`. Both return a logical value. This is particularly useful when returning errors from procedures (such as error criteria) to see whether the procedure resulted in an error.
+An ErrorInstance can be tested to see whether it is an error or the default "no error", using the functions `ErrorInstance%isError()` and `ErrorInstance%notError()`. Both return a logical value. This is particularly useful when returning errors from procedures (such as error criteria) to see whether the procedure resulted in an error. Furthermore, the `ErrorInstance%isCriticalError()` procedure checks if the error is critical or not.

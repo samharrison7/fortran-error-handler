@@ -21,6 +21,8 @@ module ResultModule
             procedure, public :: addError
             procedure, public :: addErrors
             procedure, public :: addToTrace
+            procedure, public :: hasError
+            procedure, public :: hasCriticalError
 
             ! Operators
             generic, public :: operator(.error.) => getError
@@ -937,11 +939,11 @@ module ResultModule
             this%errors = [this%errors, errors]
         end subroutine
 
-        ! Add the same trace message to all errors in a Result object
+        !> Add the same trace message to all errors in a Result object
         pure subroutine addToTrace(this, message)
-            class(Result), intent(inout)    :: this             !> The Result instance
-            character(len=*), intent(in)    :: message          !> Message to add to trace
-            integer                         :: i                !> Loop iterator
+            class(Result), intent(inout)    :: this             !! The Result instance
+            character(len=*), intent(in)    :: message          !! Message to add to trace
+            integer                         :: i                !! Loop iterator
             ! Allocate array of errors, if it isn't already allocated
             if (.not. allocated(this%errors)) allocate(this%errors(0))
             ! Loop through the errors and add the trace message one-by-one
@@ -949,5 +951,40 @@ module ResultModule
                 call this%errors(i)%addToTrace(message)
             end do
         end subroutine
+
+        !> Check if any of the errors in the Result object are actual errors
+        !! (as opposed to no errors with code 0).
+        function hasError(this)
+            class(Result), intent(in)       :: this             !! The Result instance
+            integer                         :: i                !! Loop iterator
+            logical                         :: hasError         !! Does the Result have errors?
+            hasError = .false.
+            ! If not allocated, there are no errors, so just return
+            if (.not. allocated(this%errors)) return
+            ! Loop through errors to see if they are errors or not
+            do i=lbound(this%errors,1), ubound(this%errors,1)
+                if (this%errors(i)%isError()) then
+                    hasError = .true.
+                    return      ! We don't need to loop through the rest of the errors
+                end if 
+            end do
+        end function
+
+        !> Check if any of the errors in the Result object are critical errors
+        pure function hasCriticalError(this)
+            class(Result), intent(in)       :: this             !! The Result instance
+            integer                         :: i                !! Loop iterator
+            logical                         :: hasCriticalError !! Does the Result have critical errors?.
+            hasCriticalError = .false.
+            ! If not allocated, there are no errors, so just return
+            if (.not. allocated(this%errors)) return
+            ! Loop through errors to see if they are critical errors or not
+            do i=lbound(this%errors,1), ubound(this%errors,1)
+                if (this%errors(i)%isCriticalError()) then
+                    hasCriticalError = .true.
+                    return      ! We don't need to loop through the rest of the errors
+                end if
+            end do
+        end function
 
 end module

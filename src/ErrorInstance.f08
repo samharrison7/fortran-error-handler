@@ -15,6 +15,7 @@ module ErrorInstanceModule
             procedure, public :: addToTrace
             procedure, public :: getCode
             procedure, public :: isError
+            procedure, public :: isCriticalError
             procedure, public :: notError
     end type
 
@@ -73,6 +74,7 @@ module ErrorInstanceModule
             code = this%code
         end function
 
+        !> Is the error an actual error or code 0 (not an error)?
         pure function isError(this)
             class(ErrorInstance), intent(in)    :: this
             logical                             :: isError
@@ -80,6 +82,15 @@ module ErrorInstanceModule
             if (this%code == 0) isError = .false.
         end function
 
+        !> Is the error a critical error?
+        pure function isCriticalError(this)
+            class(ErrorInstance), intent(in)    :: this
+            logical                             :: isCriticalError
+            isCriticalError = .false.
+            if (this%code /= 0 .and. this%isCritical) isCriticalError = .true.
+        end function
+
+        !> Is the error code 0 (not an error)?
         pure function notError(this)
             class(ErrorInstance), intent(in)    :: this
             logical                             :: notError

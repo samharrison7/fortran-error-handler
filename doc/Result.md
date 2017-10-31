@@ -131,6 +131,9 @@ Add an array of errors to the Result object.
 | :--- | :--- | :--- |
 | `type(ErrorInstance) :: errors(:)` | The errors to add to the Result object's array of errors. | - |
 
+### Checking for errors
+You can use the `Result%hasError()` and `Result%hasCriticalError()` procedures to check whether a Result object has an error (and that error isn't the default no error, with code 0), and whether it has a critical error, respetively. Both return a logical value.
+
 <a name="trace"></a>
 ## Error trace
 
