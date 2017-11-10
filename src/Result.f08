@@ -885,14 +885,24 @@ module ResultModule
         pure function getError(this) result(error)
             class(Result), intent(in)   :: this
             type(ErrorInstance)         :: error
-            if (size(this%errors)>0) error = this%errors(1)
+            ! If there isn't an error to be got, return the no error
+            if (size(this%errors)>0) then
+                error = this%errors(1)
+            else
+                error = ErrorInstance(code=0)
+            end if
         end function
 
         !> Return the errors array.
         pure function getErrors(this) result(errors)
-            class(Result), intent(in)   :: this
-            type(ErrorInstance)         :: errors(size(this%errors))
-            if (size(this%errors)>0) errors = this%errors
+            class(Result), intent(in)           :: this
+            type(ErrorInstance), allocatable    :: errors(:)
+            ! If there isn't an error, return empty array
+            if (size(this%errors)>0) then
+                allocate(errors, source=this%errors)
+            else
+                allocate(errors(0))
+            end if
         end function
 
         !> Set the array of ErrorInstances from a single error
@@ -924,8 +934,8 @@ module ResultModule
             type(ErrorInstance), intent(in)     :: error
             ! Allocate array of errors, if it isn't already allocated
             if (.not. allocated(this%errors)) allocate(this%errors(0))
-            ! Add the new error
-            this%errors = [this%errors, error]
+            ! Add the new error (if it is one)
+            if (error%isError()) this%errors = [this%errors, error] 
         end subroutine
 
         !> Add multiple errors to the Result object (without overriding previously
@@ -935,8 +945,8 @@ module ResultModule
             type(ErrorInstance), intent(in)     :: errors(:)
             ! Allocate array of errors, if it isn't already allocated
             if (.not. allocated(this%errors)) allocate(this%errors(0))
-            ! Add the new errors
-            this%errors = [this%errors, errors]
+            ! Add the new errors (if there are any)
+            if (size(errors)>0) this%errors = [this%errors, errors]
         end subroutine
 
         !> Add the same trace message to all errors in a Result object
