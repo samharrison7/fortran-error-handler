@@ -34,8 +34,8 @@ type(Result1D) :: r1D
 
 randomError = ErrorInstance(42, "A random error.")
 rNoData = Result(error=randomError)
-r1D = Result(data=1, errors=[randomError,anotherError])
-r2D = Result(data=[1,2], error=randomError)
+r0D = Result(data=1, errors=[randomError,anotherError])
+r1D = Result(data=[1,2], error=randomError)
 ```
 
 <a name="data"></a>
