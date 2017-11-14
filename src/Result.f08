@@ -30,7 +30,6 @@ module ResultModule
     end type
 
     type, public, extends(Result) :: Result0D
-        private
         class(*), allocatable :: data     !! The data returned from the function
 
         contains
@@ -56,7 +55,6 @@ module ResultModule
     end type
 
     type, public, extends(Result) :: Result1D
-        private
         class(*), allocatable :: data(:)     !! The data returned from the function
 
         contains
@@ -81,7 +79,6 @@ module ResultModule
     end type
 
     type, public, extends(Result) :: Result2D
-        private
         class(*), allocatable :: data(:,:)     !! The data returned from the function
 
         contains
@@ -106,7 +103,6 @@ module ResultModule
     end type
 
     type, public, extends(Result) :: Result3D
-        private
         class(*), allocatable :: data(:,:,:)     !! The data returned from the function
 
         contains
@@ -131,7 +127,6 @@ module ResultModule
     end type
 
     type, public, extends(Result) :: Result4D
-        private
         class(*), allocatable :: data(:,:,:,:)     !! The data returned from the function
 
         contains
