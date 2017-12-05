@@ -157,8 +157,8 @@ module ErrorCriteriaModule
         !! values/criteria, to account for imprecision in floating
         !! point numbers.
         subroutine setEpsilon(this, epsilon)
-            class(ErrorCriteria), intent(inout) :: this     !> This ErrorCriteria instance
-            real, intent(in)                    :: epsilon  !> The tolerance allowed
+            class(ErrorCriteria), intent(inout) :: this     !! This ErrorCriteria instance
+            real, intent(in)                    :: epsilon  !! The tolerance allowed
             this%epsilon = epsilon
         end subroutine
 
