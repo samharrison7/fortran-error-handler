@@ -108,7 +108,7 @@ module ErrorCriteriaModule
             character(len=*), intent(in), optional      :: messageSuffix        !! Suffix to error messages
             logical, intent(in), optional               :: bashColors           !! Should prefixes be colored in bash shells?
 
-            !> Initialise the parent ErrorHandler                                                                    
+            ! Initialise the parent ErrorHandler                                                                    
             call this%ErrorHandler%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors)
 
             ! Define the default error criteria. Messages will be overidden by specific
@@ -225,7 +225,7 @@ module ErrorCriteriaModule
             class(ErrorCriteria)            :: this         !! This ErrorCriteria instance
             character(len=*), intent(in)    :: name         !! Function name to change the code for
             integer, intent(in)             :: newCode      !! New error code
-            integer                         :: index        !! The array index corresponding to the function name
+            integer                         :: index        ! The array index corresponding to the function name
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
@@ -244,7 +244,7 @@ module ErrorCriteriaModule
             class(ErrorCriteria), intent(in)    :: this     !! This ErrorCriteria instance
             character(len=*), intent(in)        :: name     !! Function name to get code for
             integer                             :: code     !! The error code
-            integer                             :: index    !! The index corersponding to the function name
+            integer                             :: index    ! The index corersponding to the function name
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
@@ -279,9 +279,9 @@ module ErrorCriteriaModule
         !! it is a code for an error criterion first. If it is, throw an error
         !! message to that effect and suggest using modify() instead.
         subroutine removeErrorInstanceCheckCriteria(this, code)
-            class(ErrorCriteria)    :: this     !> This ErrorCriteria instance
-            integer, intent(in)     :: code     !> The code to remove
-            integer                 :: i        !> Loop iterator
+            class(ErrorCriteria)    :: this     !! This ErrorCriteria instance
+            integer, intent(in)     :: code     !! The code to remove
+            integer                 :: i        ! Loop iterator
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
