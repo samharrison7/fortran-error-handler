@@ -1,3 +1,4 @@
+!> Module container for `ErrorCriteria` class
 module ErrorCriteriaModule
     use ErrorHandlerModule
     use ErrorInstanceModule
@@ -100,12 +101,12 @@ module ErrorCriteriaModule
                         warningPrefix, &
                         messageSuffix, &
                         bashColors)
-            class(ErrorCriteria), intent(inout)         :: this                 !> This ErrorCriteria instance
-            type(ErrorInstance), intent(in), optional   :: errors(:)            !> Custom defined errors
-            character(len=*), intent(in), optional      :: criticalPrefix       !> Prefix to critical error messages
-            character(len=*), intent(in), optional      :: warningPrefix        !> Prefix to warning error messages
-            character(len=*), intent(in), optional      :: messageSuffix        !> Suffix to error messages
-            logical, intent(in), optional               :: bashColors           !> Should prefixes be colored in bash shells?
+            class(ErrorCriteria), intent(inout)         :: this                 !! This ErrorCriteria instance
+            type(ErrorInstance), intent(in), optional   :: errors(:)            !! Custom defined errors
+            character(len=*), intent(in), optional      :: criticalPrefix       !! Prefix to critical error messages
+            character(len=*), intent(in), optional      :: warningPrefix        !! Prefix to warning error messages
+            character(len=*), intent(in), optional      :: messageSuffix        !! Suffix to error messages
+            logical, intent(in), optional               :: bashColors           !! Should prefixes be colored in bash shells?
 
             !> Initialise the parent ErrorHandler                                                                    
             call this%ErrorHandler%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors)
@@ -166,8 +167,8 @@ module ErrorCriteriaModule
         !! indices required for the codes parameter. Must be the same size
         !! as the number of criteria.
         subroutine modifyErrorCriteriaCodes(this, codes)
-            class(ErrorCriteria)            :: this         !> This ErrorCriteria instance
-            integer, intent(in)             :: codes(:)     !> The new codes
+            class(ErrorCriteria)            :: this         !! This ErrorCriteria instance
+            integer, intent(in)             :: codes(:)     !! The new codes
 
             if (size(codes) /= size(this%currentErrorCriteriaCodes)) then
                 error stop "Error modifying error criteria codes: Array of new codes doesn't match number of criteria functions."
@@ -193,9 +194,9 @@ module ErrorCriteriaModule
         !! index corresponding to the functions according to the docs for
         !! the ErrorCriteria derived type.
         subroutine modifyErrorCriterionCodeByIndex(this, index, newCode)
-            class(ErrorCriteria)    :: this         !> This ErrorCriteria instance
-            integer, intent(in)     :: index        !> Array index to change code at
-            integer, intent(in)     :: newCode      !> New error code
+            class(ErrorCriteria)    :: this         !! This ErrorCriteria instance
+            integer, intent(in)     :: index        !! Array index to change code at
+            integer, intent(in)     :: newCode      !! New error code
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
@@ -221,10 +222,10 @@ module ErrorCriteriaModule
         !! index corresponding to the functions according to the docs for
         !! the ErrorCriteria derived type.
         subroutine modifyErrorCriterionCodeByName(this, name, newCode)
-            class(ErrorCriteria)            :: this         !> This ErrorCriteria instance
-            character(len=*), intent(in)    :: name         !> Function name to change the code for
-            integer, intent(in)             :: newCode      !> New error code
-            integer                         :: index        !> The array index corresponding to the function name
+            class(ErrorCriteria)            :: this         !! This ErrorCriteria instance
+            character(len=*), intent(in)    :: name         !! Function name to change the code for
+            integer, intent(in)             :: newCode      !! New error code
+            integer                         :: index        !! The array index corresponding to the function name
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
@@ -240,10 +241,10 @@ module ErrorCriteriaModule
 
         !> Get the error code from the criterion function name
         pure function getCodeFromCriterionName(this, name) result(code)
-            class(ErrorCriteria), intent(in)    :: this     !> This ErrorCriteria instance
-            character(len=*), intent(in)        :: name     !> Function name to get code for
-            integer                             :: code     !> The error code
-            integer                             :: index    !> The index corersponding to the function name
+            class(ErrorCriteria), intent(in)    :: this     !! This ErrorCriteria instance
+            character(len=*), intent(in)        :: name     !! Function name to get code for
+            integer                             :: code     !! The error code
+            integer                             :: index    !! The index corersponding to the function name
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
@@ -259,10 +260,10 @@ module ErrorCriteriaModule
 
         !> Get the index of the error criteria array for a given criterion name
         pure function getIndexFromCriterionName(this, name) result(index)
-            class(ErrorCriteria), intent(in)    :: this     !> This ErrorCriteria instance
-            character(len=*), intent(in)        :: name     !> Function name to get the index for
-            integer                             :: index    !> Index for the given function name
-            integer                             :: i        !> Loop iterator
+            class(ErrorCriteria), intent(in)    :: this     !! This ErrorCriteria instance
+            character(len=*), intent(in)        :: name     !! Function name to get the index for
+            integer                             :: index    !! Index for the given function name
+            integer                             :: i        ! Loop iterator
 
             ! Stop if we haven't initialised the error handler
             call this%stopIfNotInitialised
@@ -303,9 +304,9 @@ module ErrorCriteriaModule
         !! any of the codes are for an error criterion first. If they are, throw an error
         !! message to that effect and suggest using modify() instead.
         subroutine removeMultipleErrorInstancesCheckCriteria(this, codes)
-            class(ErrorCriteria)    :: this         !> This ErrorCriteria instance
-            integer, intent(in)     :: codes(:)     !> The array of codes to remove
-            integer                 :: i            !> Loop iterator
+            class(ErrorCriteria)    :: this         !! This ErrorCriteria instance
+            integer, intent(in)     :: codes(:)     !! The array of codes to remove
+            integer                 :: i            ! Loop iterator
 
             ! Loop through the codes and try and remove one-by-one.
             ! removeErrorInstance checks if initialised.
@@ -380,17 +381,17 @@ module ErrorCriteriaModule
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
         pure function integerLimit(this, value, lbound, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            integer, intent(in)                     :: value            !> The value to test
-            integer, intent(in), optional           :: lbound           !> The lower bound of the limit
-            integer, intent(in), optional           :: ubound           !> The upper bound of the limit
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            integer, intent(in)                     :: value            !! The value to test
+            integer, intent(in), optional           :: lbound           !! The lower bound of the limit
+            integer, intent(in), optional           :: ubound           !! The upper bound of the limit
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -449,17 +450,17 @@ module ErrorCriteriaModule
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
         pure function realLimit(this, value, lbound, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real, intent(in)                        :: value            !> The value to test
-            real, intent(in), optional              :: lbound           !> The lower bound of the limit
-            real, intent(in), optional              :: ubound           !> The upper bound of the limit
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real, intent(in)                        :: value            !! The value to test
+            real, intent(in), optional              :: lbound           !! The lower bound of the limit
+            real, intent(in), optional              :: ubound           !! The upper bound of the limit
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -517,17 +518,17 @@ module ErrorCriteriaModule
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
         pure function realDPLimit(this, value, lbound, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(dp), intent(in)                    :: value            !> The value to test
-            real(dp), intent(in), optional          :: lbound           !> The lower bound of the limit
-            real(dp), intent(in), optional          :: ubound           !> The upper bound of the limit
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(dp), intent(in)                    :: value            !! The value to test
+            real(dp), intent(in), optional          :: lbound           !! The lower bound of the limit
+            real(dp), intent(in), optional          :: ubound           !! The upper bound of the limit
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -585,17 +586,17 @@ module ErrorCriteriaModule
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
         pure function realQPLimit(this, value, lbound, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(qp), intent(in)                    :: value            !> The value to test
-            real(qp), intent(in), optional          :: lbound           !> The lower bound of the limit
-            real(qp), intent(in), optional          :: ubound           !> The upper bound of the limit
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(qp), intent(in)                    :: value            !! The value to test
+            real(qp), intent(in), optional          :: lbound           !! The lower bound of the limit
+            real(qp), intent(in), optional          :: ubound           !! The upper bound of the limit
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -653,14 +654,14 @@ module ErrorCriteriaModule
 
         !> Test whether an integer is non-zero.
         pure function integerNonZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            integer, intent(in)                     :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How close to zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            integer, intent(in)                     :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -691,14 +692,14 @@ module ErrorCriteriaModule
         !> Test whether a real number is non-zero, or further than a specified
         !! amount (epsilon) from zero.
         pure function realNonZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real, intent(in)                        :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How close to zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real, intent(in)                        :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -733,14 +734,14 @@ module ErrorCriteriaModule
         !> Test whether a real(dp) number is non-zero, or further than a specified
         !! amount (epsilon) from zero.
         pure function realDPNonZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(dp), intent(in)                    :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How close to zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(dp), intent(in)                    :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -775,14 +776,14 @@ module ErrorCriteriaModule
         !> Test whether a real(qp) number is non-zero, or further than a specified
         !! amount (epsilon) from zero.
         pure function realQPNonZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(qp), intent(in)                    :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How close to zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(qp), intent(in)                    :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -818,14 +819,14 @@ module ErrorCriteriaModule
 
         !> Test whether an integer is zero.
         pure function integerZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            integer, intent(in)                     :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How far from zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            integer, intent(in)                     :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -855,14 +856,14 @@ module ErrorCriteriaModule
 
         !> Test whether a real is within epsilon of zero.
         pure function realZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real, intent(in)                        :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How far from zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real, intent(in)                        :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -896,14 +897,14 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) is within epsilon of zero.
         pure function realDPZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(dp), intent(in)                    :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How far from zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(dp), intent(in)                    :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -937,14 +938,14 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) is within epsilon of zero.
         pure function realQPZero(this, value, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(qp), intent(in)                    :: value            !> The value to test
-            real, optional, intent(in)              :: epsilon          !> How far from zero can the value be?
-            character(len=*), optional, intent(in)  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(qp), intent(in)                    :: value            !! The value to test
+            real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
+            character(len=*), optional, intent(in)  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -980,15 +981,15 @@ module ErrorCriteriaModule
 
         !> Test whether an integer value is less than given criteria.
         pure function integerLessThan(this, value, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            integer, intent(in)                     :: value            !> The value to test
-            integer, intent(in)                     :: ubound           !> Value must be less than than ubound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            integer, intent(in)                     :: value            !! The value to test
+            integer, intent(in)                     :: ubound           !! Value must be less than than ubound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1020,15 +1021,15 @@ module ErrorCriteriaModule
 
         !> Test whether a real value is less than given criteria.
         pure function realLessThan(this, value, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real, intent(in)                        :: value            !> The value to test
-            real, intent(in)                        :: ubound           !> Value must be less than than ubound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real, intent(in)                        :: value            !! The value to test
+            real, intent(in)                        :: ubound           !! Value must be less than than ubound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1060,15 +1061,15 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) value is less than given criteria.
         pure function realDPLessThan(this, value, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(dp), intent(in)                    :: value            !> The value to test
-            real(dp), intent(in)                    :: ubound           !> Value must be less than than ubound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(dp), intent(in)                    :: value            !! The value to test
+            real(dp), intent(in)                    :: ubound           !! Value must be less than than ubound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1100,15 +1101,15 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) value is less than given criteria.
         pure function realQPLessThan(this, value, ubound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorHandler class
-            real(qp), intent(in)                    :: value            !> The value to test
-            real(qp), intent(in)                    :: ubound           !> Value must be less than than ubound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charUbound       !> Character variable to store ubound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
+            real(qp), intent(in)                    :: value            !! The value to test
+            real(qp), intent(in)                    :: ubound           !! Value must be less than than ubound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charUbound       ! Character variable to store ubound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1142,15 +1143,15 @@ module ErrorCriteriaModule
 
         !> Test whether an integer value is greater than given criteria.
         pure function integerGreaterThan(this, value, lbound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            integer, intent(in)                     :: value            !> The value to test
-            integer, intent(in)                     :: lbound           !> Value must be higher than lbound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            integer, intent(in)                     :: value            !! The value to test
+            integer, intent(in)                     :: lbound           !! Value must be higher than lbound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1182,15 +1183,15 @@ module ErrorCriteriaModule
 
         !> Test whether a real value is greater than given criteria.
         pure function realGreaterThan(this, value, lbound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real, intent(in)                        :: value            !> The value to test
-            real, intent(in)                        :: lbound           !> Value must be higher than lbound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real, intent(in)                        :: value            !! The value to test
+            real, intent(in)                        :: lbound           !! Value must be higher than lbound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1222,15 +1223,15 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) value is greater than given criteria.
         pure function realDPGreaterThan(this, value, lbound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(dp), intent(in)                    :: value            !> The value to test
-            real(dp), intent(in)                    :: lbound           !> Value must be higher than lbound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(dp), intent(in)                    :: value            !! The value to test
+            real(dp), intent(in)                    :: lbound           !! Value must be higher than lbound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1262,15 +1263,15 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) value is greater than given criteria.
         pure function realQPGreaterThan(this, value, lbound, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(qp), intent(in)                    :: value            !> The value to test
-            real(qp), intent(in)                    :: lbound           !> Value must be higher than lbound
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charLbound       !> Character variable to store lbound in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(qp), intent(in)                    :: value            !! The value to test
+            real(qp), intent(in)                    :: lbound           !! Value must be higher than lbound
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charLbound       ! Character variable to store lbound in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1304,16 +1305,16 @@ module ErrorCriteriaModule
 
         !> Test whether an integer is not equal to criterion.
         pure function integerNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            integer, intent(in)                     :: value            !> The value to test
-            integer, intent(in)                     :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            integer, intent(in)                     :: value            !! The value to test
+            integer, intent(in)                     :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1345,16 +1346,16 @@ module ErrorCriteriaModule
         !> Test whether a real number is not equal to, or further than a specified
         !! amount (epsilon), from criterion.
         pure function realNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real, intent(in)                        :: value            !> The value to test
-            real, intent(in)                        :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real, intent(in)                        :: value            !! The value to test
+            real, intent(in)                        :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1390,16 +1391,16 @@ module ErrorCriteriaModule
         !> Test whether a real(dp) number is not equal to, or further than a specified
         !! amount (epsilon), from criterion.
         pure function realDPNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(dp), intent(in)                    :: value            !> The value to test
-            real(dp), intent(in)                    :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(dp), intent(in)                    :: value            !! The value to test
+            real(dp), intent(in)                    :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1435,16 +1436,16 @@ module ErrorCriteriaModule
         !> Test whether a real(qp) number is not equal to, or further than a specified
         !! amount (epsilon), from criterion.
         pure function realQPNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(qp), intent(in)                    :: value            !> The value to test
-            real(qp), intent(in)                    :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(qp), intent(in)                    :: value            !! The value to test
+            real(qp), intent(in)                    :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1481,16 +1482,16 @@ module ErrorCriteriaModule
 
         !> Test whether an integer is equal to criterion.
         pure function integerEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            integer, intent(in)                     :: value            !> The value to test
-            integer, intent(in)                     :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            integer, intent(in)                     :: value            !! The value to test
+            integer, intent(in)                     :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1521,16 +1522,16 @@ module ErrorCriteriaModule
 
         !> Test whether a real number is equal or closer than a specified amount (epsilon) to criterion.
         pure function realEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real, intent(in)                        :: value            !> The value to test
-            real, intent(in)                        :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real, intent(in)                        :: value            !! The value to test
+            real, intent(in)                        :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1565,16 +1566,16 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) number is equal or closer than a specified amount (epsilon) to criterion.
         pure function realDPEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(dp), intent(in)                    :: value            !> The value to test
-            real(dp), intent(in)                    :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(dp), intent(in)                    :: value            !! The value to test
+            real(dp), intent(in)                    :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1609,16 +1610,16 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) number is equal or closer than a specified amount (epsilon) to criterion.
         pure function realQPEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(qp), intent(in)                    :: value            !> The value to test
-            real(qp), intent(in)                    :: criterion        !> Value should be equal to this criterion
-            real, intent(in), optional              :: epsilon          !> Distance from criterion allowed
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
-            character(len=100)                      :: charCriterion    !> Character variable to store criterion in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(qp), intent(in)                    :: value            !! The value to test
+            real(qp), intent(in)                    :: criterion        !! Value should be equal to this criterion
+            real, intent(in), optional              :: epsilon          !! Distance from criterion allowed
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
+            character(len=100)                      :: charCriterion    ! Character variable to store criterion in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1655,13 +1656,13 @@ module ErrorCriteriaModule
 
         !> Test whether an integer value is positive.
         pure function integerPositive(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            integer, intent(in)                     :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            integer, intent(in)                     :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1691,13 +1692,13 @@ module ErrorCriteriaModule
 
         !> Test whether a real value is positive.
         pure function realPositive(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real, intent(in)                        :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real, intent(in)                        :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1727,13 +1728,13 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) value is positive.
         pure function realDPPositive(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(dp), intent(in)                    :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(dp), intent(in)                    :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1763,13 +1764,13 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) value is positive.
         pure function realQPPositive(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(qp), intent(in)                    :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(qp), intent(in)                    :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1801,13 +1802,13 @@ module ErrorCriteriaModule
 
         !> Test whether an integer value is greater than given criteria.
         pure function integerNegative(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            integer, intent(in)                     :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            integer, intent(in)                     :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1837,13 +1838,13 @@ module ErrorCriteriaModule
 
         !> Test whether a real value is negative.
         pure function realNegative(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real, intent(in)                        :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real, intent(in)                        :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1873,13 +1874,13 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) value is negative criteria.
         pure function realDPNegative(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(dp), intent(in)                    :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(dp), intent(in)                    :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -1909,13 +1910,13 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) value is negative.
         pure function realQPNegative(this, value, message, traceMessage) result(error)
-            class(ErrorCriteria), intent(in)        :: this             !> The ErrorCriteria class
-            real(qp), intent(in)                    :: value            !> The value to test
-            character(len=*), intent(in), optional  :: message          !> Overwrite the standard error message
-            character(len=*), intent(in), optional  :: traceMessage     !> Message to display for error trace (if any)
-            type(ErrorInstance)                     :: error            !> The error to return
-            logical                                 :: pass             !> Does the value pass the test?
-            character(len=100)                      :: charValue        !> Character variable to store value in
+            class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
+            real(qp), intent(in)                    :: value            !! The value to test
+            character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
+            character(len=*), intent(in), optional  :: traceMessage     !! Message to display for error trace (if any)
+            type(ErrorInstance)                     :: error            !! The error to return
+            logical                                 :: pass             ! Does the value pass the test?
+            character(len=100)                      :: charValue        ! Character variable to store value in
 
             ! Stop the program running if ErrorHandler not initialised
             call this%stopIfNotInitialised()

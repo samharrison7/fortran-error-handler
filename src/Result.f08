@@ -1,3 +1,4 @@
+!> Module container for `Result` class
 module ResultModule
     use ErrorInstanceModule
     implicit none
@@ -9,6 +10,10 @@ module ResultModule
     integer, parameter :: dp = selected_real_kind(15,307)       !! Double precision, 15 digits, 1e307
     integer, parameter :: qp = selected_real_kind(33,4931)      !! Quadruple precision, 33 digits, 1e4931
 
+    !> The `Result` type is an addon to the framework and is designed as an object
+    !! to be returned from any procedures that may throw an error. It consists of
+    !! data (i.e., what the function should return if there aren't any errors) and
+    !! an array of `ErrorInstance`s.
     type, public :: Result
         type(ErrorInstance), dimension(:), allocatable :: errors !! The errors (if any) returned from the function
         
@@ -213,7 +218,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as real with double precision (real(dp)).
-        !> If sp or qp variables passed, they will be converted implicitally.
+        !! If sp or qp variables passed, they will be converted implicitally.
         pure function getDataAsRealDP0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real(dp)                        :: data
@@ -232,7 +237,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as real with quadruple precision (real(qp)).
-        !> If sp or dp variables passed, they will be converted implicitally.
+        !! If sp or dp variables passed, they will be converted implicitally.
         pure function getDataAsRealQP0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real(qp)                        :: data
@@ -348,7 +353,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as 1D real with double precision (real(dp)).
-        !> If sp or qp variables passed, they will be converted implicitally.
+        !! If sp or qp variables passed, they will be converted implicitally.
         pure function getDataAsRealDP1D(this) result(data)
             class(Result1D), intent(in) :: this
             real(dp)                    :: data(size(this%data))
@@ -367,7 +372,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as 1D real with quadruple precision (real(dp)).
-        !> If sp or dp variables passed, they will be converted implicitally.
+        !! If sp or dp variables passed, they will be converted implicitally.
         pure function getDataAsRealQP1D(this) result(data)
             class(Result1D), intent(in) :: this
             real(qp)                    :: data(size(this%data))

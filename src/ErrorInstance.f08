@@ -6,10 +6,10 @@ module ErrorInstanceModule
     !! message, trace and whether or not the error is critical (i.e., stops
     !! the program executing).
     type, public :: ErrorInstance
-        integer                         :: code                     !> Numeric error code
-        character(len=256)              :: message = ""             !> Message to accompany the error
-        logical                         :: isCritical = .true.      !> Shoud program execution be stopped?
-        character(len=256), allocatable :: trace(:)                 !> Custom backtrace for the error
+        integer                         :: code                     !! Numeric error code
+        character(len=256)              :: message = ""             !! Message to accompany the error
+        logical                         :: isCritical = .true.      !! Shoud program execution be stopped?
+        character(len=256), allocatable :: trace(:)                 !! Custom backtrace for the error
 
         contains
             procedure, public :: addToTrace
@@ -26,13 +26,13 @@ module ErrorInstanceModule
     contains
         !> Create a new ErrorInstance.
         pure function init(code, message, isCritical, trace) result(this)
-            type(ErrorInstance)                     :: this             !> The ErrorInstance class
-            integer, intent(in)                     :: code             !> Code for the error
-            character(len=*), intent(in), optional  :: message          !> Custom error message
-            logical, intent(in), optional           :: isCritical       !> Is the error message critical?
-            character(len=*), intent(in), optional  :: trace(:)         !> User-defined trace for the error
-            integer                                 :: i                !> Loop iterator
-            character(len=256), allocatable         :: tempTrace(:)     !> Temporary fixed-length character string array for trace node
+            type(ErrorInstance)                     :: this             !! The ErrorInstance class
+            integer, intent(in)                     :: code             !! Code for the error
+            character(len=*), intent(in), optional  :: message          !! Custom error message
+            logical, intent(in), optional           :: isCritical       !! Is the error message critical?
+            character(len=*), intent(in), optional  :: trace(:)         !! User-defined trace for the error
+            integer                                 :: i                ! Loop iterator
+            character(len=256), allocatable         :: tempTrace(:)     ! Temporary fixed-length character string array for trace node
 
             this%code = code
             if (present(message)) this%message = message
