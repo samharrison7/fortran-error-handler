@@ -83,6 +83,9 @@ $  HelloWorld
 $ ERROR STOP Error trying to return 1D data as INTEGER. Are you sure the data is of type INTEGER?
 ```
 
+### Setting data
+If you wish to fill the `data` property outside of the `Result()` interface, then a `Result%setData(data)` method exists.
+
 <a name="errors"></a>
 ## Errors
 
