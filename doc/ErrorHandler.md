@@ -23,6 +23,7 @@ The ErrorHandler must be initialised before use, by calling the `init` procedure
 | `character(len=*), optional :: warningPrefix` | Custom prefix to non-critical (warning) error messages. | "Warning:" |
 | `character(len=*), optional :: messageSuffix` | Custom suffix to be appended to error message. | - |
 | `logical, optional :: bashColors` | Should colors be displayed in output to bash consoles? | .true. |
+| `logical, optional :: on` | Should the `trigger` procedure actually trigger errors? | .true. |
 
 For example:
 
@@ -164,6 +165,9 @@ $ Warning: Override default message.
 $ Error: Another specific error.
 $ ERROR STOP 997
 ```
+
+### Turning error triggering off
+If you wish to turn off error triggering for testing purposes (not recommended in general), then set up the `ErrorHandler` object via its `init` method with the parameter `on=.false.`. E.g., `ErrorHandler%init(... on=.false.)`. `on` is set to `.true.` by default.
 
 <a name="modifying"></a>
 ## Modifying errors
