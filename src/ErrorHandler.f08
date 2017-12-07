@@ -16,6 +16,7 @@ module ErrorHandlerModule
         character(len=256)                  :: messageSuffix = ""           !! Suffix to output error message.
         logical                             :: isInitialised = .false.      !! Has the ErrorHandler been initialised?
         logical                             :: bashColors = .true.          !! Should colors be displayed in bash consoles?
+        logical                             :: on = .true.                  !! Set to .false. to turn ErrorHandler output off
         
         contains
             procedure, public :: init => initErrorHandler
@@ -56,13 +57,15 @@ module ErrorHandlerModule
                         criticalPrefix, &
                         warningPrefix, &
                         messageSuffix, &
-                        bashColors)
+                        bashColors, &
+                        on)
             class(ErrorHandler), intent(inout) :: this
             type(ErrorInstance), intent(in), optional :: errors(:)
             character(len=*), intent(in), optional :: criticalPrefix
             character(len=*), intent(in), optional :: warningPrefix
             character(len=*), intent(in), optional :: messageSuffix
             logical, intent(in), optional :: bashColors
+            logical, intent(in), optional :: on
             integer :: i                                    ! Loop iterator.
             logical, allocatable :: mask(:)                 ! Logical mask to remove default errors from input errors array.
             type(ErrorInstance) :: defaultErrors(2)         ! Temporary array containing default errors.
@@ -126,6 +129,9 @@ module ErrorHandlerModule
             if (present(bashColors)) this%bashColors = bashColors
             if (this%bashColors .eqv. .true.) this%criticalPrefix = "\x1B[91m" // adjustl(trim(this%criticalPrefix)) // "\x1B[0m"
             if (this%bashColors .eqv. .true.) this%warningPrefix = "\x1B[94m" // adjustl(trim(this%warningPrefix)) // "\x1B[0m"
+
+            ! Set whether ErrorHandler output is on or off
+            if (present(on)) this%on = on
         end subroutine
 
         !> Add an error to the list of possible errors,
@@ -412,119 +418,124 @@ module ErrorHandlerModule
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
+            
+            ! Only do something if the ErrorHandler is "on"
+            if (this%on) then
 
-            ! Try find error from code, then singular error, then array of errors, 
-            ! then finally, if not present, then set error to generic error. If
-            ! error code provided isn't valid, then no error returned. This is intentional.
-            if (present(code)) then
-                allocate(errorsOut(1))
-                ! Returns no error if code isn't valid
-                errorsOut(1) = this%getErrorFromCode(code)
-                ! Add any queued errors, with queued errors coming first
-                errorsOut = [this%errorQueue, errorsOut]
-            else if (present(error)) then
-                allocate(errorsOut(1))
-                ! Check if the error already exists
-                if (this%errorExists(error%code)) then
-                    ! Set the error to trigger the already existing one
-                    errorsOut(1) = this%getErrorFromCode(error%code)
-                    ! If message given for input error, override the default one
-                    if (error%message /= "") errorsOut(1)%message = error%message
-                    ! If there is a trace, add that
-                    if (allocated(error%trace)) errorsOut(1)%trace = error%trace
-                    ! isCritical default to .true. for ErrorInstances, so unless it's specified
-                    ! when the error is declared, it will trigger as true, regardless of the
-                    ! default criticality stored in the ErrorHandler.
-                    errorsOut(1)%isCritical = error%isCritical
-                ! If the error doesn't exist, output it anyway. Good for on-the-fly error raising.
-                else
-                    errorsOut(1) = error
-                end if
-                ! Add any queued errors, with queued errors coming first
-                errorsOut = [this%errorQueue, errorsOut]
-            else if (present(errors)) then
-                allocate(errorsOut(size(errors)))
-                ! Loop through input errors and see if that code already exists
-                do k=1, size(errors)
-                    if (this%errorExists(errors(k)%code)) then
+                ! Try find error from code, then singular error, then array of errors, 
+                ! then finally, if not present, then set error to generic error. If
+                ! error code provided isn't valid, then no error returned. This is intentional.
+                if (present(code)) then
+                    allocate(errorsOut(1))
+                    ! Returns no error if code isn't valid
+                    errorsOut(1) = this%getErrorFromCode(code)
+                    ! Add any queued errors, with queued errors coming first
+                    errorsOut = [this%errorQueue, errorsOut]
+                else if (present(error)) then
+                    allocate(errorsOut(1))
+                    ! Check if the error already exists
+                    if (this%errorExists(error%code)) then
                         ! Set the error to trigger the already existing one
-                        errorsOut(k) = this%getErrorFromCode(errors(k)%code)
-                        ! If a message given for the input error, override the default one
-                        if (errors(k)%message /= "") errorsOut(k)%message = errors(k)%message
+                        errorsOut(1) = this%getErrorFromCode(error%code)
+                        ! If message given for input error, override the default one
+                        if (error%message /= "") errorsOut(1)%message = error%message
                         ! If there is a trace, add that
-                        if (allocated(errors(k)%trace)) errorsOut(k)%trace = errors(k)%trace
+                        if (allocated(error%trace)) errorsOut(1)%trace = error%trace
                         ! isCritical default to .true. for ErrorInstances, so unless it's specified
                         ! when the error is declared, it will trigger as true, regardless of the
                         ! default criticality stored in the ErrorHandler.
-                        errorsOut(k)%isCritical = errors(k)%isCritical
+                        errorsOut(1)%isCritical = error%isCritical
                     ! If the error doesn't exist, output it anyway. Good for on-the-fly error raising.
                     else
-                        errorsOut(k) = errors(k)
+                        errorsOut(1) = error
                     end if
-                end do
-                ! Add any queued errors, with queued errors coming first
-                errorsOut = [this%errorQueue, errorsOut]
-            else
-                if (size(this%errorQueue) == 0) then
-                    allocate(errorsOut(1))
-                    errorsOut(1) = this%getErrorFromCode(1)
+                    ! Add any queued errors, with queued errors coming first
+                    errorsOut = [this%errorQueue, errorsOut]
+                else if (present(errors)) then
+                    allocate(errorsOut(size(errors)))
+                    ! Loop through input errors and see if that code already exists
+                    do k=1, size(errors)
+                        if (this%errorExists(errors(k)%code)) then
+                            ! Set the error to trigger the already existing one
+                            errorsOut(k) = this%getErrorFromCode(errors(k)%code)
+                            ! If a message given for the input error, override the default one
+                            if (errors(k)%message /= "") errorsOut(k)%message = errors(k)%message
+                            ! If there is a trace, add that
+                            if (allocated(errors(k)%trace)) errorsOut(k)%trace = errors(k)%trace
+                            ! isCritical default to .true. for ErrorInstances, so unless it's specified
+                            ! when the error is declared, it will trigger as true, regardless of the
+                            ! default criticality stored in the ErrorHandler.
+                            errorsOut(k)%isCritical = errors(k)%isCritical
+                        ! If the error doesn't exist, output it anyway. Good for on-the-fly error raising.
+                        else
+                            errorsOut(k) = errors(k)
+                        end if
+                    end do
                     ! Add any queued errors, with queued errors coming first
                     errorsOut = [this%errorQueue, errorsOut]
                 else
-                    allocate(errorsOut, source=this%errorQueue)
+                    if (size(this%errorQueue) == 0) then
+                        allocate(errorsOut(1))
+                        errorsOut(1) = this%getErrorFromCode(1)
+                        ! Add any queued errors, with queued errors coming first
+                        errorsOut = [this%errorQueue, errorsOut]
+                    else
+                        allocate(errorsOut, source=this%errorQueue)
+                    end if
                 end if
-            end if
 
-            ! Only do something if there's actually an error (i.e., the
-            ! error code isn't 0).
-            do i=1, size(errorsOut)
-                ! Check if error code > 0 and < 99999 also stops the program trying to
-                ! print out errors for elements of arrays that mightn't have
-                ! been used (e.g., if the wrong size array was declared). Don't do 
-                ! anything if error code is zero.
-                if (errorsOut(i)%getCode() > 0 .and. errorsOut(i)%getCode() < 99999) then
-                    ! Set message prefix according to whether error is
-                    ! critical or warning. Also add colour for Bash consoles.
+                ! Only do something if there's actually an error (i.e., the
+                ! error code isn't 0).
+                do i=1, size(errorsOut)
+                    ! Check if error code > 0 and < 99999 also stops the program trying to
+                    ! print out errors for elements of arrays that mightn't have
+                    ! been used (e.g., if the wrong size array was declared). Don't do 
+                    ! anything if error code is zero.
+                    if (errorsOut(i)%getCode() > 0 .and. errorsOut(i)%getCode() < 99999) then
+                        ! Set message prefix according to whether error is
+                        ! critical or warning. Also add colour for Bash consoles.
+                        if (errorsOut(i)%isCritical) then
+                            messagePrefix = this%criticalPrefix
+                        else
+                            messagePrefix = this%warningPrefix
+                        end if
+
+                        ! Compose the message to output to the console
+                        outputMessage = trim(messagePrefix) // " " // &
+                                        trim(errorsOut(i)%message) // " " // &
+                                        trim(this%messageSuffix)
+                        ! Loop through the stack trace and add to the message,
+                        ! then print
+                        if (size(errorsOut(i)%trace)>0 .and. allocated(errorsOut(i)%trace)) then
+                            traceMessage = "Trace: "
+
+                            do j=1, size(errorsOut(i)%trace)
+                                traceMessage = " " // trim(traceMessage) // " " // trim(errorsOut(i)%trace(j))
+                                if (j<size(errorsOut(i)%trace)) traceMessage = " " // trim(traceMessage) // new_line('A') &
+                                                                // "       >"
+                            end do
+
+                            write(*,"(a)") new_line('A') // trim(outputMessage)
+                            write(*,"(a)") trim(adjustl(traceMessage))
+                        else
+                            write(*,"(a)") new_line('A') // trim(outputMessage)
+                        end if
+                        
+                        if (i == size(errorsOut)) write(*,"(a)") ! Finish messages with new line
+                    end if
+                end do
+
+                ! Now we have to see if any of the errors were critical,
+                ! and stop the program running if so. We'll trigger error
+                ! stop on the first critical error found.
+                do i=1, size(errorsOut)
                     if (errorsOut(i)%isCritical) then
-                        messagePrefix = this%criticalPrefix
-                    else
-                        messagePrefix = this%warningPrefix
+                        write(*,"(a)")                  ! New line
+                        error stop errorsOut(i)%code
                     end if
+                end do
 
-                    ! Compose the message to output to the console
-                    outputMessage = trim(messagePrefix) // " " // &
-                                    trim(errorsOut(i)%message) // " " // &
-                                    trim(this%messageSuffix)
-                    ! Loop through the stack trace and add to the message,
-                    ! then print
-                    if (size(errorsOut(i)%trace)>0 .and. allocated(errorsOut(i)%trace)) then
-                        traceMessage = "Trace: "
-
-                        do j=1, size(errorsOut(i)%trace)
-                            traceMessage = " " // trim(traceMessage) // " " // trim(errorsOut(i)%trace(j))
-                            if (j<size(errorsOut(i)%trace)) traceMessage = " " // trim(traceMessage) // new_line('A') &
-                                                            // "       >"
-                        end do
-
-                        write(*,"(a)") new_line('A') // trim(outputMessage)
-                        write(*,"(a)") trim(adjustl(traceMessage))
-                    else
-                        write(*,"(a)") new_line('A') // trim(outputMessage)
-                    end if
-                    
-                    if (i == size(errorsOut)) write(*,"(a)") ! Finish messages with new line
-                end if
-            end do
-
-            ! Now we have to see if any of the errors were critical,
-            ! and stop the program running if so. We'll trigger error
-            ! stop on the first critical error found.
-            do i=1, size(errorsOut)
-                if (errorsOut(i)%isCritical) then
-                    write(*,"(a)")                  ! New line
-                    error stop errorsOut(i)%code
-                end if
-            end do
+            end if
 
         end subroutine
 

@@ -100,16 +100,18 @@ module ErrorCriteriaModule
                         criticalPrefix, &
                         warningPrefix, &
                         messageSuffix, &
-                        bashColors)
+                        bashColors, &
+                        on)
             class(ErrorCriteria), intent(inout)         :: this                 !! This ErrorCriteria instance
             type(ErrorInstance), intent(in), optional   :: errors(:)            !! Custom defined errors
             character(len=*), intent(in), optional      :: criticalPrefix       !! Prefix to critical error messages
             character(len=*), intent(in), optional      :: warningPrefix        !! Prefix to warning error messages
             character(len=*), intent(in), optional      :: messageSuffix        !! Suffix to error messages
             logical, intent(in), optional               :: bashColors           !! Should prefixes be colored in bash shells?
+            logical, intent(in), optional               :: on                   !! Should the ErrorHandler output errors?
 
             ! Initialise the parent ErrorHandler                                                                    
-            call this%ErrorHandler%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors)
+            call this%ErrorHandler%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors,on)
 
             ! Define the default error criteria. Messages will be overidden by specific
             ! criteria functions to provide more detail, but they're present here in case
