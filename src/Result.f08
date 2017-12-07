@@ -38,7 +38,8 @@ module ResultModule
         class(*), allocatable :: data     !! The data returned from the function
 
         contains
-            ! Getters for data
+            ! Getters/setters for data
+            procedure, public :: setData => setData0D
             procedure, public :: getData => getData0D
             procedure, public :: getDataAsReal => getDataAsReal0D
             procedure, public :: getDataAsRealDP => getDataAsRealDP0D
@@ -63,7 +64,8 @@ module ResultModule
         class(*), allocatable :: data(:)     !! The data returned from the function
 
         contains
-            ! Getters for data
+            ! Getters/setters for data
+            procedure, public :: setData => setData1D
             procedure, public :: getData => getData1D
             procedure, public :: getDataAsReal => getDataAsReal1D
             procedure, public :: getDataAsRealDP => getDataAsRealDP1D
@@ -87,7 +89,8 @@ module ResultModule
         class(*), allocatable :: data(:,:)     !! The data returned from the function
 
         contains
-            ! Getters for data
+            ! Getters/setters for data
+            procedure, public :: setData => setData2D
             procedure, public :: getData => getData2D
             procedure, public :: getDataAsReal => getDataAsReal2D
             procedure, public :: getDataAsRealDP => getDataAsRealDP2D
@@ -111,7 +114,8 @@ module ResultModule
         class(*), allocatable :: data(:,:,:)     !! The data returned from the function
 
         contains
-            ! Getters for data
+            ! Getters/setters for data
+            procedure, public :: setData => setData3D
             procedure, public :: getData => getData3D
             procedure, public :: getDataAsReal => getDataAsReal3D
             procedure, public :: getDataAsRealDP => getDataAsRealDP3D
@@ -135,7 +139,8 @@ module ResultModule
         class(*), allocatable :: data(:,:,:,:)     !! The data returned from the function
 
         contains
-            ! Getters for data
+            ! Getters/setters for data
+            procedure, public :: setData => setData4D
             procedure, public :: getData => getData4D
             procedure, public :: getDataAsReal => getDataAsReal4D
             procedure, public :: getDataAsRealDP => getDataAsRealDP4D
@@ -189,6 +194,13 @@ module ResultModule
             allocate(this%data, source=data)
             call this%setErrors(error, errors)
         end function
+
+        !> Set the Result object's data
+        subroutine setData0D(this, data)
+            class(Result0D) :: this
+            class(*)        :: data
+            allocate(this%data, source=data)
+        end subroutine
 
         !> Return the data from the Result object.
         pure function getData0D(this) result(data)
@@ -326,6 +338,13 @@ module ResultModule
             call this%setErrors(error, errors)
         end function
 
+        !> Set the Result object's data
+        subroutine setData1D(this, data)
+            class(Result1D) :: this
+            class(*)        :: data(:)
+            allocate(this%data, source=data)
+        end subroutine
+
         !> Return the data from the Result object.
         pure function getData1D(this) result(data)
             class(Result1D), intent(in) :: this
@@ -461,6 +480,13 @@ module ResultModule
             call this%setErrors(error, errors)
         end function
 
+        !> Set the Result object's data
+        subroutine setData2D(this, data)
+            class(Result2D) :: this
+            class(*)        :: data(:,:)
+            allocate(this%data, source=data)
+        end subroutine
+
         !> Return the data from the Result object.
         pure function getData2D(this) result(data)
             class(Result2D), intent(in) :: this
@@ -594,6 +620,13 @@ module ResultModule
             allocate(this%data, source=data)
             call this%setErrors(error, errors)
         end function
+
+        !> Set the Result object's data
+        subroutine setData3D(this, data)
+            class(Result3D) :: this
+            class(*)        :: data(:,:,:)
+            allocate(this%data, source=data)
+        end subroutine
 
         !> Return the data from the Result object.
         pure function getData3D(this) result(data)
@@ -737,6 +770,13 @@ module ResultModule
             allocate(this%data, source=data)
             call this%setErrors(error, errors)
         end function
+
+        !> Set the Result object's data
+        subroutine setData4D(this, data)
+            class(Result4D) :: this
+            class(*)        :: data(:,:,:,:)
+            allocate(this%data, source=data)
+        end subroutine
 
         !> Return the data from the Result object.
         pure function getData4D(this) result(data)
