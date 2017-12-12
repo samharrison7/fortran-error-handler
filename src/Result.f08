@@ -926,7 +926,7 @@ module ResultModule
             class(Result), intent(in)   :: this
             type(ErrorInstance)         :: error
             ! If there isn't an error to be got, return the no error
-            if (size(this%errors)>0) then
+            if (allocated(this%errors) .and. size(this%errors)>0) then
                 error = this%errors(1)
             else
                 error = ErrorInstance(code=0)
@@ -938,7 +938,7 @@ module ResultModule
             class(Result), intent(in)           :: this
             type(ErrorInstance), allocatable    :: errors(:)
             ! If there isn't an error, return empty array
-            if (size(this%errors)>0) then
+            if (allocated(this%errors) .and. size(this%errors)>0) then
                 allocate(errors, source=this%errors)
             else
                 allocate(errors(0))
