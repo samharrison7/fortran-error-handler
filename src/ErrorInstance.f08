@@ -6,7 +6,7 @@ module ErrorInstanceModule
     !! message, trace and whether or not the error is critical (i.e., stops
     !! the program executing).
     type, public :: ErrorInstance
-        integer                         :: code                     !! Numeric error code
+        integer                         :: code = 1                 !! Numeric error code
         character(len=256)              :: message = ""             !! Message to accompany the error
         logical                         :: isCritical = .true.      !! Shoud program execution be stopped?
         character(len=256), allocatable :: trace(:)                 !! Custom backtrace for the error
@@ -27,16 +27,16 @@ module ErrorInstanceModule
         !> Create a new ErrorInstance.
         pure function init(code, message, isCritical, trace) result(this)
             type(ErrorInstance)                     :: this             !! The ErrorInstance class
-            integer, intent(in)                     :: code             !! Code for the error
+            integer, intent(in), optional           :: code             !! Code for the error
             character(len=*), intent(in), optional  :: message          !! Custom error message
             logical, intent(in), optional           :: isCritical       !! Is the error message critical?
             character(len=*), intent(in), optional  :: trace(:)         !! User-defined trace for the error
             integer                                 :: i                ! Loop iterator
             character(len=256), allocatable         :: tempTrace(:)     ! Temporary fixed-length character string array for trace node
 
-            this%code = code
-            if (present(message)) this%message = message
-            if (present(isCritical)) this%isCritical = isCritical
+            if (present(code)) this%code = code                     ! Defaults to 1
+            if (present(message)) this%message = message            ! Defaults to ""
+            if (present(isCritical)) this%isCritical = isCritical   ! Defaults to .true.
             ! If trace present, loop through and convert the nodes to fixed-length
             ! character strings before storing in this%trace.
             if (present(trace)) then
