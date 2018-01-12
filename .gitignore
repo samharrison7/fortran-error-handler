@@ -6,6 +6,10 @@ makefile
 *.sublime-workspace
 .vs/
 .project
+Debug/
+*.sln
+*.u2d
+*.vfproj
 
 # Compilation files
 *.stackdump
