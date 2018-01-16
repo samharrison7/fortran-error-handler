@@ -196,9 +196,9 @@ module ResultModule
         end function
 
         !> Set the Result object's data
-        subroutine setData0D(this, data)
-            class(Result0D) :: this
-            class(*)        :: data
+        pure subroutine setData0D(this, data)
+            class(Result0D), intent(inout) :: this
+            class(*), intent(inout) :: data
             allocate(this%data, source=data)
         end subroutine
 
@@ -339,9 +339,9 @@ module ResultModule
         end function
 
         !> Set the Result object's data
-        subroutine setData1D(this, data)
-            class(Result1D) :: this
-            class(*)        :: data(:)
+        pure subroutine setData1D(this, data)
+            class(Result1D), intent(inout) :: this
+            class(*), intent(inout)        :: data(:)
             allocate(this%data, source=data)
         end subroutine
 
@@ -481,9 +481,9 @@ module ResultModule
         end function
 
         !> Set the Result object's data
-        subroutine setData2D(this, data)
-            class(Result2D) :: this
-            class(*)        :: data(:,:)
+        pure subroutine setData2D(this, data)
+            class(Result2D), intent(inout) :: this
+            class(*), intent(inout)        :: data(:,:)
             allocate(this%data, source=data)
         end subroutine
 
@@ -622,9 +622,9 @@ module ResultModule
         end function
 
         !> Set the Result object's data
-        subroutine setData3D(this, data)
-            class(Result3D) :: this
-            class(*)        :: data(:,:,:)
+        pure subroutine setData3D(this, data)
+            class(Result3D), intent(inout) :: this
+            class(*), intent(inout)        :: data(:,:,:)
             allocate(this%data, source=data)
         end subroutine
 
@@ -772,9 +772,9 @@ module ResultModule
         end function
 
         !> Set the Result object's data
-        subroutine setData4D(this, data)
-            class(Result4D) :: this
-            class(*)        :: data(:,:,:,:)
+        pure subroutine setData4D(this, data)
+            class(Result4D), intent(inout) :: this
+            class(*), intent(inout)        :: data(:,:,:,:)
             allocate(this%data, source=data)
         end subroutine
 
