@@ -28,6 +28,7 @@ module ResultModule
             procedure, public :: addToTrace
             procedure, public :: hasError
             procedure, public :: hasCriticalError
+            procedure, public :: clear
 
             ! Operators
             generic, public :: operator(.error.) => getError
@@ -1036,5 +1037,11 @@ module ResultModule
                 end if
             end do
         end function
+
+        !> Clear all errors from the Result object
+        subroutine clear(this)
+            class(Result)                   :: this             !! The Result instance
+            deallocate(this%errors)
+        end subroutine
 
 end module
