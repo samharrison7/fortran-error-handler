@@ -28,6 +28,7 @@ module ResultModule
             procedure, public :: addToTrace
             procedure, public :: hasError
             procedure, public :: hasCriticalError
+            procedure, public :: clear
 
             ! Operators
             generic, public :: operator(.error.) => getError
@@ -171,7 +172,7 @@ module ResultModule
 !-------------!
 
         !> Initialise the result object with no data.
-        pure function initNoData(error, errors) result(this)
+        function initNoData(error, errors) result(this)
             type(Result) :: this
             type(ErrorInstance), intent(in), optional :: error
             type(ErrorInstance), intent(in), optional :: errors(:)
@@ -184,7 +185,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 0D polymorphic class(*) data.
-        pure function init0D(data, error, errors) result(this)
+        function init0D(data, error, errors) result(this)
             type(Result0D)                              :: this
             class(*), intent(in)                        :: data
             type(ErrorInstance), intent(in), optional   :: error
@@ -203,7 +204,7 @@ module ResultModule
         end subroutine
 
         !> Return the data from the Result object.
-        pure function getData0D(this) result(data)
+        function getData0D(this) result(data)
             class(Result0D), intent(in)     :: this
             class(*), allocatable           :: data
             allocate(data, source=this%data)
@@ -212,7 +213,7 @@ module ResultModule
         !> Attempt to return the data as a real (single precision).
         !! If dp or qp variables passed as data, they will be converted
         !! to single precision.
-        pure function getDataAsReal0D(this) result(data)
+        function getDataAsReal0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real                            :: data
             select type (d => this%data)
@@ -231,7 +232,7 @@ module ResultModule
 
         !> Attempt to return the data as real with double precision (real(dp)).
         !! If sp or qp variables passed, they will be converted implicitally.
-        pure function getDataAsRealDP0D(this) result(data)
+        function getDataAsRealDP0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real(dp)                        :: data
             select type (d => this%data)
@@ -250,7 +251,7 @@ module ResultModule
 
         !> Attempt to return the data as real with quadruple precision (real(qp)).
         !! If sp or dp variables passed, they will be converted implicitally.
-        pure function getDataAsRealQP0D(this) result(data)
+        function getDataAsRealQP0D(this) result(data)
             class(Result0D), intent(in)     :: this
             real(qp)                        :: data
             select type (d => this%data)
@@ -269,7 +270,7 @@ module ResultModule
 
         !> Attempt to return the data as an integer. Real variable of kinds sp, dp and qp
         !! will be converted to nearest integer.
-        pure function getDataAsInteger0D(this) result(data)
+        function getDataAsInteger0D(this) result(data)
             class(Result0D), intent(in) :: this
             integer                     :: data
             select type (d => this%data)
@@ -287,7 +288,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a character string
-        pure function getDataAsCharacter0D(this) result(data)
+        function getDataAsCharacter0D(this) result(data)
             class(Result0D), intent(in) :: this
             character(:), allocatable   :: data
             select type (d => this%data)
@@ -299,7 +300,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as logical
-        pure function getDataAsLogical0D(this) result(data)
+        function getDataAsLogical0D(this) result(data)
             class(Result0D), intent(in) :: this
             logical                     :: data
             select type (d => this%data)
@@ -311,7 +312,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as complex
-        pure function getDataAsComplex0D(this) result(data)
+        function getDataAsComplex0D(this) result(data)
             class(Result0D), intent(in) :: this
             complex :: data
             select type (d => this%data)
@@ -327,7 +328,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 1D polymorphic class(*) data.
-        pure function init1D(data, error, errors) result(this)
+        function init1D(data, error, errors) result(this)
             type(Result1D)                              :: this
             class(*), intent(in)                        :: data(:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -346,7 +347,7 @@ module ResultModule
         end subroutine
 
         !> Return the data from the Result object.
-        pure function getData1D(this) result(data)
+        function getData1D(this) result(data)
             class(Result1D), intent(in) :: this
             class(*), allocatable       :: data(:)
             allocate(data, source=this%data)
@@ -354,7 +355,7 @@ module ResultModule
 
         !> Attempt to return the data as a single precision real 1D array.
         !! If dp or qp data given, they will be converted to single precision.
-        pure function getDataAsReal1D(this) result(data)
+        function getDataAsReal1D(this) result(data)
             class(Result1D), intent(in) :: this
             real                        :: data(size(this%data))
             select type (d => this%data)
@@ -373,7 +374,7 @@ module ResultModule
 
         !> Attempt to return the data as 1D real with double precision (real(dp)).
         !! If sp or qp variables passed, they will be converted implicitally.
-        pure function getDataAsRealDP1D(this) result(data)
+        function getDataAsRealDP1D(this) result(data)
             class(Result1D), intent(in) :: this
             real(dp)                    :: data(size(this%data))
             select type (d => this%data)
@@ -392,7 +393,7 @@ module ResultModule
 
         !> Attempt to return the data as 1D real with quadruple precision (real(dp)).
         !! If sp or dp variables passed, they will be converted implicitally.
-        pure function getDataAsRealQP1D(this) result(data)
+        function getDataAsRealQP1D(this) result(data)
             class(Result1D), intent(in) :: this
             real(qp)                    :: data(size(this%data))
             select type (d => this%data)
@@ -411,7 +412,7 @@ module ResultModule
 
         !> Attempt to return the data as a 1D integer array. Reals of kind sp,
         !! dp and qp will be converted to nearest integer.
-        pure function getDataAsInteger1D(this) result(data)
+        function getDataAsInteger1D(this) result(data)
             class(Result1D), intent(in) :: this
             integer                     :: data(size(this%data))
             select type (d => this%data)
@@ -429,7 +430,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 1D character array
-        pure function getDataAsCharacter1D(this) result(data)
+        function getDataAsCharacter1D(this) result(data)
             class(Result1D), intent(in) :: this
             character(:), allocatable   :: data(:)
             select type (d => this%data)
@@ -441,7 +442,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 1D logical array
-        pure function getDataAsLogical1D(this) result(data)
+        function getDataAsLogical1D(this) result(data)
             class(Result1D), intent(in) :: this
             logical                     :: data(size(this%data))
             select type (d => this%data)
@@ -453,7 +454,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 1D complex array
-        pure function getDataAsComplex1D(this) result(data)
+        function getDataAsComplex1D(this) result(data)
             class(Result1D), intent(in) :: this
             complex                     :: data(size(this%data))
             select type (d => this%data)
@@ -469,7 +470,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 2D polymorphic class(*) data.
-        pure function init2D(data, error, errors) result(this)
+        function init2D(data, error, errors) result(this)
             type(Result2D)                              :: this
             class(*), intent(in)                        :: data(:,:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -488,7 +489,7 @@ module ResultModule
         end subroutine
 
         !> Return the data from the Result object.
-        pure function getData2D(this) result(data)
+        function getData2D(this) result(data)
             class(Result2D), intent(in) :: this
             class(*), allocatable       :: data(:,:)
             allocate(data, source=this%data)
@@ -496,7 +497,7 @@ module ResultModule
 
         !> Attempt to return the data as a real 2D array with single precision.
         !! dp and qp data will be converted to sp.
-        pure function getDataAsReal2D(this) result(data)
+        function getDataAsReal2D(this) result(data)
             class(Result2D), intent(in) :: this
             real                        :: data(size(this%data,1),size(this%data,2))
             select type (d => this%data)
@@ -515,7 +516,7 @@ module ResultModule
 
         !> Attempt to return the data as 2D real with double precision (real(dp)).
         !! If sp or qp variables passed, they will be converted implicitally.
-        pure function getDataAsRealDP2D(this) result(data)
+        function getDataAsRealDP2D(this) result(data)
             class(Result2D), intent(in) :: this
             real(dp)                    :: data(size(this%data,1),size(this%data,2))
             select type (d => this%data)
@@ -534,7 +535,7 @@ module ResultModule
 
         !> Attempt to return the data as 2D real with quadruple precision (real(qp)).
         !! If sp or dp variables passed, they will be converted implicitally.
-        pure function getDataAsRealQP2D(this) result(data)
+        function getDataAsRealQP2D(this) result(data)
             class(Result2D), intent(in) :: this
             real(qp)                    :: data(size(this%data,1),size(this%data,2))
             select type (d => this%data)
@@ -552,7 +553,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 2D integer array
-        pure function getDataAsInteger2D(this) result(data)
+        function getDataAsInteger2D(this) result(data)
             class(Result2D), intent(in) :: this
             integer                     :: data(size(this%data,1),size(this%data,2))
             select type (d => this%data)
@@ -570,7 +571,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 2D character array
-        pure function getDataAsCharacter2D(this) result(data)
+        function getDataAsCharacter2D(this) result(data)
             class(Result2D), intent(in) :: this
             character(:), allocatable   :: data(:,:)
             select type (d => this%data)
@@ -582,7 +583,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 2D logical array
-        pure function getDataAsLogical2D(this) result(data)
+        function getDataAsLogical2D(this) result(data)
             class(Result2D), intent(in) :: this
             logical                     :: data(size(this%data,1),size(this%data,2))
             select type (d => this%data)
@@ -594,7 +595,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 2D complex array
-        pure function getDataAsComplex2D(this) result(data)
+        function getDataAsComplex2D(this) result(data)
             class(Result2D), intent(in) :: this
             complex                     :: data(size(this%data,1),size(this%data,2))
             select type (d => this%data)
@@ -610,7 +611,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with 3D polymorphic class(*) data.
-        pure function init3D(data, error, errors) result(this)
+        function init3D(data, error, errors) result(this)
             type(Result3D)                              :: this
             class(*), intent(in)                        :: data(:,:,:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -629,7 +630,7 @@ module ResultModule
         end subroutine
 
         !> Return the data from the Result object.
-        pure function getData3D(this) result(data)
+        function getData3D(this) result(data)
             class(Result3D), intent(in) :: this
             class(*), allocatable       :: data(:,:,:)
             allocate(data, source=this%data)
@@ -637,7 +638,7 @@ module ResultModule
 
         !> Attempt to return the data as 3D real with single precision (real).
         !! If dp or qp variables passed, they will be converted implicitally.
-        pure function getDataAsReal3D(this) result(data)
+        function getDataAsReal3D(this) result(data)
             class(Result3D), intent(in) :: this
             real                        :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -658,7 +659,7 @@ module ResultModule
 
         !> Attempt to return the data as 3D real with double precision (real(dp)).
         !! If sp or qp variables passed, they will be converted implicitally.
-        pure function getDataAsRealDP3D(this) result(data)
+        function getDataAsRealDP3D(this) result(data)
             class(Result3D), intent(in) :: this
             real(dp)                    :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -679,7 +680,7 @@ module ResultModule
 
         !> Attempt to return the data as 3D real with quadruple precision (real(qp)).
         !! If sp or dp variables passed, they will be converted implicitally.
-        pure function getDataAsRealQP3D(this) result(data)
+        function getDataAsRealQP3D(this) result(data)
             class(Result3D), intent(in) :: this
             real(qp)                    :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -699,7 +700,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 3D integer array
-        pure function getDataAsInteger3D(this) result(data)
+        function getDataAsInteger3D(this) result(data)
             class(Result3D), intent(in) :: this
             integer                     :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -715,7 +716,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 3D character array
-        pure function getDataAsCharacter3D(this) result(data)
+        function getDataAsCharacter3D(this) result(data)
             class(Result3D), intent(in) :: this
             character(:), allocatable   :: data(:,:,:)
             select type (d => this%data)
@@ -727,7 +728,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 3D logical array
-        pure function getDataAsLogical3D(this) result(data)
+        function getDataAsLogical3D(this) result(data)
             class(Result3D), intent(in) :: this
             logical                     :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -741,7 +742,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as 3D complex array
-        pure function getDataAsComplex3D(this) result(data)
+        function getDataAsComplex3D(this) result(data)
             class(Result3D), intent(in) :: this
             complex                     :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -760,7 +761,7 @@ module ResultModule
 !--------!
 
         !> Initialise the result object with polymorphic class(*) data.
-        pure function init4D(data, error, errors) result(this)
+        function init4D(data, error, errors) result(this)
             type(Result4D)                              :: this
             class(*), intent(in)                        :: data(:,:,:,:)
             type(ErrorInstance), intent(in), optional   :: error
@@ -779,7 +780,7 @@ module ResultModule
         end subroutine
 
         !> Return the data from the Result object.
-        pure function getData4D(this) result(data)
+        function getData4D(this) result(data)
             class(Result4D), intent(in) :: this
             class(*), allocatable       :: data(:,:,:,:)
             allocate(data, source=this%data)
@@ -787,7 +788,7 @@ module ResultModule
 
         !> Attempt to return the data as 4D real with single precision (real).
         !! If dp or qp variables passed, they will be converted implicitally.
-        pure function getDataAsReal4D(this) result(data)
+        function getDataAsReal4D(this) result(data)
             class(Result4D), intent(in) :: this
             real                        :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -809,7 +810,7 @@ module ResultModule
 
         !> Attempt to return the data as 4D real with double precision (real(dp)).
         !! If sp or qp variables passed, they will be converted implicitally.
-        pure function getDataAsRealDP4D(this) result(data)
+        function getDataAsRealDP4D(this) result(data)
             class(Result4D), intent(in) :: this
             real(dp)                    :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -831,7 +832,7 @@ module ResultModule
 
         !> Attempt to return the data as 4D real with double precision (real(qp)).
         !! If sp or dp variables passed, they will be converted implicitally.
-        pure function getDataAsRealQP4D(this) result(data)
+        function getDataAsRealQP4D(this) result(data)
             class(Result4D), intent(in) :: this
             real(qp)                    :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -852,7 +853,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 4D real array
-        pure function getDataAsInteger4D(this) result(data)
+        function getDataAsInteger4D(this) result(data)
             class(Result4D), intent(in) :: this
             integer                     :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -869,7 +870,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 4D character array
-        pure function getDataAsCharacter4D(this) result(data)
+        function getDataAsCharacter4D(this) result(data)
             class(Result4D), intent(in) :: this
             character(:), allocatable   :: data(:,:,:,:)
             select type (d => this%data)
@@ -881,7 +882,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 4D logical array
-        pure function getDataAsLogical4D(this) result(data)
+        function getDataAsLogical4D(this) result(data)
             class(Result4D), intent(in) :: this
             logical                     :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -896,7 +897,7 @@ module ResultModule
         end function
 
         !> Attempt to return the data as a 4D complex array
-        pure function getDataAsComplex4D(this) result(data)
+        function getDataAsComplex4D(this) result(data)
             class(Result4D), intent(in) :: this
             complex                     :: data(size(this%data,1), &
                                                 size(this%data,2), &
@@ -915,14 +916,14 @@ module ResultModule
 !------------!
 
         !> Returns the error code from the first error in the errors array.
-        pure function getErrorCode(this) result(errorCode)
+        function getErrorCode(this) result(errorCode)
             class(Result), intent(in)   :: this
             integer                     :: errorCode
             errorCode = this%errors(1)%getCode()
         end function
 
         !> Returns the first error from the errors array.
-        pure function getError(this) result(error)
+        function getError(this) result(error)
             class(Result), intent(in)   :: this
             type(ErrorInstance)         :: error
             ! If there isn't an error to be got, return the no error
@@ -934,7 +935,7 @@ module ResultModule
         end function
 
         !> Return the errors array.
-        pure function getErrors(this) result(errors)
+        function getErrors(this) result(errors)
             class(Result), intent(in)           :: this
             type(ErrorInstance), allocatable    :: errors(:)
             ! If there isn't an error, return empty array
@@ -947,7 +948,7 @@ module ResultModule
 
         !> Set the array of ErrorInstances from a single error
         !! or array of errors.
-        pure subroutine setErrors(this, error, errors)
+        subroutine setErrors(this, error, errors)
             class(Result), intent(inout)                :: this
             type(ErrorInstance), optional, intent(in)   :: error
             type(ErrorInstance), optional, intent(in)   :: errors(:)
@@ -969,7 +970,7 @@ module ResultModule
 
         !> Add an error to the Result object (without overriding previously
         !! added errors).
-        pure subroutine addError(this, error)
+        subroutine addError(this, error)
             class(Result), intent(inout)        :: this
             type(ErrorInstance), intent(in)     :: error
             ! Allocate array of errors, if it isn't already allocated
@@ -980,7 +981,7 @@ module ResultModule
 
         !> Add multiple errors to the Result object (without overriding previously
         !! added errors).
-        pure subroutine addErrors(this, errors)
+        subroutine addErrors(this, errors)
             class(Result), intent(inout)        :: this
             type(ErrorInstance), intent(in)     :: errors(:)
             ! Allocate array of errors, if it isn't already allocated
@@ -990,7 +991,7 @@ module ResultModule
         end subroutine
 
         !> Add the same trace message to all errors in a Result object
-        pure subroutine addToTrace(this, message)
+        subroutine addToTrace(this, message)
             class(Result), intent(inout)    :: this             !! The Result instance
             character(len=*), intent(in)    :: message          !! Message to add to trace
             integer                         :: i                !! Loop iterator
@@ -1021,7 +1022,7 @@ module ResultModule
         end function
 
         !> Check if any of the errors in the Result object are critical errors
-        pure function hasCriticalError(this)
+        function hasCriticalError(this)
             class(Result), intent(in)       :: this             !! The Result instance
             integer                         :: i                !! Loop iterator
             logical                         :: hasCriticalError !! Does the Result have critical errors?.
@@ -1036,5 +1037,11 @@ module ResultModule
                 end if
             end do
         end function
+
+        !> Clear all errors from the Result object
+        subroutine clear(this)
+            class(Result)                   :: this             !! The Result instance
+            deallocate(this%errors)
+        end subroutine
 
 end module

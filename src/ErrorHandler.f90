@@ -27,11 +27,14 @@ module ErrorHandlerModule
 
             ! Adding ErrorInstaces
             generic, public :: add => addErrorInstance, addMultipleErrorInstancesFromCodes, addMultipleErrorInstancesFromErrors
-            procedure :: addErrorInstance, addMultipleErrorInstancesFromCodes, addMultipleErrorInstancesFromErrors
+            procedure :: addErrorInstance
+            procedure :: addMultipleErrorInstancesFromCodes
+            procedure :: addMultipleErrorInstancesFromErrors
 
             ! Removing ErrorInstances
             generic, public :: remove => removeErrorInstance, removeMultipleErrorInstances
-            procedure :: removeErrorInstance, removeMultipleErrorInstances
+            procedure :: removeErrorInstance
+            procedure :: removeMultipleErrorInstances
 
             ! Getters
             procedure, public :: getError
@@ -531,7 +534,7 @@ module ErrorHandlerModule
                 do i=1, size(errorsOut)
                     if (errorsOut(i)%isCritical) then
                         write(*,"(a)")                  ! New line
-                        error stop errorsOut(i)%code
+                        error stop 1
                     end if
                 end do
 
@@ -541,7 +544,7 @@ module ErrorHandlerModule
 
         !> Check error handler is initialised. If it isn't,
         !! stop the program running.
-        pure subroutine stopIfNotInitialised(this)
+        subroutine stopIfNotInitialised(this)
             class(ErrorHandler), intent(in) :: this     !! This ErrorHandler instance
             if (this%isInitialised .eqv. .false.) then
                 error stop "Error handling not initialised. Call init() procedure on ErrorHandler object before using."
@@ -550,7 +553,7 @@ module ErrorHandlerModule
 
         !> Check error handler is initialised. If it isn't,
         !! stop the program running.
-        pure subroutine stopIfInitialised(this)
+        subroutine stopIfInitialised(this)
             class(ErrorHandler), intent(in) :: this     !! This ErrorHandler instance
             if (this%isInitialised .eqv. .true.) then
                 error stop "Error handling already initialised, no need to call again."
@@ -558,7 +561,7 @@ module ErrorHandlerModule
         end subroutine
 
         !> Get an ErrorInstance object from its unique error code
-        pure function getErrorFromCode(this, code) result(error)
+        function getErrorFromCode(this, code) result(error)
             class(ErrorHandler), intent(in) :: this     !! This ErrorHandler instance
             integer, intent(in)             :: code     !! Error code
             type(ErrorInstance)             :: error    !! The returned error
@@ -576,7 +579,7 @@ module ErrorHandlerModule
         end function
 
         !> Return the default no error, with code 0.
-        pure function getNoError(this) result(noError)
+        function getNoError(this) result(noError)
             class(ErrorHandler), intent(in) :: this     !! This ErrorHandler instance
             type(ErrorInstance) :: noError              !! The no error to return
 

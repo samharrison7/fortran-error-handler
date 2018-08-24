@@ -25,7 +25,7 @@ module ErrorInstanceModule
 
     contains
         !> Create a new ErrorInstance.
-        pure function init(code, message, isCritical, trace) result(this)
+        function init(code, message, isCritical, trace) result(this)
             type(ErrorInstance)                     :: this             !! The ErrorInstance class
             integer, intent(in), optional           :: code             !! Code for the error
             character(len=*), intent(in), optional  :: message          !! Custom error message
@@ -54,7 +54,7 @@ module ErrorInstanceModule
         !! WARNING: GFortran bug means this must be compiled with
         !! flag -O1 at least. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70231
         !! and https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran
-        pure subroutine addToTrace(this, message)
+        subroutine addToTrace(this, message)
             class(ErrorInstance), intent(inout) :: this
             character(len=*), intent(in) :: message
             character(len=256) :: tempMessage
@@ -68,14 +68,14 @@ module ErrorInstanceModule
         end subroutine
 
         !> Return the error code.
-        pure function getCode(this) result(code)
+        function getCode(this) result(code)
             class(ErrorInstance), intent(in)    :: this
             integer                             :: code
             code = this%code
         end function
 
         !> Is the error an actual error or code 0 (not an error)?
-        pure function isError(this)
+        function isError(this)
             class(ErrorInstance), intent(in)    :: this
             logical                             :: isError
             isError = .true.
@@ -83,7 +83,7 @@ module ErrorInstanceModule
         end function
 
         !> Is the error a critical error?
-        pure function isCriticalError(this)
+        function isCriticalError(this)
             class(ErrorInstance), intent(in)    :: this
             logical                             :: isCriticalError
             isCriticalError = .false.
@@ -91,7 +91,7 @@ module ErrorInstanceModule
         end function
 
         !> Is the error code 0 (not an error)?
-        pure function notError(this)
+        function notError(this)
             class(ErrorInstance), intent(in)    :: this
             logical                             :: notError
             notError = .true.

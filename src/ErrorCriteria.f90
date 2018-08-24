@@ -69,7 +69,8 @@ module ErrorCriteriaModule
             ! Modify error criteria codes
             procedure, public :: modifyErrorCriteriaCodes       
             generic, public :: modifyErrorCriterionCode => modifyErrorCriterionCodeByIndex, modifyErrorCriterionCodeByName
-            procedure, public :: modifyErrorCriterionCodeByIndex, modifyErrorCriterionCodeByName
+            procedure, public :: modifyErrorCriterionCodeByIndex
+            procedure, public :: modifyErrorCriterionCodeByName
 
             ! The criteria functions
             generic, public :: limit => integerLimit, realLimit, realDPLimit, realQPLimit
@@ -81,15 +82,42 @@ module ErrorCriteriaModule
             generic, public :: equal => integerEqual, realEqual, realDPEqual, realQPEqual
             generic, public :: positive => integerPositive, realPositive, realDPPositive, realQPPositive
             generic, public :: negative => integerNegative, realNegative, realDPNegative, realQPNegative
-            procedure, private :: integerLimit, realLimit, realDPLimit, realQPLimit, &
-                                integerNonZero, realNonZero, realDPNonZero, realQPNonZero, &
-                                integerZero, realZero, realDPZero, realQPZero, &
-                                integerLessThan, realLessThan, realDPLessThan, realQPLessThan, &
-                                integerGreaterThan, realGreaterThan, realDPGreaterThan, realQPGreaterThan, &
-                                integerNotEqual, realNotEqual, realDPNotEqual, realQPNotEqual, &
-                                integerEqual, realEqual, realDPEqual, realQPEqual, &
-                                integerPositive, realPositive, realDPPositive, realQPPositive, &
-                                integerNegative, realNegative, realDPNegative, realQPNegative
+            procedure, private :: integerLimit
+            procedure, private ::  realLimit
+            procedure, private :: realDPLimit
+            procedure, private :: realQPLimit
+            procedure, private :: integerNonZero
+            procedure, private :: realNonZero
+            procedure, private :: realDPNonZero
+            procedure, private :: realQPNonZero
+            procedure, private :: integerZero
+            procedure, private :: realZero
+            procedure, private :: realDPZero
+            procedure, private :: realQPZero
+            procedure, private :: integerLessThan
+            procedure, private :: realLessThan
+            procedure, private :: realDPLessThan
+            procedure, private :: realQPLessThan
+            procedure, private :: integerGreaterThan
+            procedure, private :: realGreaterThan
+            procedure, private :: realDPGreaterThan
+            procedure, private :: realQPGreaterThan
+            procedure, private :: integerNotEqual
+            procedure, private :: realNotEqual
+            procedure, private :: realDPNotEqual
+            procedure, private :: realQPNotEqual
+            procedure, private :: integerEqual
+            procedure, private :: realEqual
+            procedure, private :: realDPEqual
+            procedure, private :: realQPEqual
+            procedure, private :: integerPositive
+            procedure, private :: realPositive
+            procedure, private :: realDPPositive
+            procedure, private :: realQPPositive
+            procedure, private :: integerNegative
+            procedure, private :: realNegative
+            procedure, private :: realDPNegative
+            procedure, private :: realQPNegative
     end type
 
     contains
@@ -242,7 +270,7 @@ module ErrorCriteriaModule
         end subroutine
 
         !> Get the error code from the criterion function name
-        pure function getCodeFromCriterionName(this, name) result(code)
+        function getCodeFromCriterionName(this, name) result(code)
             class(ErrorCriteria), intent(in)    :: this     !! This ErrorCriteria instance
             character(len=*), intent(in)        :: name     !! Function name to get code for
             integer                             :: code     !! The error code
@@ -261,7 +289,7 @@ module ErrorCriteriaModule
         end function
 
         !> Get the index of the error criteria array for a given criterion name
-        pure function getIndexFromCriterionName(this, name) result(index)
+        function getIndexFromCriterionName(this, name) result(index)
             class(ErrorCriteria), intent(in)    :: this     !! This ErrorCriteria instance
             character(len=*), intent(in)        :: name     !! Function name to get the index for
             integer                             :: index    !! Index for the given function name
@@ -382,7 +410,7 @@ module ErrorCriteriaModule
         !> Test whether an integer value falls within a limit. If only upper
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
-        pure function integerLimit(this, value, lbound, ubound, message, traceMessage) result(error)
+        function integerLimit(this, value, lbound, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             integer, intent(in)                     :: value            !! The value to test
             integer, intent(in), optional           :: lbound           !! The lower bound of the limit
@@ -451,7 +479,7 @@ module ErrorCriteriaModule
         !> Test whether a real value falls within a limit. If only upper
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
-        pure function realLimit(this, value, lbound, ubound, message, traceMessage) result(error)
+        function realLimit(this, value, lbound, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real, intent(in)                        :: value            !! The value to test
             real, intent(in), optional              :: lbound           !! The lower bound of the limit
@@ -519,7 +547,7 @@ module ErrorCriteriaModule
         !> Test whether a real(dp) value falls within a limit. If only upper
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
-        pure function realDPLimit(this, value, lbound, ubound, message, traceMessage) result(error)
+        function realDPLimit(this, value, lbound, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(dp), intent(in)                    :: value            !! The value to test
             real(dp), intent(in), optional          :: lbound           !! The lower bound of the limit
@@ -587,7 +615,7 @@ module ErrorCriteriaModule
         !> Test whether a real(qp) value falls within a limit. If only upper
         !! or lower bounds are specified, the value must be less than
         !! or greater than the limit (respetively).
-        pure function realQPLimit(this, value, lbound, ubound, message, traceMessage) result(error)
+        function realQPLimit(this, value, lbound, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(qp), intent(in)                    :: value            !! The value to test
             real(qp), intent(in), optional          :: lbound           !! The lower bound of the limit
@@ -655,7 +683,7 @@ module ErrorCriteriaModule
 !-- NON-ZERO --!
 
         !> Test whether an integer is non-zero.
-        pure function integerNonZero(this, value, epsilon, message, traceMessage) result(error)
+        function integerNonZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             integer, intent(in)                     :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
@@ -693,7 +721,7 @@ module ErrorCriteriaModule
 
         !> Test whether a real number is non-zero, or further than a specified
         !! amount (epsilon) from zero.
-        pure function realNonZero(this, value, epsilon, message, traceMessage) result(error)
+        function realNonZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real, intent(in)                        :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
@@ -735,7 +763,7 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) number is non-zero, or further than a specified
         !! amount (epsilon) from zero.
-        pure function realDPNonZero(this, value, epsilon, message, traceMessage) result(error)
+        function realDPNonZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(dp), intent(in)                    :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
@@ -777,7 +805,7 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) number is non-zero, or further than a specified
         !! amount (epsilon) from zero.
-        pure function realQPNonZero(this, value, epsilon, message, traceMessage) result(error)
+        function realQPNonZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(qp), intent(in)                    :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How close to zero can the value be?
@@ -820,7 +848,7 @@ module ErrorCriteriaModule
 !-- ZERO --!
 
         !> Test whether an integer is zero.
-        pure function integerZero(this, value, epsilon, message, traceMessage) result(error)
+        function integerZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             integer, intent(in)                     :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
@@ -857,7 +885,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real is within epsilon of zero.
-        pure function realZero(this, value, epsilon, message, traceMessage) result(error)
+        function realZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real, intent(in)                        :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
@@ -898,7 +926,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(dp) is within epsilon of zero.
-        pure function realDPZero(this, value, epsilon, message, traceMessage) result(error)
+        function realDPZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(dp), intent(in)                    :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
@@ -939,7 +967,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(qp) is within epsilon of zero.
-        pure function realQPZero(this, value, epsilon, message, traceMessage) result(error)
+        function realQPZero(this, value, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(qp), intent(in)                    :: value            !! The value to test
             real, optional, intent(in)              :: epsilon          !! How far from zero can the value be?
@@ -982,7 +1010,7 @@ module ErrorCriteriaModule
 !-- LESS THAN --!
 
         !> Test whether an integer value is less than given criteria.
-        pure function integerLessThan(this, value, ubound, message, traceMessage) result(error)
+        function integerLessThan(this, value, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             integer, intent(in)                     :: value            !! The value to test
             integer, intent(in)                     :: ubound           !! Value must be less than than ubound
@@ -1022,7 +1050,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real value is less than given criteria.
-        pure function realLessThan(this, value, ubound, message, traceMessage) result(error)
+        function realLessThan(this, value, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real, intent(in)                        :: value            !! The value to test
             real, intent(in)                        :: ubound           !! Value must be less than than ubound
@@ -1062,7 +1090,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(dp) value is less than given criteria.
-        pure function realDPLessThan(this, value, ubound, message, traceMessage) result(error)
+        function realDPLessThan(this, value, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(dp), intent(in)                    :: value            !! The value to test
             real(dp), intent(in)                    :: ubound           !! Value must be less than than ubound
@@ -1102,7 +1130,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(qp) value is less than given criteria.
-        pure function realQPLessThan(this, value, ubound, message, traceMessage) result(error)
+        function realQPLessThan(this, value, ubound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorHandler class
             real(qp), intent(in)                    :: value            !! The value to test
             real(qp), intent(in)                    :: ubound           !! Value must be less than than ubound
@@ -1144,7 +1172,7 @@ module ErrorCriteriaModule
 !-- GREATER THAN --!
 
         !> Test whether an integer value is greater than given criteria.
-        pure function integerGreaterThan(this, value, lbound, message, traceMessage) result(error)
+        function integerGreaterThan(this, value, lbound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             integer, intent(in)                     :: value            !! The value to test
             integer, intent(in)                     :: lbound           !! Value must be higher than lbound
@@ -1184,7 +1212,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real value is greater than given criteria.
-        pure function realGreaterThan(this, value, lbound, message, traceMessage) result(error)
+        function realGreaterThan(this, value, lbound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real, intent(in)                        :: value            !! The value to test
             real, intent(in)                        :: lbound           !! Value must be higher than lbound
@@ -1224,7 +1252,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(dp) value is greater than given criteria.
-        pure function realDPGreaterThan(this, value, lbound, message, traceMessage) result(error)
+        function realDPGreaterThan(this, value, lbound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(dp), intent(in)                    :: value            !! The value to test
             real(dp), intent(in)                    :: lbound           !! Value must be higher than lbound
@@ -1264,7 +1292,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(qp) value is greater than given criteria.
-        pure function realQPGreaterThan(this, value, lbound, message, traceMessage) result(error)
+        function realQPGreaterThan(this, value, lbound, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(qp), intent(in)                    :: value            !! The value to test
             real(qp), intent(in)                    :: lbound           !! Value must be higher than lbound
@@ -1306,7 +1334,7 @@ module ErrorCriteriaModule
 !-- NOT EQUAL --!
 
         !> Test whether an integer is not equal to criterion.
-        pure function integerNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function integerNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             integer, intent(in)                     :: value            !! The value to test
             integer, intent(in)                     :: criterion        !! Value should be equal to this criterion
@@ -1347,7 +1375,7 @@ module ErrorCriteriaModule
 
         !> Test whether a real number is not equal to, or further than a specified
         !! amount (epsilon), from criterion.
-        pure function realNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function realNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real, intent(in)                        :: value            !! The value to test
             real, intent(in)                        :: criterion        !! Value should be equal to this criterion
@@ -1392,7 +1420,7 @@ module ErrorCriteriaModule
 
         !> Test whether a real(dp) number is not equal to, or further than a specified
         !! amount (epsilon), from criterion.
-        pure function realDPNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function realDPNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(dp), intent(in)                    :: value            !! The value to test
             real(dp), intent(in)                    :: criterion        !! Value should be equal to this criterion
@@ -1437,7 +1465,7 @@ module ErrorCriteriaModule
 
         !> Test whether a real(qp) number is not equal to, or further than a specified
         !! amount (epsilon), from criterion.
-        pure function realQPNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function realQPNotEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(qp), intent(in)                    :: value            !! The value to test
             real(qp), intent(in)                    :: criterion        !! Value should be equal to this criterion
@@ -1483,7 +1511,7 @@ module ErrorCriteriaModule
 !-- EQUAL --!
 
         !> Test whether an integer is equal to criterion.
-        pure function integerEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function integerEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             integer, intent(in)                     :: value            !! The value to test
             integer, intent(in)                     :: criterion        !! Value should be equal to this criterion
@@ -1523,7 +1551,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real number is equal or closer than a specified amount (epsilon) to criterion.
-        pure function realEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function realEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real, intent(in)                        :: value            !! The value to test
             real, intent(in)                        :: criterion        !! Value should be equal to this criterion
@@ -1567,7 +1595,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(dp) number is equal or closer than a specified amount (epsilon) to criterion.
-        pure function realDPEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function realDPEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(dp), intent(in)                    :: value            !! The value to test
             real(dp), intent(in)                    :: criterion        !! Value should be equal to this criterion
@@ -1611,7 +1639,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(qp) number is equal or closer than a specified amount (epsilon) to criterion.
-        pure function realQPEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
+        function realQPEqual(this, value, criterion, epsilon, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(qp), intent(in)                    :: value            !! The value to test
             real(qp), intent(in)                    :: criterion        !! Value should be equal to this criterion
@@ -1657,7 +1685,7 @@ module ErrorCriteriaModule
 !-- POSITIVE --!
 
         !> Test whether an integer value is positive.
-        pure function integerPositive(this, value, message, traceMessage) result(error)
+        function integerPositive(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             integer, intent(in)                     :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
@@ -1693,7 +1721,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real value is positive.
-        pure function realPositive(this, value, message, traceMessage) result(error)
+        function realPositive(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real, intent(in)                        :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
@@ -1729,7 +1757,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(dp) value is positive.
-        pure function realDPPositive(this, value, message, traceMessage) result(error)
+        function realDPPositive(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(dp), intent(in)                    :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
@@ -1765,7 +1793,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(qp) value is positive.
-        pure function realQPPositive(this, value, message, traceMessage) result(error)
+        function realQPPositive(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(qp), intent(in)                    :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
@@ -1803,7 +1831,7 @@ module ErrorCriteriaModule
 !-- NEGATIVE --!
 
         !> Test whether an integer value is greater than given criteria.
-        pure function integerNegative(this, value, message, traceMessage) result(error)
+        function integerNegative(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             integer, intent(in)                     :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
@@ -1839,7 +1867,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real value is negative.
-        pure function realNegative(this, value, message, traceMessage) result(error)
+        function realNegative(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real, intent(in)                        :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
@@ -1875,7 +1903,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(dp) value is negative criteria.
-        pure function realDPNegative(this, value, message, traceMessage) result(error)
+        function realDPNegative(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(dp), intent(in)                    :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message
@@ -1911,7 +1939,7 @@ module ErrorCriteriaModule
         end function
 
         !> Test whether a real(qp) value is negative.
-        pure function realQPNegative(this, value, message, traceMessage) result(error)
+        function realQPNegative(this, value, message, traceMessage) result(error)
             class(ErrorCriteria), intent(in)        :: this             !! The ErrorCriteria class
             real(qp), intent(in)                    :: value            !! The value to test
             character(len=*), intent(in), optional  :: message          !! Overwrite the standard error message

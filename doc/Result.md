@@ -137,6 +137,9 @@ Add an array of errors to the Result object.
 ### Checking for errors
 You can use the `Result%hasError()` and `Result%hasCriticalError()` procedures to check whether a Result object has an error (and that error isn't the default no error, with code 0), and whether it has a critical error, respetively. Both return a logical value.
 
+### Clearing errors
+At some point, it might be desirable to remove all errors from the Result objects. For example, if those errors have already been triggered by the `ErrorHandler` and shouldn't be triggered a second time. The `Result%clear()` simply deallocated the `Result%errors` array.
+
 <a name="trace"></a>
 ## Error trace
 
