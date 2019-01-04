@@ -1,5 +1,6 @@
 # Custom makefiles
 makefile
+Makefile
 
 # Sublime Text and Visual Studio project files
 *.sublime-project
@@ -10,6 +11,7 @@ Debug/
 *.sln
 *.u2d
 *.vfproj
+*.fdz
 
 # Compilation files
 *.stackdump
