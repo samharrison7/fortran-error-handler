@@ -162,7 +162,7 @@ module ResultModule
     end type
 
     interface Result
-        module procedure initNoData, init0D, init1D, init2D, init3D, init4D
+        module procedure init0D, init1D, init2D, init3D, init4D
     end interface
 
     contains
@@ -171,14 +171,14 @@ module ResultModule
 !-- No data --!
 !-------------!
 
-        !> Initialise the result object with no data.
-        function initNoData(error, errors) result(this)
-            type(Result) :: this
-            type(ErrorInstance), intent(in), optional :: error
-            type(ErrorInstance), intent(in), optional :: errors(:)
-            ! Set the errors
-            call this%setErrors(error, errors)
-        end function
+        ! !> Initialise the result object with no data.
+        ! function initNoData(error, errors) result(this)
+        !     type(Result) :: this
+        !     type(ErrorInstance), intent(in), optional :: error
+        !     type(ErrorInstance), intent(in), optional :: errors(:)
+        !     ! Set the errors
+        !     call this%setErrors(error, errors)
+        ! end function
 
 !--------!
 !-- 0D --!
