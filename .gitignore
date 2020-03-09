@@ -1,5 +1,6 @@
 # Custom makefiles
 makefile
+Makefile
 
 # Sublime Text and Visual Studio project files
 *.sublime-project

@@ -976,6 +976,9 @@ module ResultModule
             if (.not. allocated(this%errors)) allocate(this%errors(0))
             ! Add the new error (if it is one)
             if (error%isError()) this%errors = [this%errors, error] 
+            if (error%isCriticalError()) then
+                print *, "Critical error added: " // trim(error%message)
+            end if
         end subroutine
 
         !> Add multiple errors to the Result object (without overriding previously
@@ -983,10 +986,17 @@ module ResultModule
         pure subroutine addErrors(this, errors)
             class(Result), intent(inout)        :: this
             type(ErrorInstance), intent(in)     :: errors(:)
+            dp
             ! Allocate array of errors, if it isn't already allocated
             if (.not. allocated(this%errors)) allocate(this%errors(0))
             ! Add the new errors (if there are any)
-            if (size(errors)>0) this%errors = [this%errors, errors]
+            if (size(errors)>0) then
+                this%errors = [this%errors, errors]
+                do i=1, size(errors)
+                    if (errors(i)%isCriticalError()) then
+                    print *, "Critical error added: " // trim(errors(i)%message)
+                end do
+            end if
         end subroutine
 
         !> Add the same trace message to all errors in a Result object
