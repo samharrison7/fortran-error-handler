@@ -4,7 +4,7 @@ module ErrorHandlerModule
     implicit none
     private
 
-    !> The class that is responsible for handling (i.e., adding and triggering)
+    !> The class that is responsible for handling (i.e. adding and triggering)
     !! errors. Errors can be critical (resulting in the program being terminated)
     !! or just warnings.
     type, public :: ErrorHandler
@@ -16,6 +16,7 @@ module ErrorHandlerModule
         character(len=256)                  :: messageSuffix = ""           !! Suffix to output error message.
         logical                             :: isInitialised = .false.      !! Has the ErrorHandler been initialised?
         logical                             :: bashColors = .true.          !! Should colors be displayed in bash consoles?
+        logical                             :: printErrorCode = .false.     !! Should the error code be printed when errors triggered?
         logical                             :: on = .true.                  !! Set to .false. to turn ErrorHandler output off
         
         contains
@@ -55,23 +56,26 @@ module ErrorHandlerModule
 
     contains
 
+        !> Initialise the ErrorHandler with potential errors and config passed as parameters.
         subroutine initErrorHandler(this, &
                         errors, &
                         criticalPrefix, &
                         warningPrefix, &
                         messageSuffix, &
                         bashColors, &
+                        printErrorCode, &
                         on)
-            class(ErrorHandler), intent(inout) :: this
-            type(ErrorInstance), intent(in), optional :: errors(:)
-            character(len=*), intent(in), optional :: criticalPrefix
-            character(len=*), intent(in), optional :: warningPrefix
-            character(len=*), intent(in), optional :: messageSuffix
-            logical, intent(in), optional :: bashColors
-            logical, intent(in), optional :: on
-            integer :: i                                    ! Loop iterator.
-            logical, allocatable :: mask(:)                 ! Logical mask to remove default errors from input errors array.
-            type(ErrorInstance) :: defaultErrors(2)         ! Temporary array containing default errors.
+            class(ErrorHandler), intent(inout)          :: this             !! This ErrorHandler instance
+            type(ErrorInstance), intent(in), optional   :: errors(:)        !! List of ErrorInstances to add
+            character(len=*), intent(in), optional      :: criticalPrefix   !! Prefix for error messages if they're critical
+            character(len=*), intent(in), optional      :: warningPrefix    !! Prefix for error messages if they're warnings
+            character(len=*), intent(in), optional      :: messageSuffix    !! Suffix for error messages
+            logical, intent(in), optional               :: bashColors       !! Use bash colours or not?
+            logical, intent(in), optional               :: printErrorCode   !! Should the error code be prepended to the prefix?
+            logical, intent(in), optional               :: on               !! Turn the ErrorHandler on or off
+            integer                                     :: i                ! Loop iterator.
+            logical, allocatable                        :: mask(:)          ! Logical mask to remove default errors from input errors array.
+            type(ErrorInstance)                         :: defaultErrors(2) ! Temporary array containing default errors.
 
             ! Stop the program running is ErrorHandler is already initialised
             call this%stopIfInitialised()
@@ -132,6 +136,9 @@ module ErrorHandlerModule
             if (present(bashColors)) this%bashColors = bashColors
             if (this%bashColors .eqv. .true.) this%criticalPrefix = "\x1B[91m" // adjustl(trim(this%criticalPrefix)) // "\x1B[0m"
             if (this%bashColors .eqv. .true.) this%warningPrefix = "\x1B[94m" // adjustl(trim(this%warningPrefix)) // "\x1B[0m"
+
+            ! Set whether we want the error code to be prefix to the message
+            if (present(printErrorCode)) this%printErrorCode = printErrorCode
 
             ! Set whether ErrorHandler output is on or off
             if (present(on)) this%on = on
@@ -248,9 +255,9 @@ module ErrorHandlerModule
             logical, intent(in), optional           :: isCritical   !! Modified error criticality.
             character(len=*), intent(in), optional  :: trace(:)     !! Modified error trace.
             integer                                 :: i            ! Loop iterator.
-            logical                                 :: errorExists  ! Boolean to check if error exists.
+            logical                                 :: doesErrorExist ! Boolean to check if error exists.
             
-            errorExists = .false.
+            doesErrorExist = .false.
             ! Loop through this%errors to see if the given code matches an existing one.
             ! Set message, criticality and trace if so.
             do i=lbound(this%errors,1), ubound(this%errors,1)
@@ -258,12 +265,12 @@ module ErrorHandlerModule
                     if (present(message)) this%errors(i)%message = message
                     if (present(isCritical)) this%errors(i)%isCritical = isCritical
                     if (present(trace)) allocate(this%errors(i)%trace, source=trace)
-                    errorExists = .true.
+                    doesErrorExist = .true.
                 end if
             end do
 
             ! If the error code wasn't found, stop with an error message saying so.
-            if (.not. errorExists) then
+            if (.not. doesErrorExist) then
                 write(*,"(a,a,i5,a)") trim(this%criticalPrefix), &
                     " Trying to modify error with code that doesn't exist: ", code, "."
                 error stop 1
@@ -324,13 +331,14 @@ module ErrorHandlerModule
             errors = this%errors
         end function
 
-        !> Set the list of errors. Any existing errors will be overriden
+        !> Set the list of errors. Any existing errors will be overriden.
         subroutine setErrors(this, errors)
             class(ErrorHandler) :: this         !! The ErrorHandler instance
             type(ErrorInstance) :: errors(:)    !! New array of errors
             this%errors = errors
         end subroutine
 
+        !> Check if an error with the given code exists.
         function errorExists(this, code)
             class(ErrorHandler) :: this         !! The ErrorHandler instance
             integer, intent(in) :: code         !! Error code to check existance far
@@ -418,6 +426,7 @@ module ErrorHandlerModule
             character(len=500)              :: traceMessage     ! The strack trace message
             type(ErrorInstance), allocatable :: errorsOut(:)    ! The errors to output
             integer                         :: i, j, k          ! Loop iterators
+            character(len=256)              :: strCode          ! String representation of error code
 
             ! Stop the program running is ErrorHandler not initialised
             call this%stopIfNotInitialised()
@@ -503,12 +512,17 @@ module ErrorHandlerModule
                             messagePrefix = this%warningPrefix
                         end if
 
+                        ! If the error code should be added to the prefix, then do so
+                        if (this%printErrorCode) then
+                            write(strCode, *) errorsOut(i)%getCode()
+                            messagePrefix = trim(adjustl(strCode)) // " " // trim(messagePrefix)
+                        end if
+
                         ! Compose the message to output to the console
                         outputMessage = trim(messagePrefix) // " " // &
                                         trim(errorsOut(i)%message) // " " // &
                                         trim(this%messageSuffix)
-                        ! Loop through the stack trace and add to the message,
-                        ! then print
+                        ! Loop through the stack trace and add to the message, then print
                         if (size(errorsOut(i)%trace)>0 .and. allocated(errorsOut(i)%trace)) then
                             traceMessage = "Trace: "
 

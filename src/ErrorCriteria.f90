@@ -82,38 +82,47 @@ module ErrorCriteriaModule
             generic, public :: equal => integerEqual, realEqual, realDPEqual, realQPEqual
             generic, public :: positive => integerPositive, realPositive, realDPPositive, realQPPositive
             generic, public :: negative => integerNegative, realNegative, realDPNegative, realQPNegative
+            ! Limit
             procedure, private :: integerLimit
             procedure, private ::  realLimit
             procedure, private :: realDPLimit
             procedure, private :: realQPLimit
+            ! Non-zero
             procedure, private :: integerNonZero
             procedure, private :: realNonZero
             procedure, private :: realDPNonZero
             procedure, private :: realQPNonZero
+            ! Zero
             procedure, private :: integerZero
             procedure, private :: realZero
             procedure, private :: realDPZero
             procedure, private :: realQPZero
+            ! Less than
             procedure, private :: integerLessThan
             procedure, private :: realLessThan
             procedure, private :: realDPLessThan
             procedure, private :: realQPLessThan
+            ! Greater than
             procedure, private :: integerGreaterThan
             procedure, private :: realGreaterThan
             procedure, private :: realDPGreaterThan
             procedure, private :: realQPGreaterThan
+            ! Not equal
             procedure, private :: integerNotEqual
             procedure, private :: realNotEqual
             procedure, private :: realDPNotEqual
             procedure, private :: realQPNotEqual
+            ! Equal
             procedure, private :: integerEqual
             procedure, private :: realEqual
             procedure, private :: realDPEqual
             procedure, private :: realQPEqual
+            ! Positive
             procedure, private :: integerPositive
             procedure, private :: realPositive
             procedure, private :: realDPPositive
             procedure, private :: realQPPositive
+            ! Negative
             procedure, private :: integerNegative
             procedure, private :: realNegative
             procedure, private :: realDPNegative
@@ -129,6 +138,7 @@ module ErrorCriteriaModule
                         warningPrefix, &
                         messageSuffix, &
                         bashColors, &
+                        printErrorCode, &
                         on)
             class(ErrorCriteria), intent(inout)         :: this                 !! This ErrorCriteria instance
             type(ErrorInstance), intent(in), optional   :: errors(:)            !! Custom defined errors
@@ -136,10 +146,19 @@ module ErrorCriteriaModule
             character(len=*), intent(in), optional      :: warningPrefix        !! Prefix to warning error messages
             character(len=*), intent(in), optional      :: messageSuffix        !! Suffix to error messages
             logical, intent(in), optional               :: bashColors           !! Should prefixes be colored in bash shells?
+            logical, intent(in), optional               :: printErrorCode
             logical, intent(in), optional               :: on                   !! Should the ErrorHandler output errors?
 
             ! Initialise the parent ErrorHandler                                                                    
-            call this%ErrorHandler%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors,on)
+            call this%ErrorHandler%init( &
+                errors=errors, &
+                criticalPrefix=criticalPrefix, &
+                warningPrefix=warningPrefix, &
+                messageSuffix=messageSuffix, &
+                bashColors=bashColors, &
+                printErrorCode=printErrorCode, &
+                on=on &
+            )
 
             ! Define the default error criteria. Messages will be overidden by specific
             ! criteria functions to provide more detail, but they're present here in case
@@ -349,11 +368,11 @@ module ErrorCriteriaModule
         !! list of errors. A separate criterion function(s) must accompany this
         !! new criterion.
         subroutine addErrorCriterion(this, code, name, message, isCritical)
-            class(ErrorCriteria) :: this
-            integer, intent(in) :: code
-            character(len=*) :: name
-            character(len=*) :: message
-            logical :: isCritical
+            class(ErrorCriteria)    :: this         !! This ErrorCriteria instance
+            integer, intent(in)     :: code         !! Error code for the new criterion
+            character(len=*)        :: name         !! Name of this criterion
+            character(len=*)        :: message      !! Error message for this criterion
+            logical                 :: isCritical   !! If triggered, is it critical?
 
             ! Add the error to the errors array
             call this%ErrorHandler%add(& 
@@ -377,11 +396,11 @@ module ErrorCriteriaModule
         !! and list of errors. Separate criteria functions must accompany these
         !! new criteria.
         subroutine addErrorCriteria(this, codes, names, messages, areCritical)
-            class(ErrorCriteria) :: this
-            integer, intent(in) :: codes(:)
-            character(len=*) :: names(:)
-            character(len=*) :: messages(:)
-            logical :: areCritical(:)
+            class(ErrorCriteria)    :: this             !! This ErrorCriteria instance
+            integer, intent(in)     :: codes(:)         !! Error codes for the new criteria
+            character(len=*)        :: names(:)         !! Names for the criteria
+            character(len=*)        :: messages(:)      !! Error messages
+            logical                 :: areCritical(:)   !! Are the errors critical?
 
             ! Add the errors to the errors array
             call this%ErrorHandler%add( & 

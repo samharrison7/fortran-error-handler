@@ -11,7 +11,7 @@ The Result type is an addon to the framework and is designed as an object to be 
 #### Rank (dimensions)
 Fortran lacks any real kind of array-rank polymorphism ([assumed rank arrays](https://software.intel.com/en-us/node/692101) currently have very limited implementation and scope, and the `select rank` construct has even less support) and creating a Result object able to store both type- and rank-polymorphic data [proved impossible](https://stackoverflow.com/questions/44564872/using-assumed-rank-fortran-array-as-derived-type-component). As such, a different type exists for each rank, up to rank-4 (4 dimensional) data: `type(Result0D)`, `type(Result1D)`, `type(Result2D)`, `type(Result3D)` and `type(Result4D)`. These all extend from the parent `type(Result)`, which can be instantied itself to provide a Result object with no data (e.g., for returning an error from functions that would normally be subroutines).
 
-Extending to high ranks is trivial - take a look at the [Result.f08](../src/Result.f08) file to see how it's done. If you do this, it is strongly encouraged to place the extension in a separate file so that you can later update the framework without conflicting with or overriding the changes you've made.
+Extending to high ranks is trivial - take a look at the [Result.f90](../src/Result.f90) file to see how it's done. If you do this, it is strongly encouraged to place the extension in a separate file so that you can later update the framework without conflicting with or overriding the changes you've made.
 
 <a name="creating"></a>
 ## Creating Result objects

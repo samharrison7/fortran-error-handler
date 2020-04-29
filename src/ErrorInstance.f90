@@ -19,6 +19,7 @@ module ErrorInstanceModule
             procedure, public :: notError
     end type
 
+    !> Interface for creating new ErrorInstances using ErrorInstance(...) syntax
     interface ErrorInstance
         procedure init
     end interface

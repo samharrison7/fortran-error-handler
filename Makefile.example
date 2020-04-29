@@ -1,20 +1,25 @@
+FC=gfortran
+WARNINGS = -Wall
+FCFLAGS = -O1 -fcheck=all -fbackslash -fopenmp ${WARNINGS}
+DEBUGFLAGS = -g -ffpe-trap=zero,invalid,overflow,underflow -pg
+EXEC_FILE = main
+EXEC_PATH = ./bin/
+
 # Modules in compilation order.
-modules = src/ErrorInstance.f08 \
-    src/ErrorHandler.f08 \
-    src/ErrorCriteria.f08 \
-    src/Result.f08 \
-    example/example_usage.f08
+OBJ = src/ErrorInstance.o \
+	src/ErrorHandler.o \
+	src/ErrorCriteria.o \
+	src/Result.o \
+	example/example_usage.o
 
-# Where should the output .exe be placed and run?
-outputFile = ./feh
+OBJECTS = $(notdir $(OBJ))
 
-# Flags
-flags = -g -O1 -fcheck=all -fcheck=no-bounds -fbackslash -Wall -Wno-unused-dummy-argument
+VPATH = src \
+	example
 
 # The commands:
 #   make main: Compile and create exe.
-#   make compile: Only compile, don't create exe.
-#   make run: Same as `make main`, but run the exe as well.
+#   make run: Run the compiled exe.
 #   make clean: Remove compiled files.
 #   
 #   GFortran bug causes "character length mismatch in array constructor"
@@ -22,11 +27,11 @@ flags = -g -O1 -fcheck=all -fcheck=no-bounds -fbackslash -Wall -Wno-unused-dummy
 #   -O1 or higher must be used. See
 #   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70231 and
 #   https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran.
-main: $(modules)
-    gfortran $(modules) $(flags)  -o "$(outputFile)"
-compile: $(modules)
-    gfortran -c $(modules) $(flags)
-run: $(modules)
-    gfortran $(vendor) $(modules) $(flags) -o "$(outputFile)" && "$(outputFile)"
+$(EXEC_FILE): $(OBJECTS)
+	$(FC) $(FCFLAGS) $(DEBUGFLAGS) -o $(EXEC_PATH)$@ $^
+%.o: %.f90
+	$(FC) -c $(FCFLAGS) $(DEBUGFLAGS) $<
+run:
+	$(EXEC_PATH)$(EXEC_FILE)
 clean:
-    rm -f *.mod *.o *.stackdump
+	rm -f *.mod *.o *.stackdump

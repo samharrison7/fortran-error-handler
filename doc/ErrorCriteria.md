@@ -149,7 +149,7 @@ On the surface, removing errors using the `remove` generic is exactly the same a
 <a name="extending"></a>
 ## Extending the error criteria
 
-Of course, the ErrorCriteria provided here only includes checks for a few of the most common criteria, and most users will have their own application-specific checks to perform. Whilst one could simply edit the ErrorCriteria.f08 file to add further criteria functions, this is **strongly discouraged**. Doing so would mean pulling in future updates to the Fortran Error Handler would conflict with (i.e., override) your custom criteria.
+Of course, the ErrorCriteria provided here only includes checks for a few of the most common criteria, and most users will have their own application-specific checks to perform. Whilst one could simply edit the ErrorCriteria.f90 file to add further criteria functions, this is **strongly discouraged**. Doing so would mean pulling in future updates to the Fortran Error Handler would conflict with (i.e., override) your custom criteria.
 
 Instead, you should create your own class that extends the ErrorCriteria and instantiate that class as your error handler. Two self-explanatory procedures, `ErrorCriteria%addErrorCriterion(code, name, message, isCritical)` and `ErrorCriteria%addErrorCriteria(codes, names, messages, areCritical)` can be used in the `init` procedure to add your custom criteria to the current list or criteria and the overall list of errors. 
 
@@ -311,4 +311,4 @@ $ Error: Value must be a factor of 8. Given value: 3.
 $ ERROR STOP 111
 ```
 
-Check out the [ErrorCriteria.f08](/src/ErrorCriteria.f08) file for further ideas on how to implement custom criteria.
+Check out the [ErrorCriteria.f90](/src/ErrorCriteria.f90) file for further ideas on how to implement custom criteria.

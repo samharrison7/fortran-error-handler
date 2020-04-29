@@ -987,7 +987,8 @@ module ResultModule
         subroutine addErrors(this, errors)
             class(Result), intent(inout)        :: this
             type(ErrorInstance), intent(in)     :: errors(:)
-            dp
+            integer                             :: i
+
             ! Allocate array of errors, if it isn't already allocated
             if (.not. allocated(this%errors)) allocate(this%errors(0))
             ! Add the new errors (if there are any)
@@ -995,7 +996,8 @@ module ResultModule
                 this%errors = [this%errors, errors]
                 do i=1, size(errors)
                     if (errors(i)%isCriticalError()) then
-                    print *, "Critical error added: " // trim(errors(i)%message)
+                        print *, "Critical error added: " // trim(errors(i)%message)
+                    end if
                 end do
             end if
         end subroutine
