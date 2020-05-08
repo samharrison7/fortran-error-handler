@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-project(fortran_error_handler
-        VERSION 1.0
-        DESCRIPTION "Fortran Error Handling framework"
-        LANGUAGES Fortran)
+project(fortran_error_handler)
+enable_language(Fortran)
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
     set(FLAGS "-O3 -fcheck=all -fbackslash -ffpe-trap=zero,invalid,overflow")
