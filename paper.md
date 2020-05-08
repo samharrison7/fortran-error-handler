@@ -5,7 +5,7 @@ tags:
     - error handling
 authors:
     - name: Sam Harrison
-      orcid: 
+      orcid: 0000-0001-8491-4720 
       affiliation: 1
     - name: Virginie D Keller
       orcid:
@@ -24,7 +24,7 @@ affiliations:
       index: 1
     - name: UK Centre for Ecology & Hydrology, Maclean Building, Benson Lane, Crowmarsh Gifford, Wallingford, OX10 8BB, UK
       index: 2
-date: 1 May 2020
+date: 8 May 2020
 bibliography: paper.bib
 ---
 
@@ -32,7 +32,7 @@ bibliography: paper.bib
 
 Despite the rise of interpreted programming languages like Python and R in scientific programming, compiled languages are still the de-facto choice for computationally intensive modelling tasks, such as in climate sciences and theoretical physics. Fortran remains the top choice of many scientists, and Modern Fortran has brought great flexibility to the language in terms of object-oriented paradigms and polymorphism.
 
-Any modelling code needs robust error checking, yet Fortran error handling frameworks to provide error checking utilities are few and far between, and those that do exist often implement only part of the error handling process, or rely on pre-processors [@popper:2012, @lucking:2015]. Here, we present what we believe is the most comprehensive Fortran error handling framework to date, providing a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
+Any modelling code needs robust error checking, yet Fortran error handling frameworks to provide these utilities are few and far between, and those that do exist often implement only part of the error handling process, or rely on pre-processors [@popper:2012, @lucking:2015]. Here, we present what we believe is the most comprehensive Fortran error handling framework to date, providing a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
 The framework implements the whole error handling process, including separate utilities for:
 - Managing the error handling environment, through an `ErrorHandler` class. This allows for queuing and triggering error events, storing pre-defined custom errors and customising error reporting.
@@ -40,4 +40,4 @@ The framework implements the whole error handling process, including separate ut
 - Passing errors between routines, through a `Result` class. Result objects contain a list of error instances as well as a data component, enabling errors to be returned from functions at the same time as the data which the function would traditionally return.
 - Common error checking criteria, through an `ErrorCriteria` class. This defines a number of common criteria used for error checking, such as equality and non-zero assertions.
 
-Importantly, these classes are extensible to enable, for example, custom error criteria by extending the `ErrorCriteria` class, or the passing of custom data types through extension of the `Result` object. Whilst they are designed to be modular, such that inidividual elements can be used separately, the use of the whole framework enables robust error checking for the largest and most complex models and software.
+These classes are extensible to enable, for example, custom error criteria by extending the `ErrorCriteria` class, or the passing of custom data types through extension of the `Result` object. They are designed to be modular, such that individual elements can be used separately to implement individual parts of the error handling process.The use of the whole framework enables robust error checking for the largest and most complex models and software.
