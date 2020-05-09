@@ -24,7 +24,7 @@ affiliations:
       index: 1
     - name: UK Centre for Ecology & Hydrology, Maclean Building, Benson Lane, Crowmarsh Gifford, Wallingford, OX10 8BB, UK
       index: 2
-date: 8 May 2020
+date: 9 May 2020
 bibliography: paper.bib
 ---
 
@@ -41,3 +41,9 @@ The framework implements the whole error handling process, including separate ut
 - Common error checking criteria, through an `ErrorCriteria` class. This defines a number of common criteria used for error checking, such as equality and non-zero assertions.
 
 These classes are extensible to enable, for example, custom error criteria by extending the `ErrorCriteria` class, or the passing of custom data types through extension of the `Result` object. They are designed to be modular, such that individual elements can be used separately to implement individual parts of the error handling process.The use of the whole framework enables robust error checking for the largest and most complex models and software.
+
+# Acknowledgements
+
+The Fortran Error Handler was developed within the European Union Horizon 2020 project [NanoFASE](http://nanofase.eu/), which received funding under grant agreement No 646002.
+
+# References
