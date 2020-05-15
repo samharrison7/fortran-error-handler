@@ -2,20 +2,31 @@
 
 Fortran error handling frameworks are few and far between, and those that do exist often implement only parts of the error handling process, or rely on pre-processors. The goal of this error handling framework is to provide a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
-- [Installation](#installation)
+- [Getting started](#getting-started)
 - [Usage](#usage)
     - [Basic structure](#usage-structure)
     - [Quick start guide](#usage-quickstart)
 - [Learn more](#more)
 - [Caveats and limitations](#more)
 
-<a name="installation"></a>
-## Installation
+<a name="getting-started"></a>
+## Getting started
 
-Simply download the source and compile. An example Makefile.example is included, which can be altered according to your compiler and preferences. The framework has only been tested using GFortran 6.3.0. Note that a few bugs in GFortran mean that `-O1` or higher and `-fcheck-no-bounds` must be used.
+If you wish to use the Fortran Error Handler in a project, the simplest way to do so is to include the source files (in `src/`) at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
+
+The code can also be compiled using `cmake`, which creates an executable using the `example/example_usage.f90` script as well as a library:
 
 ```bash
-$ git clone https://github.com/samharrison7/fortran-error-handler.git
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
+
+Whether the library is shared or not is specified by the `BUILD_SHARED_LIBS` variable. If you wish to build a shared library, then pass the `BUILD_SHARED_LIBS` option as on:
+
+```bash
+$ cmake .. -DBUILD_SHARED_LIBS=ON
 ```
 
 <a name="usage"></a>

@@ -16,7 +16,7 @@ Please send pull requests for all contributions (bug reports and features) to th
 
 ## Security vulnerabilities
 
-If you discover a security vulnerability, please send an email to Sam Harrison at [samharrison.xg@gmail.com](samharrison.xg@gmail.com). Please do not submit an issue with the vulnerability.
+If you discover a security vulnerability, please send an email to Sam Harrison at [samharrison.xg@gmail.com](mailto:samharrison.xg@gmail.com). Please do not submit an issue with the vulnerability.
 
 ## Coding style
 

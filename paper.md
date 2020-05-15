@@ -40,7 +40,7 @@ The framework implements the whole error handling process, including separate ut
 - Passing errors between routines, through a `Result` class. Result objects contain a list of error instances as well as a data component, enabling errors to be returned from functions at the same time as the data which the function would traditionally return.
 - Common error checking criteria, through an `ErrorCriteria` class. This defines a number of common criteria used for error checking, such as equality and non-zero assertions.
 
-These classes are extensible to enable, for example, custom error criteria by extending the `ErrorCriteria` class, or the passing of custom data types through extension of the `Result` object. They are designed to be modular, such that individual elements can be used separately to implement individual parts of the error handling process.The use of the whole framework enables robust error checking for the largest and most complex models and software.
+These classes are extensible to enable, for example, custom error criteria by extending the `ErrorCriteria` class, or the passing of custom data types through extension of the `Result` object. They are designed to be modular, such that individual elements can be used separately to implement individual parts of the error handling process. The use of the whole framework enables robust error checking for the largest and most complex models and software.
 
 # Acknowledgements
 
