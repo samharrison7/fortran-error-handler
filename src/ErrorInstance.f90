@@ -46,8 +46,6 @@ module ErrorInstanceModule
                     tempTrace(i) = trace(i)
                 end do
                 allocate(this%trace, source=tempTrace)
-            else
-                allocate(this%trace(0))
             end if
         end function
 
