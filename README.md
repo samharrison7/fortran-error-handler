@@ -140,9 +140,9 @@ $ 1
 $ Input value is: 1
 ```
 
-The stop codes 105 and 106 are the default error codes for those particular limit criteria. These codes can be modified using the ErrorCriteria's `modifyErrorCriterionCode` procedure. See the [ErrorCriteria docs](docs/ErrorCriteria.md).
+The stop codes 105 and 106 are the default error codes for those particular limit criteria. These codes can be modified using the ErrorCriteria's `modifyErrorCriterionCode` procedure. See the [ErrorCriteria docs](doc/ErrorCriteria.md).
 
-The framework is designed to work seemlessly in large object-oriented projects, where Result objects can be returned from functions with ErrorInstances that contain a user-defined trace of where the error came from. The goal of such a trace is to provide more useful errors to end users of your application, who might not have access to the source code and thus find standard stack traces containing references to files and line numbers useless. More details can be found in the [ErrorInstance docs](docs/ErrorInstance.md), and more thorough examples in the [examples directory](example/).
+The framework is designed to work seemlessly in large object-oriented projects, where Result objects can be returned from functions with ErrorInstances that contain a user-defined trace of where the error came from. The goal of such a trace is to provide more useful errors to end users of your application, who might not have access to the source code and thus find standard stack traces containing references to files and line numbers useless. More details can be found in the [ErrorInstance docs](doc/ErrorInstance.md), and more thorough examples in the [examples directory](example/).
 
 ## Learn more <a name="more"></a>
 
