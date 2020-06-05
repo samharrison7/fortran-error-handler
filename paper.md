@@ -32,7 +32,7 @@ bibliography: paper.bib
 
 Despite the rise of interpreted programming languages like Python and R in scientific programming, compiled languages are still the de-facto choice for computationally intensive modelling tasks, such as in climate sciences and theoretical physics. Fortran remains the top choice of many scientists, and Modern Fortran has brought great flexibility to the language in terms of object-oriented paradigms and polymorphism.
 
-Any modelling code needs robust error checking, yet Fortran error handling frameworks to provide these utilities are few and far between, and those that do exist often implement only part of the error handling process, or rely on pre-processors [@popper:2012; @lucking:2015]. Here, we present what we believe is the most comprehensive Fortran error handling framework to date, providing a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
+Any modelling code needs robust error checking, yet Fortran error handling frameworks to provide these utilities are few and far between, and those that do exist often implement only part of the error handling process, or rely on pre-processors [@poppe:2012; @lucking:2015]. Here, we present what we believe is the most comprehensive Fortran error handling framework to date, providing a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
 The framework implements the whole error handling process, including separate utilities for:
 
