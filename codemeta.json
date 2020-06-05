@@ -1,0 +1,51 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "0000-0001-8491-4720",
+      "@type": "Person",
+      "email": "sharrison@ceh.ac.uk",
+      "name": "Sam Harrison",
+      "affiliation": "UK Centre for Ecology & Hydrology, Lancaster Environment Centre, Library Avenue, Bailrigg, Lancaster, LA1 4AP, UK"
+    },
+    {
+      "@id": "0000-0003-4489-5363",
+      "@type": "Person",
+      "email": "vke@ceh.ac.uk",
+      "name": "Virginie D Keller",
+      "affiliation": "UK Centre for Ecology & Hydrology, Maclean Building, Benson Lane, Crowmarsh Gifford, Wallingford, OX10 8BB, UK"
+    },
+    {
+      "@id": "0000-0002-9876-0491",
+      "@type": "Person",
+      "email": "rjw@ceh.ac.uk",
+      "name": "Richard J Williams",
+      "affiliation": "UK Centre for Ecology & Hydrology, Maclean Building, Benson Lane, Crowmarsh Gifford, Wallingford, OX10 8BB, UK"
+    },
+    {
+      "@id": "0000-0003-3764-5331",
+      "@type": "Person",
+      "email": "mihu@ceh.ac.uk",
+      "name": "Michael Hutchins",
+      "affiliation": "UK Centre for Ecology & Hydrology, Maclean Building, Benson Lane, Crowmarsh Gifford, Wallingford, OX10 8BB, UK"
+    },
+    {
+      "@id": "0000-0002-3627-851X",
+      "@type": "Person",
+      "email": "stlo@ceh.ac.uk",
+      "name": "Stephen Lofts",
+      "affiliation": "UK Centre for Ecology & Hydrology, Lancaster Environment Centre, Library Avenue, Bailrigg, Lancaster, LA1 4AP, UK"
+    }
+  ],
+  "identifier": "",
+  "codeRepository": "https://github.com/samharrison7/fortran-error-handler",
+  "datePublished": "2020-06-05",
+  "dateModified": "2020-06-05",
+  "dateCreated": "2020-06-05",
+  "description": "Comprehensive error framework for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.",
+  "keywords": "Fortran, error handling",
+  "license": "MIT",
+  "title": "Fortran Error Handler",
+  "version": "v1.0.0"
+}

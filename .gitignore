@@ -6,6 +6,7 @@ Makefile
 *.sublime-project
 *.sublime-workspace
 .vs/
+.vscode/
 .project
 Debug/
 *.sln
