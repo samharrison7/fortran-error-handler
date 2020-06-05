@@ -8,23 +8,23 @@ authors:
       orcid: 0000-0001-8491-4720 
       affiliation: 1
     - name: Virginie D Keller
-      orcid:
+      orcid: 0000-0003-4489-5363
       affiliation: 2
     - name: Richard J Williams
-      orcid: 
+      orcid: 0000-0002-9876-0491 
       affiliation: 2
     - name: Michael Hutchins
-      orcid:
+      orcid: 0000-0003-3764-5331
       affiliation: 2
     - name: Stephen Lofts
-      orcid:
+      orcid: 0000-0002-3627-851X
       affilication: 1
 affiliations:
     - name: UK Centre for Ecology & Hydrology, Lancaster Environment Centre, Library Avenue, Bailrigg, Lancaster, LA1 4AP, UK
       index: 1
     - name: UK Centre for Ecology & Hydrology, Maclean Building, Benson Lane, Crowmarsh Gifford, Wallingford, OX10 8BB, UK
       index: 2
-date: 9 May 2020
+date: 5 June 2020
 bibliography: paper.bib
 ---
 

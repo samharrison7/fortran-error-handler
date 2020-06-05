@@ -14,13 +14,17 @@ Fortran error handling frameworks are few and far between, and those that do exi
 
 If you wish to use the Fortran Error Handler in a project, the simplest way to do so is to include the source files (in `src/`) at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
 
-The code can also be compiled using `cmake`, which creates an executable using the `example/example_usage.f90` script as well as a library:
+The code can also be compiled using `cmake`, which creates an example executable (using `example/example_usage.f90`), an executable of unit tests (using `tests/run_tests.f90`), and a library of the framework:
 
 ```bash
 $ mkdir build
 $ cd build
 $ cmake ..
 $ make
+# To run the unit tests
+$ ./test
+# To run the example
+$ ./example
 ```
 
 Whether the library is shared or not is specified by the `BUILD_SHARED_LIBS` variable. If you wish to build a shared library, then pass the `BUILD_SHARED_LIBS` option as on:
@@ -28,6 +32,8 @@ Whether the library is shared or not is specified by the `BUILD_SHARED_LIBS` var
 ```bash
 $ cmake .. -DBUILD_SHARED_LIBS=ON
 ```
+
+The framework has been tested using GFortran 7 upwards and Intel Fortran 18.
 
 <a name="usage"></a>
 ## Usage
