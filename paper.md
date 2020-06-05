@@ -18,7 +18,7 @@ authors:
       affiliation: 2
     - name: Stephen Lofts
       orcid: 0000-0002-3627-851X
-      affilication: 1
+      affiliation: 1
 affiliations:
     - name: UK Centre for Ecology & Hydrology, Lancaster Environment Centre, Library Avenue, Bailrigg, Lancaster, LA1 4AP, UK
       index: 1
