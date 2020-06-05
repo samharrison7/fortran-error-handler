@@ -987,18 +987,17 @@ module ResultModule
         subroutine addErrors(this, errors)
             class(Result), intent(inout)        :: this
             type(ErrorInstance), intent(in)     :: errors(:)
-            integer                             :: i
+            type(ErrorInstance), allocatable    :: tmpErrors(:)
 
-            ! Allocate array of errors, if it isn't already allocated
-            if (.not. allocated(this%errors)) allocate(this%errors(0))
-            ! Add the new errors (if there are any)
-            if (size(errors)>0) then
-                this%errors = [this%errors, errors]
-                do i=1, size(errors)
-                    if (errors(i)%isCriticalError()) then
-                        print *, "Critical error added: " // trim(errors(i)%message)
-                    end if
-                end do
+            ! If errors not already allocated, use the input errors to allocate
+            if (.not. allocated(this%errors) .and. size(errors)>0) then
+                allocate(this%errors, source=errors)
+            ! Else, if there are new errors to add, do an allocation shuffle to add
+            else if (size(errors)>0) then
+                call move_alloc(this%errors, tmpErrors)
+                allocate(this%errors(size(tmpErrors) + size(errors)))
+                this%errors(:size(tmpErrors)) = tmpErrors
+                this%errors(size(tmpErrors)+1:) = errors
             end if
         end subroutine
 
