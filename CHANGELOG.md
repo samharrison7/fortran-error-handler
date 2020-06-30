@@ -15,6 +15,6 @@ Notable changes to the Fortran Error Handler will be documented here.
 ### Added
 - First major release.
 
-[Unreleased]: https://github.com/samharrison7/fortran-error-handler/compare/1.0.1...HEAD
-[1.0.1]: https://github.com/samharrison7/fortran-error-hander/compare/v1.0...v1.0.1
-[1.0]: https://github.com/samharrison7/fortran-error-hander/compare/v0.3-beta2...v1.0
+[Unreleased]: https://github.com/samharrison7/fortran-error-handler/tree/develop 
+[1.0.1]: https://github.com/samharrison7/fortran-error-handler/tree/1.0.1
+[1.0]: https://github.com/samharrison7/fortran-error-handler/tree/1.0 
