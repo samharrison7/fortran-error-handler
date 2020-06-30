@@ -139,6 +139,7 @@ module ErrorCriteriaModule
                         messageSuffix, &
                         bashColors, &
                         printErrorCode, &
+                        triggerWarnings, &
                         on)
             class(ErrorCriteria), intent(inout)         :: this                 !! This ErrorCriteria instance
             type(ErrorInstance), intent(in), optional   :: errors(:)            !! Custom defined errors
@@ -146,7 +147,8 @@ module ErrorCriteriaModule
             character(len=*), intent(in), optional      :: warningPrefix        !! Prefix to warning error messages
             character(len=*), intent(in), optional      :: messageSuffix        !! Suffix to error messages
             logical, intent(in), optional               :: bashColors           !! Should prefixes be colored in bash shells?
-            logical, intent(in), optional               :: printErrorCode
+            logical, intent(in), optional               :: printErrorCode       !! Should error messages be prefixed with the error code?
+            logical, intent(in), optional               :: triggerWarnings      !! Should warnings be printing on trigger?
             logical, intent(in), optional               :: on                   !! Should the ErrorHandler output errors?
 
             ! Initialise the parent ErrorHandler                                                                    
@@ -156,6 +158,7 @@ module ErrorCriteriaModule
                 warningPrefix=warningPrefix, &
                 messageSuffix=messageSuffix, &
                 bashColors=bashColors, &
+                triggerWarnings=triggerWarnings, &
                 printErrorCode=printErrorCode, &
                 on=on &
             )

@@ -14,9 +14,9 @@ An `ErrorInstance(code, message, isCritical, trace)` interface is provided so th
 
 | Parameter declaration | Description | Default |
 | :--- | :--- | :--- |
-| `integer, optional :: code` | The error code. | 1 |
-| `character(len=*), optional :: message` | Default message for the error (which there is plenty of opportunity to override). | "" |
-| `logical, optional :: isCritical` | Is the error critical (i.e., should it stop the program)? | .true. |
+| `integer, optional :: code` | The error code. | `1` |
+| `character(len=*), optional :: message` | Default message for the error (which there is plenty of opportunity to override). | `""` |
+| `logical, optional :: isCritical` | Is the error critical (i.e., should it stop the program)? | `.true.` |
 | `character(len=*), optional :: trace(:)` | Custom trace for the error | - |
 
 For example:

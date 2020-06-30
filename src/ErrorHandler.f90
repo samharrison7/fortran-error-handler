@@ -17,6 +17,7 @@ module ErrorHandlerModule
         logical                             :: isInitialised = .false.      !! Has the ErrorHandler been initialised?
         logical                             :: bashColors = .true.          !! Should colors be displayed in bash consoles?
         logical                             :: printErrorCode = .false.     !! Should the error code be printed when errors triggered?
+        logical                             :: triggerWarnings = .true.     !! Should warnings be printed on trigger?
         logical                             :: on = .true.                  !! Set to .false. to turn ErrorHandler output off
         
         contains
@@ -64,6 +65,7 @@ module ErrorHandlerModule
                         messageSuffix, &
                         bashColors, &
                         printErrorCode, &
+                        triggerWarnings, &
                         on)
             class(ErrorHandler), intent(inout)          :: this             !! This ErrorHandler instance
             type(ErrorInstance), intent(in), optional   :: errors(:)        !! List of ErrorInstances to add
@@ -72,6 +74,7 @@ module ErrorHandlerModule
             character(len=*), intent(in), optional      :: messageSuffix    !! Suffix for error messages
             logical, intent(in), optional               :: bashColors       !! Use bash colours or not?
             logical, intent(in), optional               :: printErrorCode   !! Should the error code be prepended to the prefix?
+            logical, intent(in), optional               :: triggerWarnings  !! Should warnings be printed on trigger?
             logical, intent(in), optional               :: on               !! Turn the ErrorHandler on or off
             integer                                     :: i                ! Loop iterator.
             logical, allocatable                        :: mask(:)          ! Logical mask to remove default errors from input errors array.
@@ -137,8 +140,10 @@ module ErrorHandlerModule
             if (this%bashColors .eqv. .true.) this%criticalPrefix = "\x1B[91m" // adjustl(trim(this%criticalPrefix)) // "\x1B[0m"
             if (this%bashColors .eqv. .true.) this%warningPrefix = "\x1B[94m" // adjustl(trim(this%warningPrefix)) // "\x1B[0m"
 
-            ! Set whether we want the error code to be prefix to the message
+            ! Set whether we want the error code to be prefixed to the message and whether
+            ! we want warnings to be triggered
             if (present(printErrorCode)) this%printErrorCode = printErrorCode
+            if (present(triggerWarnings)) this%triggerWarnings = triggerWarnings
 
             ! Set whether ErrorHandler output is on or off
             if (present(on)) this%on = on
@@ -503,7 +508,8 @@ module ErrorHandlerModule
                     ! print out errors for elements of arrays that mightn't have
                     ! been used (e.g., if the wrong size array was declared). Don't do 
                     ! anything if error code is zero.
-                    if (errorsOut(i)%getCode() > 0 .and. errorsOut(i)%getCode() < 99999) then
+                    if (errorsOut(i)%getCode() > 0 .and. errorsOut(i)%getCode() < 99999 &
+                        .and. .not. (.not. this%triggerWarnings .and. .not. errorsOut(i)%isCritical)) then
                         ! Set message prefix according to whether error is
                         ! critical or warning. Also add colour for Bash consoles.
                         if (errorsOut(i)%isCritical) then

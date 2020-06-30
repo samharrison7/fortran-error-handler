@@ -22,8 +22,10 @@ The ErrorHandler must be initialised before use, by calling the `init` procedure
 | `character(len=*), optional :: criticalPrefix` | Custom prefix to be prepended to critical error messages. | "Error:" |
 | `character(len=*), optional :: warningPrefix` | Custom prefix to non-critical (warning) error messages. | "Warning:" |
 | `character(len=*), optional :: messageSuffix` | Custom suffix to be appended to error message. | - |
-| `logical, optional :: bashColors` | Should colors be displayed in output to bash consoles? | .true. |
-| `logical, optional :: on` | Should the `trigger` procedure actually trigger errors? | .true. |
+| `logical, optional :: bashColors` | Should colors be displayed in output to bash consoles? | `.true.` |
+| `logical, optional :: printErrorCode` | Should the error code be prepended to the prefix? | `.false.` |
+| `logical, optional :: triggerWarnings` | Should warnings be printed when the error queue is triggered? | `.true.` |
+| `logical, optional :: on` | Should the `trigger` procedure actually trigger errors? | `.true.` |
 
 For example:
 
@@ -50,7 +52,7 @@ For single errors, `add` acts as a generic to the ErrorHandler's `addErrorInstan
 | :--- | :--- | :--- |
 | `integer, optional :: code` | Error code to add. | - |
 | `character(len=*), optional :: message` | Message for the error. | "" |
-| `logical, optional :: isCritical` | Is the error critical? | .true. |
+| `logical, optional :: isCritical` | Is the error critical? | `.true.` |
 | `type(ErrorInstance), optional :: error` | ErrorInstance to add, if a code hasn't been specified. | - |
 
 For example:
@@ -67,7 +69,7 @@ For multiple errors input as an array of codes and optional messages and areCrit
 | :--- | :--- | :--- |
 | `integer :: codes(:)` | Array of error codes to add. | - |
 | `character(len=*), optional :: messages(:)` | Corresponding messages for the errors. | "" |
-| `logical, optional :: areCritical(:)` | Are the errors critical? | .true. |
+| `logical, optional :: areCritical(:)` | Are the errors critical? | `.true.` |
 
 For example:
 
