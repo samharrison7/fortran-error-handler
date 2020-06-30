@@ -33,7 +33,7 @@ Initialising ErrorCriteria serves the purpose of [initialising its parent](Error
 | `character(len=*), optional :: criticalPrefix` | Custom prefix to be prepended to critical error messages. | "Error:" |
 | `character(len=*), optional :: warningPrefix` | Custom prefix to non-critical (warning) error messages. | "Warning:" |
 | `character(len=*), optional :: messageSuffix` | Custom suffix to be appended to error message. | - |
-| `logical, optional :: bashColors` | Should colors be displayed in output to bash consoles? | .true. |
+| `logical, optional :: bashColors` | Should colors be displayed in output to bash consoles? | `.true.` |
 
 For example:
 

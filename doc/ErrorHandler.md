@@ -52,7 +52,7 @@ For single errors, `add` acts as a generic to the ErrorHandler's `addErrorInstan
 | :--- | :--- | :--- |
 | `integer, optional :: code` | Error code to add. | - |
 | `character(len=*), optional :: message` | Message for the error. | "" |
-| `logical, optional :: isCritical` | Is the error critical? | .true. |
+| `logical, optional :: isCritical` | Is the error critical? | `.true.` |
 | `type(ErrorInstance), optional :: error` | ErrorInstance to add, if a code hasn't been specified. | - |
 
 For example:
@@ -69,7 +69,7 @@ For multiple errors input as an array of codes and optional messages and areCrit
 | :--- | :--- | :--- |
 | `integer :: codes(:)` | Array of error codes to add. | - |
 | `character(len=*), optional :: messages(:)` | Corresponding messages for the errors. | "" |
-| `logical, optional :: areCritical(:)` | Are the errors critical? | .true. |
+| `logical, optional :: areCritical(:)` | Are the errors critical? | `.true.` |
 
 For example:
 
