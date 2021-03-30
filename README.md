@@ -1,6 +1,7 @@
 # Fortran Error Handler
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4268263.svg)](https://doi.org/10.5281/zenodo.4268263)
+[![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B%20%20%E2%97%8F%20%20%E2%97%8B-orange)](https://fair-software.eu)
 
 Fortran error handling frameworks are few and far between, and those that do exist often implement only parts of the error handling process, or rely on pre-processors. The goal of this error handling framework is to provide a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
