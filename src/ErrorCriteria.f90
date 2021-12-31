@@ -133,14 +133,14 @@ module ErrorCriteriaModule
         !> Initialise the ErrorCriteria and at the same time initialise
         !! the parent ErrorHandler, setting custom errors.
         subroutine initErrorCriteria(this, &
-                        errors, &
-                        criticalPrefix, &
-                        warningPrefix, &
-                        messageSuffix, &
-                        bashColors, &
-                        printErrorCode, &
-                        triggerWarnings, &
-                        on)
+                                     errors, &
+                                     criticalPrefix, &
+                                     warningPrefix, &
+                                     messageSuffix, &
+                                     bashColors, &
+                                     printErrorCode, &
+                                     triggerWarnings, &
+                                     on)
             class(ErrorCriteria), intent(inout)         :: this                 !! This ErrorCriteria instance
             type(ErrorInstance), intent(in), optional   :: errors(:)            !! Custom defined errors
             character(len=*), intent(in), optional      :: criticalPrefix       !! Prefix to critical error messages

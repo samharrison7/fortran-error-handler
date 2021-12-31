@@ -20,20 +20,27 @@ module CustomErrorCriteriaModule
     !! the parent ErrorCriteria (and thus ErrorHandler), setting custom errors
     !! and default error criteria errors.
     subroutine initCustomErrorCriteria(this, &
-                                        errors, &
-                                        criticalPrefix, &
-                                        warningPrefix, &
-                                        messageSuffix, &
-                                        bashColors)
+                                       errors, &
+                                       criticalPrefix, &
+                                       warningPrefix, &
+                                       messageSuffix, &
+                                       bashColors, &
+                                       printErrorCode, &
+                                       triggerWarnings, &
+                                       on)
         class(CustomErrorCriteria), intent(inout)   :: this                 !> This ErrorCriteria instance
         type(ErrorInstance), intent(in), optional   :: errors(:)            !> Custom defined errors
         character(len=*), intent(in), optional      :: criticalPrefix       !> Prefix to critical error messages
         character(len=*), intent(in), optional      :: warningPrefix        !> Prefix to warning error messages
         character(len=*), intent(in), optional      :: messageSuffix        !> Suffix to error messages
         logical, intent(in), optional               :: bashColors           !> Should prefixes be colored in bash shells?
+        logical, intent(in), optional               :: printErrorCode       !! Should error messages be prefixed with the error code?
+        logical, intent(in), optional               :: triggerWarnings      !! Should warnings be printing on trigger?
+        logical, intent(in), optional               :: on                   !! Should the ErrorHandler output errors?
 
         !> We must initialise the parent ErrorCriteria for the default criteria to be set                                                              
-        call this%ErrorCriteria%init(errors,criticalPrefix,warningPrefix,messageSuffix,bashColors)
+        call this%ErrorCriteria%init(errors, criticalPrefix, warningPrefix, messageSuffix, bashColors, &
+                                     printErrorCode, triggerWarnings, on)
         ! Add our new error criterion. Make sure you include a function(s) that corresponds to this!
         call this%addErrorCriteria( &
             codes = [110,111], &
@@ -45,7 +52,7 @@ module CustomErrorCriteriaModule
     end subroutine
 
     !> Test whether an integer value is a factor of criterion
-    pure function integerFactor(this, value, criterion, message, traceMessage) result(error)
+    function integerFactor(this, value, criterion, message, traceMessage) result(error)
         class(CustomErrorCriteria), intent(in)  :: this             !> The ErrorCriteria class
         integer, intent(in)                     :: value            !> The value to test
         integer, intent(in)                     :: criterion            !> The value to test
@@ -86,7 +93,7 @@ module CustomErrorCriteriaModule
     end function
 
     !> Test whether an integer value is a multiple of criterion
-    pure function integerMultiple(this, value, criterion, message, traceMessage) result(error)
+    function integerMultiple(this, value, criterion, message, traceMessage) result(error)
         class(CustomErrorCriteria), intent(in)  :: this             !> The ErrorCriteria class
         integer, intent(in)                     :: value            !> The value to test
         integer, intent(in)                     :: criterion            !> The value to test

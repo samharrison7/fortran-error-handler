@@ -1,5 +1,8 @@
 # Fortran Error Handler
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4268263.svg)](https://doi.org/10.5281/zenodo.4268263)
+[![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B%20%20%E2%97%8F%20%20%E2%97%8B-orange)](https://fair-software.eu)
+
 Fortran error handling frameworks are few and far between, and those that do exist often implement only parts of the error handling process, or rely on pre-processors. The goal of this error handling framework is to provide a universal and comprehensive solution for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.
 
 - [Getting started](#getting-started)
@@ -12,9 +15,42 @@ Fortran error handling frameworks are few and far between, and those that do exi
 <a name="getting-started"></a>
 ## Getting started
 
-If you wish to use the Fortran Error Handler in a project, the simplest way to do so is to include the source files (in `src/`) at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
+There are a few ways to get the Fortran Error Handler into your project.
 
-The code can also be compiled using `cmake`, which creates an example executable (using `example/example_usage.f90`), an executable of unit tests (using `tests/run_tests.f90`), and a library of the framework:
+### `fpm` - Fortran Package Manager
+
+The simplest way is to use [fpm (Fortran Package Manager)](https://fpm.fortran-lang.org/en/index.html). You can either directly include the Fortran Error Handler as a dependency in your `fpm.toml` file:
+
+```toml
+[dependencies]
+feh = { git = "https://github.com/samharrison7/fortran-error-handler" }
+```
+
+Or you can clone the repo and build the library yourself using fpm:
+
+```bash
+$ git clone https://github.com/samharrison7/fortran-error-handler
+$ cd fortran-error-handler
+$ fpm build --flag="-fbackslash"
+```
+
+A static library (e.g. `libfeh.a` on Linux) and `.mod` files will be generated in the `build` directory for you to use. An example executable (using `example/example_usage.f90`) will also be generated. Running `fpm test` will run tests (using `tests/run_tests.f90`) for the framework. The `-fbackslash` flag is a GFortran flag to enable coloured terminal output, and is only needed if the `bashColors` option is `.true.` (default). The equivalent `ifort` flag is `/assume:bscc`.
+
+You can also get fpm to install the Fortran Error Handler locally (e.g. to `/home/<user>/.local`):
+
+```bash
+$ fpm install --flag="-fbackslash"
+```
+
+Fpm can easily be installed using Conda: `conda install -c conda-forge fpm`.
+
+### Grab the files
+
+Another simple method is to simple grab a copy of the source files (in `src/`) and include at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
+
+### `cmake`
+
+The code can also be compiled using `cmake`, which generates a library and `.mod` files, an example executable, and executable of unit tests.
 
 ```bash
 $ mkdir build
@@ -25,12 +61,6 @@ $ make
 $ ./test
 # To run the example
 $ ./example
-```
-
-Whether the library is shared or not is specified by the `BUILD_SHARED_LIBS` variable. If you wish to build a shared library, then pass the `BUILD_SHARED_LIBS` option as on:
-
-```bash
-$ cmake .. -DBUILD_SHARED_LIBS=ON
 ```
 
 The framework has been tested using GFortran 7 upwards and Intel Fortran 18.
