@@ -14,9 +14,34 @@ Fortran error handling frameworks are few and far between, and those that do exi
 <a name="getting-started"></a>
 ## Getting started
 
-If you wish to use the Fortran Error Handler in a project, the simplest way to do so is to include the source files (in `src/`) at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
+There are a few ways to get the Fortran Error Handler into your project.
 
-The code can also be compiled using `cmake`, which creates an example executable (using `example/example_usage.f90`), an executable of unit tests (using `tests/run_tests.f90`), and a library of the framework:
+### `fpm` - Fortran Package Manager
+
+The simplest way is to use [fpm (Fortran Package Manager)](https://fpm.fortran-lang.org/en/index.html). You can either directly include the Fortran Error Handler as a dependency in your `fpm.toml` file:
+
+```toml
+[dependencies]
+feh = { git = "https://github.com/samharrison7/fortran-error-handler" }
+```
+
+Or you can clone the repo and build the library yourself using fpm:
+
+```bash
+$ git clone https://github.com/samharrison7/fortran-error-handler
+$ cd fortran-error-handler
+$ fpm build --flag="-fbackslash"
+```
+
+A static library (e.g. `libfeh.a` on Linux) and `.mod` files will be generated in the `build` directory for you to use. An example executable (using `example/example_usage.f90`) will also be generated. Running `fpm test` will run tests (using `tests/run_tests.f90`) for the framework. Fpm can easily be installed using Conda: `conda install -c conda-forge fpm`.
+
+### Grab the files
+
+Another simple method is to simple grab a copy of the source files (in `src/`) and include at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
+
+### `cmake`
+
+The code can also be compiled using `cmake`, which generates a library and `.mod` files, an example executable, and executable of unit tests.
 
 ```bash
 $ mkdir build
@@ -27,12 +52,6 @@ $ make
 $ ./test
 # To run the example
 $ ./example
-```
-
-Whether the library is shared or not is specified by the `BUILD_SHARED_LIBS` variable. If you wish to build a shared library, then pass the `BUILD_SHARED_LIBS` option as on:
-
-```bash
-$ cmake .. -DBUILD_SHARED_LIBS=ON
 ```
 
 The framework has been tested using GFortran 7 upwards and Intel Fortran 18.

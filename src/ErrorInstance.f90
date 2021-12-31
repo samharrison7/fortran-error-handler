@@ -55,15 +55,12 @@ module ErrorInstanceModule
         !! and https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran
         subroutine addToTrace(this, message)
             class(ErrorInstance), intent(inout) :: this
-            character(len=*), intent(in) :: message
-            character(len=256) :: tempMessage
-
-            tempMessage = message       ! Make character length 256
+            character(len=*), intent(in)        :: message
             ! Check if this is the first time something has been added to
             ! the trace or not. If it is, allocate as null array.
             if (.not. allocated(this%trace)) allocate(this%trace(0))
             ! Add the new node to the trace array.
-            this%trace = [this%trace, tempMessage]
+            this%trace = [character(len=256) :: this%trace, message]
         end subroutine
 
         !> Return the error code.

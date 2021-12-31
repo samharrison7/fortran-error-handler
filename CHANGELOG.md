@@ -3,6 +3,9 @@ Notable changes to the Fortran Error Handler will be documented here.
 
 ## [Unreleased]
 
+### Added
+- Added option to compile with fpm (Fortran Package Manager) and updated README.md accordingly.
+
 ## [1.0.2] - 2020-11-11
 
 No changes to code. Release is only to archive on Zenodo.
