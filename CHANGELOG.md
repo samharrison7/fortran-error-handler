@@ -3,6 +3,11 @@ Notable changes to the Fortran Error Handler are documented here.
 
 ## [Unreleased]
 
+## [1.0.4] - 2022-01-02
+
+### Fixed
+- Added copyright to `fpm.toml`
+
 ## [1.0.3] - 2021-12-31
 
 ### Added
@@ -26,7 +31,8 @@ No changes to code. Release is only to archive on Zenodo.
 ### Added
 - First major release.
 
-[Unreleased]: https://github.com/samharrison7/fortran-error-handler/compare/1.0.3...HEAD 
+[Unreleased]: https://github.com/samharrison7/fortran-error-handler/compare/1.0.4...HEAD 
+[1.0.4]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.4
 [1.0.3]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.3
 [1.0.2]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.2
 [1.0.1]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.1
