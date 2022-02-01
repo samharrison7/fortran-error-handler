@@ -3,6 +3,9 @@ Notable changes to the Fortran Error Handler are documented here.
 
 ## [Unreleased]
 
+### Added
+- [meson.build](./meson.build) file to enable builds using meson. Added details to README.md.
+
 ## [1.0.4] - 2022-01-02
 
 ### Fixed

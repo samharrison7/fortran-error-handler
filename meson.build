@@ -1,14 +1,14 @@
 project('feh', 'fortran', meson_version: '>=0.50')
 
 # Compiler flags
-flags = []
+flags = ''
 if meson.get_compiler('fortran').get_id() == 'gcc'
     flags = ['-fbackslash', '-fbacktrace']
 endif
 if meson.get_compiler('fortran').get_id() == 'intel'
     flags = ['-assume', 'bscc', '-traceback']
 endif
-add_project_arguments(flags, language : 'fortran')
+add_global_arguments(flags, language : 'fortran')
 
 # Files that are common to all build
 files = ['src/ErrorInstance.f90', 'src/ErrorHandler.f90',

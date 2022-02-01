@@ -48,6 +48,26 @@ Fpm can easily be installed using Conda: `conda install -c conda-forge fpm`.
 
 Another simple method is to simple grab a copy of the source files (in `src/`) and include at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
 
+### Meson
+
+If you use [meson](https://mesonbuild.com/), a [meson.build](./meson.build) is provided. For example, if you want to build into the `buildmeson` directory:
+
+```bash
+$ meson buildmeson
+$ ninja -C buildmeson
+```
+
+From meson 0.56, you can use the `meson compile` command instead of `ninja`. This will generate the example and test executables, a shared library and module files. You can run the tests directly using meson: `meson test -C buildmeson`.
+
+By default, the library is built with a debug build type. To build for release (with `-O3` optimisations), specify this via the `--buildtype=release` option:
+
+```bash
+$ meson buildrelease --buildtype=release
+$ ninja -C buildrelease
+```
+
+Installing using meson (`meson install`) isn't recommended at the moment as `.mod` files are not installed - see [this issue](https://github.com/mesonbuild/meson/issues/5374).
+
 ### `cmake`
 
 The code can also be compiled using `cmake`, which generates a library and `.mod` files, an example executable, and executable of unit tests.
