@@ -15,7 +15,7 @@ Fortran error handling frameworks are few and far between, and those that do exi
 <a name="getting-started"></a>
 ## Getting started
 
-There are a few ways to get the Fortran Error Handler into your project.
+There are a few ways to get the Fortran Error Handler into your project. The following have been tested with recent version of the GFortran and Intel Fortran compiler (`ifort`, not `ifx`).
 
 ### `fpm` - Fortran Package Manager
 
@@ -50,7 +50,7 @@ Another simple method is to simple grab a copy of the source files (in `src/`) a
 
 ### Meson
 
-If you use [meson](https://mesonbuild.com/), a [meson.build](./meson.build) is provided. For example, if you want to build into the `buildmeson` directory:
+If you use [meson](https://mesonbuild.com/), a [meson.build](./meson.build) file is provided. For example, if you want to build into the `buildmeson` directory:
 
 ```bash
 $ meson buildmeson
@@ -68,9 +68,9 @@ $ ninja -C buildrelease
 
 Installing using meson (`meson install`) isn't recommended at the moment as `.mod` files are not installed - see [this issue](https://github.com/mesonbuild/meson/issues/5374).
 
-### `cmake`
+### CMake
 
-The code can also be compiled using `cmake`, which generates a library and `.mod` files, an example executable, and executable of unit tests.
+The code can also be compiled using CMake, which similarly generates a library and `.mod` files, an example executable, and executable of unit tests.
 
 ```bash
 $ mkdir build
@@ -82,8 +82,6 @@ $ ./test
 # To run the example
 $ ./example
 ```
-
-The framework has been tested using GFortran 7 upwards and Intel Fortran 18.
 
 <a name="usage"></a>
 ## Usage
@@ -207,9 +205,6 @@ Explore the documentation for each class to learn how to best use the framework,
 ## Caveats and limitations <a name="caveats"></a>
 
 - Error code must be less than 99999.
-- GFortran bugs:
-    - `-O1` or higher must be used to avoid "character length mismatch in array constructor" errors with allocatable character variables.
-    - `-fcheck=no-bounds` must be used to avoid errors on allocating rank-2 or higher arrays.
 - Result objects only support up to rank-4 (4 dimensional) data.
 - Limited support for different kinds, due to Fortran's lack of kind polymorphism. In particular, ErrorCriteria only accept 4-byte integers and single precision, double precision and quadruple precision reals, as such:
 
