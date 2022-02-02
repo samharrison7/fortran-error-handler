@@ -6,6 +6,9 @@ Notable changes to the Fortran Error Handler are documented here.
 ### Added
 - [meson.build](./meson.build) file to enable builds using meson. Added details to README.md.
 
+### Removed
+- Removed need to specify `-fbackslash` (or equivalent for other compilers) by using `char(27)` for terminal escape character.
+
 ## [1.0.4] - 2022-01-02
 
 ### Fixed
