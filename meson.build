@@ -3,10 +3,10 @@ project('feh', 'fortran', meson_version: '>=0.50')
 # Compiler flags
 flags = ''
 if meson.get_compiler('fortran').get_id() == 'gcc'
-    flags = ['-fbackslash', '-fbacktrace']
+    flags = ['-fbacktrace']
 endif
 if meson.get_compiler('fortran').get_id() == 'intel'
-    flags = ['-assume', 'bscc', '-traceback']
+    flags = ['-traceback']
 endif
 add_global_arguments(flags, language : 'fortran')
 

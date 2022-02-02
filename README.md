@@ -31,15 +31,14 @@ Or you can clone the repo and build the library yourself using fpm:
 ```bash
 $ git clone https://github.com/samharrison7/fortran-error-handler
 $ cd fortran-error-handler
-$ fpm build --flag="-fbackslash"
+$ fpm build
 ```
 
-A static library (e.g. `libfeh.a` on Linux) and `.mod` files will be generated in the `build` directory for you to use. An example executable (using `example/example_usage.f90`) will also be generated. Running `fpm test` will run tests (using `tests/run_tests.f90`) for the framework. The `-fbackslash` flag is a GFortran flag to enable coloured terminal output, and is only needed if the `bashColors` option is `.true.` (default). The equivalent `ifort` flag is `/assume:bscc`.
-
+A static library (e.g. `libfeh.a` on Linux) and `.mod` files will be generated in the `build` directory for you to use. An example executable (using `example/example_usage.f90`) will also be generated. Running `fpm test` will run tests (using `tests/run_tests.f90`) for the framework. 
 You can also get fpm to install the Fortran Error Handler locally (e.g. to `/home/<user>/.local`):
 
 ```bash
-$ fpm install --flag="-fbackslash"
+$ fpm install
 ```
 
 Fpm can easily be installed using Conda: `conda install -c conda-forge fpm`.

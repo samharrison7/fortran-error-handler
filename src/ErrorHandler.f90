@@ -67,18 +67,22 @@ module ErrorHandlerModule
                         printErrorCode, &
                         triggerWarnings, &
                         on)
-            class(ErrorHandler), intent(inout)          :: this             !! This ErrorHandler instance
-            type(ErrorInstance), intent(in), optional   :: errors(:)        !! List of ErrorInstances to add
-            character(len=*), intent(in), optional      :: criticalPrefix   !! Prefix for error messages if they're critical
-            character(len=*), intent(in), optional      :: warningPrefix    !! Prefix for error messages if they're warnings
-            character(len=*), intent(in), optional      :: messageSuffix    !! Suffix for error messages
-            logical, intent(in), optional               :: bashColors       !! Use bash colours or not?
-            logical, intent(in), optional               :: printErrorCode   !! Should the error code be prepended to the prefix?
-            logical, intent(in), optional               :: triggerWarnings  !! Should warnings be printed on trigger?
-            logical, intent(in), optional               :: on               !! Turn the ErrorHandler on or off
-            integer                                     :: i                ! Loop iterator.
-            logical, allocatable                        :: mask(:)          ! Logical mask to remove default errors from input errors array.
-            type(ErrorInstance)                         :: defaultErrors(2) ! Temporary array containing default errors.
+            class(ErrorHandler), intent(inout)          :: this                     !! This ErrorHandler instance
+            type(ErrorInstance), intent(in), optional   :: errors(:)                !! List of ErrorInstances to add
+            character(len=*), intent(in), optional      :: criticalPrefix           !! Prefix for error messages if they're critical
+            character(len=*), intent(in), optional      :: warningPrefix            !! Prefix for error messages if they're warnings
+            character(len=*), intent(in), optional      :: messageSuffix            !! Suffix for error messages
+            logical, intent(in), optional               :: bashColors               !! Use bash colours or not?
+            logical, intent(in), optional               :: printErrorCode           !! Should the error code be prepended to the prefix?
+            logical, intent(in), optional               :: triggerWarnings          !! Should warnings be printed on trigger?
+            logical, intent(in), optional               :: on                       !! Turn the ErrorHandler on or off
+            integer                                     :: i                        ! Loop iterator.
+            logical, allocatable                        :: mask(:)                  ! Logical mask to remove default errors from input errors array.
+            type(ErrorInstance)                         :: defaultErrors(2)         ! Temporary array containing default errors.
+            character(len=*), parameter                 :: ESC = char(27)           ! Terminal escape character
+            character(len=*), parameter                 :: COLOR_RED = ESC//"[91m"  ! Escape sequence for red text
+            character(len=*), parameter                 :: COLOR_BLUE = ESC//"[94m" ! Escape sequence for blue text
+            character(len=*), parameter                 :: COLOR_RESET = ESC//"[0m" ! Escape sequence to reset text color
 
             ! Stop the program running is ErrorHandler is already initialised
             call this%stopIfInitialised()
@@ -137,8 +141,8 @@ module ErrorHandlerModule
 
             ! Set whether bash colors wanted or not, and add them to prefixes if so
             if (present(bashColors)) this%bashColors = bashColors
-            if (this%bashColors .eqv. .true.) this%criticalPrefix = "\x1B[91m" // adjustl(trim(this%criticalPrefix)) // "\x1B[0m"
-            if (this%bashColors .eqv. .true.) this%warningPrefix = "\x1B[94m" // adjustl(trim(this%warningPrefix)) // "\x1B[0m"
+            if (this%bashColors .eqv. .true.) this%criticalPrefix = COLOR_RED // adjustl(trim(this%criticalPrefix)) // COLOR_RESET
+            if (this%bashColors .eqv. .true.) this%warningPrefix = COLOR_BLUE // adjustl(trim(this%warningPrefix)) // COLOR_RESET
 
             ! Set whether we want the error code to be prefixed to the message and whether
             ! we want warnings to be triggered
