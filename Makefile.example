@@ -1,6 +1,6 @@
 FC=gfortran
 WARNINGS = -Wall
-FCFLAGS = -O1 -fcheck=all -fbackslash -fopenmp ${WARNINGS}
+FCFLAGS = -O1 -fcheck=all -fopenmp ${WARNINGS}
 DEBUGFLAGS = -g -ffpe-trap=zero,invalid,overflow,underflow -pg
 EXEC_FILE = main
 EXEC_PATH = ./bin/
@@ -21,12 +21,6 @@ VPATH = src \
 #   make main: Compile and create exe.
 #   make run: Run the compiled exe.
 #   make clean: Remove compiled files.
-#   
-#   GFortran bug causes "character length mismatch in array constructor"
-#   errors with allocatable character variables, even when they're the correct length.
-#   -O1 or higher must be used. See
-#   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70231 and
-#   https://stackoverflow.com/questions/44385909/adding-to-an-array-of-characters-in-fortran.
 $(EXEC_FILE): $(OBJECTS)
 	$(FC) $(FCFLAGS) $(DEBUGFLAGS) -o $(EXEC_PATH)$@ $^
 %.o: %.f90
