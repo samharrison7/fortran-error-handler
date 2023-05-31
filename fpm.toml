@@ -1,16 +1,16 @@
 name = "feh"
-version = "1.0.4"
+version = "1.0.5"
 license = "MIT"
 author = "Sam Harrison"
 maintainer = "samharrison.xg@gmail.com"
 copyright = "Copyright 2022, Sam Harrison"
 
-[[ example ]]
+[[example]]
 name = "example"
 source-dir = "example"
 main = "example_usage.f90"
 
-[[ test ]]
+[[test]]
 name = "tests"
 source-dir = "tests"
 main = "run_tests.f90"

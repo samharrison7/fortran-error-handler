@@ -3,11 +3,16 @@ Notable changes to the Fortran Error Handler are documented here.
 
 ## [Unreleased]
 
+## [1.0.5] - 2023-05-31
+
 ### Added
 - [meson.build](./meson.build) file to enable builds using meson. Added details to README.md.
 
 ### Removed
 - Removed need to specify `-fbackslash` (or equivalent for other compilers) by using `char(27)` for terminal escape character.
+
+### Fixed
+- Removed whitespace in `fpm.toml` file table names to make compatible with latest fpm versions.
 
 ## [1.0.4] - 2022-01-02
 
@@ -37,7 +42,8 @@ No changes to code. Release is only to archive on Zenodo.
 ### Added
 - First major release.
 
-[Unreleased]: https://github.com/samharrison7/fortran-error-handler/compare/1.0.4...HEAD 
+[Unreleased]: https://github.com/samharrison7/fortran-error-handler/compare/1.0.5...HEAD 
+[1.0.5]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.5
 [1.0.4]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.4
 [1.0.3]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.3
 [1.0.2]: https://github.com/samharrison7/fortran-error-handler/releases/tag/1.0.2
