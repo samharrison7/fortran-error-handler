@@ -15,7 +15,7 @@ Fortran error handling frameworks are few and far between, and those that do exi
 <a name="getting-started"></a>
 ## Getting started
 
-There are a few ways to get the Fortran Error Handler into your project.
+There are a few ways to get the Fortran Error Handler into your project. The following have been tested with recent version of the GFortran and Intel Fortran compiler (`ifort`, not `ifx`).
 
 ### `fpm` - Fortran Package Manager
 
@@ -31,15 +31,14 @@ Or you can clone the repo and build the library yourself using fpm:
 ```bash
 $ git clone https://github.com/samharrison7/fortran-error-handler
 $ cd fortran-error-handler
-$ fpm build --flag="-fbackslash"
+$ fpm build
 ```
 
-A static library (e.g. `libfeh.a` on Linux) and `.mod` files will be generated in the `build` directory for you to use. An example executable (using `example/example_usage.f90`) will also be generated. Running `fpm test` will run tests (using `tests/run_tests.f90`) for the framework. The `-fbackslash` flag is a GFortran flag to enable coloured terminal output, and is only needed if the `bashColors` option is `.true.` (default). The equivalent `ifort` flag is `/assume:bscc`.
-
+A static library (e.g. `libfeh.a` on Linux) and `.mod` files will be generated in the `build` directory for you to use. An example executable (using `example/example_usage.f90`) will also be generated. Running `fpm test` will run tests (using `tests/run_tests.f90`) for the framework. 
 You can also get fpm to install the Fortran Error Handler locally (e.g. to `/home/<user>/.local`):
 
 ```bash
-$ fpm install --flag="-fbackslash"
+$ fpm install
 ```
 
 Fpm can easily be installed using Conda: `conda install -c conda-forge fpm`.
@@ -48,9 +47,29 @@ Fpm can easily be installed using Conda: `conda install -c conda-forge fpm`.
 
 Another simple method is to simple grab a copy of the source files (in `src/`) and include at the start of your compilation setup. Source files should be compiled in this order: `ErrorInstance.f90`, `ErrorHandler.f90`, `ErrorCriteria.f90`, `Result.f90`. An example [Makefile.example](./Makefile.example) is included, which can be altered according to your compiler and preferences. 
 
-### `cmake`
+### Meson
 
-The code can also be compiled using `cmake`, which generates a library and `.mod` files, an example executable, and executable of unit tests.
+If you use [meson](https://mesonbuild.com/), a [meson.build](./meson.build) file is provided. For example, if you want to build into the `buildmeson` directory:
+
+```bash
+$ meson buildmeson
+$ ninja -C buildmeson
+```
+
+From meson 0.56, you can use the `meson compile` command instead of `ninja`. This will generate the example and test executables, a shared library and module files. You can run the tests directly using meson: `meson test -C buildmeson`.
+
+By default, the library is built with a debug build type. To build for release (with `-O3` optimisations), specify this via the `--buildtype=release` option:
+
+```bash
+$ meson buildrelease --buildtype=release
+$ ninja -C buildrelease
+```
+
+Installing using meson (`meson install`) isn't recommended at the moment as `.mod` files are not installed - see [this issue](https://github.com/mesonbuild/meson/issues/5374).
+
+### CMake
+
+The code can also be compiled using CMake, which similarly generates a library and `.mod` files, an example executable, and executable of unit tests.
 
 ```bash
 $ mkdir build
@@ -62,8 +81,6 @@ $ ./test
 # To run the example
 $ ./example
 ```
-
-The framework has been tested using GFortran 7 upwards and Intel Fortran 18.
 
 <a name="usage"></a>
 ## Usage
@@ -187,9 +204,6 @@ Explore the documentation for each class to learn how to best use the framework,
 ## Caveats and limitations <a name="caveats"></a>
 
 - Error code must be less than 99999.
-- GFortran bugs:
-    - `-O1` or higher must be used to avoid "character length mismatch in array constructor" errors with allocatable character variables.
-    - `-fcheck=no-bounds` must be used to avoid errors on allocating rank-2 or higher arrays.
 - Result objects only support up to rank-4 (4 dimensional) data.
 - Limited support for different kinds, due to Fortran's lack of kind polymorphism. In particular, ErrorCriteria only accept 4-byte integers and single precision, double precision and quadruple precision reals, as such:
 

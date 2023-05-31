@@ -4,10 +4,10 @@ project(fortran_error_handler)
 enable_language(Fortran)
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
-    set(FLAGS "-O3 -fcheck=all -fbackslash -ffpe-trap=zero,invalid,overflow")
+    set(FLAGS "-O3 -fcheck=all -ffpe-trap=zero,invalid,overflow")
 endif()
 if(CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
-    set(FLAGS "/O3 /fpe:0 /assume:bscc")
+    set(FLAGS "/O3 /fpe:0")
 endif()
 
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${FLAGS}")

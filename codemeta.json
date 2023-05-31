@@ -41,11 +41,11 @@
   "identifier": "",
   "codeRepository": "https://github.com/samharrison7/fortran-error-handler",
   "datePublished": "2020-06-05",
-  "dateModified": "2020-06-05",
+  "dateModified": "2023-05-31",
   "dateCreated": "2020-06-05",
   "description": "Comprehensive error framework for applications requiring functional and robust error handling, utilising the power of modern object-oriented Fortran.",
   "keywords": "Fortran, error handling",
   "license": "MIT",
   "title": "Fortran Error Handler",
-  "version": "v1.0.3"
+  "version": "v1.0.5"
 }

@@ -2,6 +2,9 @@
 makefile
 Makefile
 
+# Build dirs
+build*/
+
 # Sublime Text and Visual Studio project files
 *.sublime-project
 *.sublime-workspace
@@ -57,4 +60,3 @@ snip/
 *.out
 *.app
 bin/
-build/
